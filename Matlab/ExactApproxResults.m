@@ -17,7 +17,7 @@ for i = 1:szQueryTraj
         Pexact = cell2mat(trajData(exactValues(1,1),1));
         approxDist = ContFrechet(Papprox,Q);
         exactDist = ContFrechet(Pexact,Q);
-        distDiff = approxDist - exactDist;
+        distDiff = (approxDist - exactDist) / exactDist;
         distDiffList = [distDiffList; distDiff]; 
     end
     
@@ -34,6 +34,6 @@ distDiffAvg = mean(distDiffList);
 pctIdSame = numIdSame/szQueryTraj * 100;
 disp(['-------------------']);
 disp(['Pct ID the same: ',num2str(pctIdSame)]);
-disp(['Avg Distance difference when IDs not the same: ',num2str(distDiffAvg)]);
+disp(['Avg mult error when IDs not the same: ',num2str(distDiffAvg)]);
 
 expResults1 = [pctIdSame distDiffAvg];

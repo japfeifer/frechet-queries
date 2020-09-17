@@ -68,7 +68,7 @@ for currKsize = 1:totalTraj
                 currTraj = cell2mat(trajData(j,1)); 
                 
                 upBnd = GetBestUpperBound(currTraj,newCenterTraj,2,j,centerTrajId);
-                lowBnd = GetBestLowerBound(currTraj,newCenterTraj,Inf,2,j,centerTrajId);
+                lowBnd = GetBestConstLB(currTraj,newCenterTraj,Inf,2,j,centerTrajId);
 
                 if upBnd == lowBnd % we have the Continuous Frechet dist
                     currDist = upBnd;
@@ -175,7 +175,7 @@ for currKsize = 1:totalTraj
                            newCenterTrajID ~= currTrajID && ...
                            prevCenterTrajID ~= currTrajID
 
-                            lowBnd = GetBestLowerBound(currTraj,newCenterTraj,currCenterOldDistList(k,2),2,currTrajID,newCenterTrajID);
+                            lowBnd = GetBestConstLB(currTraj,newCenterTraj,currCenterOldDistList(k,2),2,currTrajID,newCenterTrajID);
                             upBnd = GetBestUpperBound(currTraj,newCenterTraj,2,currTrajID,newCenterTrajID);
                             if currCenterOldDistList(k,2) < lowBnd % prev center is closer
                                 moveToNewCenter = false;

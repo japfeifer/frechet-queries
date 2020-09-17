@@ -1,6 +1,6 @@
 % create data
-% P = cell2mat(trajData(1,1));
-% Q = cell2mat(trajData(100,1));
+P = cell2mat(trajData(2444,1));
+Q = cell2mat(trajData(2445,1));
 
 % RotMatrix2d45 = [cosd(45) -sind(45); ...
 %                      sind(45) cosd(45)];
@@ -40,6 +40,13 @@ figure;
 plot(P(:,1),P(:,2),'o-k','linewidth',1,'markerfacecolor','k');
 hold on;
 plot(Q(:,1),Q(:,2),'o-b','linewidth',1,'markerfacecolor','b');
+
+plot([P(1,1) P(1,1)],[P(1,2) P(1,2)],'ko','MarkerSize',15);
+plot([P(sP,1) P(sP,1)],[P(sP,2) P(sP,2)],'kx','MarkerSize',15);
+
+plot([Q(1,1) Q(1,1)],[Q(1,2) Q(1,2)],'bo','MarkerSize',15);
+plot([Q(sQ,1) Q(sQ,1)],[Q(sQ,2) Q(sQ,2)],'bx','MarkerSize',15);
+
 title(['Cont Frechet: ',num2str(cm),'    size P(black):',num2str(sP),'    size Q:(blue)',num2str(sQ)]);
 % legend('Q','P','location','best');
 % line([2 cm+2],[0.5 0.5],'color','m','linewidth',2);

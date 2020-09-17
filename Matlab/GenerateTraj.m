@@ -3,6 +3,10 @@ tic;
 trajCounter = 0;
 trajData = {[]};
 
+trajData(numDiffTraj*numSimilarTraj,1:7) = {0}; % pre-populate trajData with nulls - performance improvement
+
+h = waitbar(0, 'Generate Trajectory');
+
 for k = 1:numDiffTraj
     % generate a random sample traj
     currNumVertices = randi([floor(avgNumVertices/2) floor(avgNumVertices*1.5)] ,1);
@@ -26,12 +30,10 @@ for k = 1:numDiffTraj
     end
         
     for i = 1:numSimilarTraj
-        if i == 1
-            prevTraj = sampleTraj;
-        else
-            prevTraj = curr_Traj;
-        end
-        
+        prevTraj = sampleTraj;
+
+        curr_Traj = prevTraj;
+
         % randomize the vertices a bit
         curr_Traj = prevTraj + ((-maxVertDist + (maxVertDist+maxVertDist).*rand(numDim,currNumVertices))');
         % randomize the location a bit (translate it to a slightly different location
@@ -47,5 +49,12 @@ for k = 1:numDiffTraj
         
     end
     
+    if mod(k,1000) == 0
+        X = ['Generate Trajectory ',num2str(k),'/',num2str(numDiffTraj)];
+        waitbar(k/numDiffTraj, h, X);
+    end
+    
 end
+
+close(h);
 timeElapsed = toc;

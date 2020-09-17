@@ -5,21 +5,15 @@ queryResults3 = [];
 % additive error
 addErrorList = [];
 for i = 1:size(queryTraj,1)
-    currPrune = cell2mat(queryTraj(i,8));
     currVal = cell2mat(queryTraj(i,14));
-    if currPrune ~= 0
-        addErrorList = [addErrorList; currVal];
-    end
+    addErrorList = [addErrorList; currVal];
 end
 
 % relative error
 relErrorList = [];
 for i = 1:size(queryTraj,1)
-    currPrune = cell2mat(queryTraj(i,8));
     currVal = cell2mat(queryTraj(i,15));
-    if currPrune ~= 0
-        relErrorList = [relErrorList; currVal];
-    end
+    relErrorList = [relErrorList; currVal];
 end
 
 disp(['-----------------------------']);

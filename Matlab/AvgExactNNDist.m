@@ -1,6 +1,6 @@
 % Avg exact NN distance
 %
-% First run NNSearch with Emin = 0 (exact search)
+% First run NNS1 with exact search
 % Then run this script to calc avg exact NN distance for the queries
 
 szQueryTraj = size(queryTraj,1);

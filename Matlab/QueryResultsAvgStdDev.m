@@ -1,6 +1,12 @@
-    % calculate query result avg and std dev
+% calculate query result avg and std dev
 
 queryResults1 = [];
+
+% number of cluster centre tree distance computations
+distList = [];
+for i = 1:size(queryTraj,1)
+    distList = [distList; cell2mat(queryTraj(i,6))]; 
+end
 
 % number of cluster centre tree node accesses
 pList = [];
@@ -8,29 +14,28 @@ for i = 1:size(queryTraj,1)
     pList = [pList; cell2mat(queryTraj(i,4))]; 
 end
 
-% size of pruning
-pruneList = [];
+% size of S1
+S1List = [];
 for i = 1:size(queryTraj,1)
-    currPrune = cell2mat(queryTraj(i,8));
+    currPrune = cell2mat(queryTraj(i,9));
     if currPrune ~= 0
-        pruneList = [pruneList; currPrune];
+        S1List = [S1List; currPrune];
     end
 end
 
-% size of approx cluster centres
-clusterList = [];
+% size of S2
+S2List = [];
 for i = 1:size(queryTraj,1)
-    currPrune = cell2mat(queryTraj(i,8));
-    currCluster = cell2mat(queryTraj(i,9));
+    currPrune = cell2mat(queryTraj(i,5));
     if currPrune ~= 0
-        clusterList = [clusterList; currCluster];
+        S2List = [S2List; currPrune];
     end
 end
 
 % CFD computations
 cfdList = [];
 for i = 1:size(queryTraj,1)
-    currPrune = cell2mat(queryTraj(i,8));
+    currPrune = cell2mat(queryTraj(i,5));
     cfd = cell2mat(queryTraj(i,10));
     if currPrune ~= 0
         cfdList = [cfdList; cfd];
@@ -40,7 +45,7 @@ end
 % FDP computations
 fdpList = [];
 for i = 1:size(queryTraj,1)
-    currPrune = cell2mat(queryTraj(i,8));
+    currPrune = cell2mat(queryTraj(i,5));
     fdp = cell2mat(queryTraj(i,11));
     if currPrune ~= 0
         fdpList = [fdpList; fdp];
@@ -50,7 +55,7 @@ end
 % num results
 numresList = [];
 for i = 1:size(queryTraj,1)
-    currPrune = cell2mat(queryTraj(i,8));
+    currPrune = cell2mat(queryTraj(i,5));
     numres = cell2mat(queryTraj(i,13));
     if currPrune ~= 0
         numresList = [numresList; numres];
@@ -59,17 +64,25 @@ end
 
 disp(['-----------------------------']);
 
+dAvg = mean(distList);
+dStd = std(distList);
+disp(['LBConstAvg:',num2str(dAvg),' LBConstStd:',num2str(dStd)]);
+
 pAvg = mean(pList);
 pStd = std(pList);
-disp(['pAvg:',num2str(pAvg),' pStd:',num2str(pStd)]);
+disp(['MtreeNodeVisitsAvg:',num2str(pAvg),' MtreeNodeVisitsStd:',num2str(pStd)]);
 
-pruneAvg = mean(pruneList);
-pruneStd = std(pruneList);
-disp(['pruneAvg:',num2str(pruneAvg),' pruneStd:',num2str(pruneStd)]);
+% pAvg = mean(pList);
+% pStd = std(pList);
+% disp(['AllVisitAvg:',num2str(pAvg),' AllVisitStd:',num2str(pStd)]);
 
-clusterAvg = mean(clusterList);
-clusterStd = std(clusterList);
-disp(['clusterAvg:',num2str(clusterAvg),' clusterStd:',num2str(clusterStd)]);
+S1Avg = mean(S1List);
+S1Std = std(S1List);
+disp(['S1Avg:',num2str(S1Avg),' S1Std:',num2str(S1Std)]);
+
+S2Avg = mean(S2List);
+S2Std = std(S2List);
+disp(['S2Avg:',num2str(S2Avg),' S2Std:',num2str(S2Std)]);
 
 cfdAvg = mean(cfdList);
 cfdStd = std(cfdList);
@@ -83,5 +96,7 @@ numresAvg = mean(numresList);
 numresStd = std(numresList);
 disp(['numresAvg:',num2str(numresAvg),' numresStd:',num2str(numresStd)]);
 
-queryResults1 = [pAvg pStd pruneAvg pruneStd cfdAvg cfdStd fdpAvg fdpStd];
-queryResults2 = [pAvg pStd pruneAvg pruneStd fdpAvg fdpStd numresAvg numresStd];
+queryResults1 = [dAvg dStd S1Avg S1Std S2Avg S2Std cfdAvg cfdStd fdpAvg fdpStd];
+queryResults2 = [dAvg dStd S1Avg S1Std S2Avg S2Std fdpAvg fdpStd numresAvg numresStd];
+queryResultsCCT3 = [dAvg dStd];
+queryResultsMtree = [pAvg pStd cfdAvg cfdStd fdpAvg fdpStd];

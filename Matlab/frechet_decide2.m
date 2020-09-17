@@ -1,13 +1,25 @@
 function [decide] = frechet_decide2(P,Q,len,plotFSD,printFSD)
 %--solves the decision problem for Frechet distance
 %--modified: 27 Apr 2012:  To compute data required in frechet_init
-global I J lP lQ lPQ bP bQ 
+global I J lP lQ lPQ bP bQ
+
 [M,N]=size(P);
 if M<2, error('P must be a d by I array where d >= 2'); end
 if (I ~= N), error('P must be a d by I array'); end
 [M,N]=size(Q);
 if M<2, error('Q must be a d by I array where d >= 2'); end
 if (J ~= N), error('Q must be a d by J array'); end
+
+A=[]; B=[]; C=[]; D=[]; BF=[]; LF=[];LR=[];BR=[];
+A(1:I-1,1:J-1)=NaN;
+B(1:I-1,1:J-1)=NaN;
+C(1:I-1,1:J-1)=NaN;
+D(1:I-1,1:J-1)=NaN;
+BF(1:I-1,1:J-1)=NaN;
+LF(1:I-1,1:J-1)=NaN;
+LR(2:I,1,1:2)=NaN;
+BR(1,2:J,1:2)=NaN;
+
 %--compute the free space in each cell
 for i=1:I-1 
     for j=1:J-1
@@ -270,12 +282,12 @@ if plotFSD==1  %--plot the free space diagram
     end
 end
 %--Compute the reachable sets for each cell
-for i=2:I    %--fill in column 1
-    LR(i,1,1) = NaN; LR(i,1,2) = NaN;
-end
-for j=2:J    %--fill in row 1
-    BR(1,j,1) = NaN; BR(1,j,2) = NaN;
-end
+% for i=2:I    %--fill in column 1
+%     LR(i,1,1) = NaN; LR(i,1,2) = NaN;
+% end
+% for j=2:J    %--fill in row 1
+%     BR(1,j,1) = NaN; BR(1,j,2) = NaN;
+% end
 for i=1:I-1
     for j=1:J-1
         if (i==1)&&(j==1)
@@ -334,6 +346,7 @@ if (BR(I,J-1,2)==1)||(LR(I-1,J,2)==1)
 else
     decide = 0;
 end
+
 if plotFSD==1, title(['Free Space for Leash Length = ' num2str(len)]); end
 return
 end

@@ -7,6 +7,7 @@ bestTrajDist = 0;
 currReach = 0;
 currNumVertices = 0;
 perturbDist = 0;
+totalTraj = size(trajData,1);
 
 for k = 1:numQueryTraj
     

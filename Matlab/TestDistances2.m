@@ -19,7 +19,7 @@ for i = 1:numQuery % number of different queries
         P = cell2mat(trajData(j,1));
         dist1 = ContFrechet(P,Q,1);
         
-%         LBdist = GetBestLowerBound(P,Q,Inf,2,j,i);
+%         LBdist = GetBestConstLB(P,Q,Inf,2,j,i);
 %         UBdist = GetBestUpperBound(P,Q,2,j,i);
 
         qcnt = qcnt + 1;

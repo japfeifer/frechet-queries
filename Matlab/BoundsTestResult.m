@@ -5,145 +5,199 @@ boundsTestRes = [];
 
 disp(['-----------------------------']);
 
-% exact continuous Fréchet distance
 currList = [];
 for i = 1:szQueryTraj
     currList = [currList; cell2mat(queryTraj(i,29))]; 
 end
 currAvg = mean(currList);
-currStd = std(currList);
-disp(['exact cont Fréchet distance Avg:',num2str(currAvg),'      Std:',num2str(currStd)]);
-boundsTestRes = [boundsTestRes currAvg currStd];
+disp(['exact cont Fréchet distance Avg:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
 
-% SE LB 
 currList = [];
 for i = 1:szQueryTraj
     currList = [currList; cell2mat(queryTraj(i,30))]; 
 end
 currAvg = mean(currList);
-currStd = std(currList);
-disp(['SE LB Avg:',num2str(currAvg),'      Std:',num2str(currStd)]);
-boundsTestRes = [boundsTestRes currAvg currStd];
+disp(['LB - SE:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
 
-% BB no rot LB 
 currList = [];
 for i = 1:szQueryTraj
     currList = [currList; cell2mat(queryTraj(i,31))]; 
 end
 currAvg = mean(currList);
-currStd = std(currList);
-disp(['BB no rot LB Avg:',num2str(currAvg),'      Std:',num2str(currStd)]);
-boundsTestRes = [boundsTestRes currAvg currStd];
+disp(['LB - BB no rotation:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
 
-% BB include rot LB 
 currList = [];
 for i = 1:szQueryTraj
     currList = [currList; cell2mat(queryTraj(i,32))]; 
 end
 currAvg = mean(currList);
-currStd = std(currList);
-disp(['BB include rot LB Avg:',num2str(currAvg),'      Std:',num2str(currStd)]);
-boundsTestRes = [boundsTestRes currAvg currStd];
+disp(['LB - BB rotate 22.5:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
 
-% SSE LB 
 currList = [];
 for i = 1:szQueryTraj
     currList = [currList; cell2mat(queryTraj(i,33))]; 
 end
 currAvg = mean(currList);
-currStd = std(currList);
-disp(['SSE LB Avg:',num2str(currAvg),'      Std:',num2str(currStd)]);
-boundsTestRes = [boundsTestRes currAvg currStd];
+disp(['LB - BB rotate 45:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
 
-% SE LB best?
 currList = [];
 for i = 1:szQueryTraj
     currList = [currList; cell2mat(queryTraj(i,34))]; 
 end
-currPct = sum(currList) / szQueryTraj * 100;
-disp(['SE LB best Pct:',num2str(currPct)]);
-boundsTestRes = [boundsTestRes currPct];
+currAvg = mean(currList);
+disp(['LB - SSE:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
 
-% BB no rot LB best?
 currList = [];
 for i = 1:szQueryTraj
     currList = [currList; cell2mat(queryTraj(i,35))]; 
 end
-currPct = sum(currList) / szQueryTraj * 100;
-disp(['BB no rot LB best Pct:',num2str(currPct)]);
-boundsTestRes = [boundsTestRes currPct];
+currAvg = mean(currList);
+disp(['LB - NF beats best LB?:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
 
-% BB include rot LB best?
 currList = [];
 for i = 1:szQueryTraj
     currList = [currList; cell2mat(queryTraj(i,36))]; 
 end
-currPct = sum(currList) / szQueryTraj * 100;
-disp(['BB include rot LB best Pct:',num2str(currPct)]);
-boundsTestRes = [boundsTestRes currPct];
+currAvg = mean(currList);
+disp(['LB - SE best?:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
 
-% SSE LB best?
 currList = [];
 for i = 1:szQueryTraj
     currList = [currList; cell2mat(queryTraj(i,37))]; 
 end
-currPct = sum(currList) / szQueryTraj * 100;
-disp(['SSE LB best Pct:',num2str(currPct)]);
-boundsTestRes = [boundsTestRes currPct];
+currAvg = mean(currList);
+disp(['LB - BB no rotation best?:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
 
-% ADF no pad 
 currList = [];
 for i = 1:szQueryTraj
     currList = [currList; cell2mat(queryTraj(i,38))]; 
 end
 currAvg = mean(currList);
-currStd = std(currList);
-disp(['ADF no pad Avg:',num2str(currAvg),'      Std:',num2str(currStd)]);
-boundsTestRes = [boundsTestRes currAvg currStd];
+disp(['LB - BB rotate 22.5 best:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
 
-% ADF include pad 
 currList = [];
 for i = 1:szQueryTraj
     currList = [currList; cell2mat(queryTraj(i,39))]; 
 end
 currAvg = mean(currList);
-currStd = std(currList);
-disp(['ADF include pad Avg:',num2str(currAvg),'      Std:',num2str(currStd)]);
-boundsTestRes = [boundsTestRes currAvg currStd];
+disp(['LB - BB rotate 45 best:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
 
-% ADF include pad better than ADF no pad?
 currList = [];
 for i = 1:szQueryTraj
     currList = [currList; cell2mat(queryTraj(i,40))]; 
 end
-currPct = sum(currList) / szQueryTraj * 100;
-disp(['ADF include pad better than ADF no pad Pct: ',num2str(currPct)]);
-boundsTestRes = [boundsTestRes currPct];
+currAvg = mean(currList);
+disp(['LB - SSE Bound best:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
 
-% NF no pad better than best LB?
 currList = [];
 for i = 1:szQueryTraj
     currList = [currList; cell2mat(queryTraj(i,41))]; 
 end
-currPct = sum(currList) / szQueryTraj * 100;
-disp(['NF no pad better than best LB Pct: ',num2str(currPct)]);
-boundsTestRes = [boundsTestRes currPct];
+currAvg = mean(currList);
+disp(['UB - BB no rotation:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
 
-% NF pad better than best LB?
 currList = [];
 for i = 1:szQueryTraj
     currList = [currList; cell2mat(queryTraj(i,42))]; 
 end
-currPct = sum(currList) / szQueryTraj * 100;
-disp(['NF pad better than best LB Pct: ',num2str(currPct)]);
-boundsTestRes = [boundsTestRes currPct];
+currAvg = mean(currList);
+disp(['UB - BB rotate 22.5:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
 
-% NF pad better than NF no pad?
 currList = [];
 for i = 1:szQueryTraj
     currList = [currList; cell2mat(queryTraj(i,43))]; 
 end
-currPct = sum(currList) / szQueryTraj * 100;
-disp(['NF pad better than NF no pad Pct: ',num2str(currPct)]);
-boundsTestRes = [boundsTestRes currPct];
+currAvg = mean(currList);
+disp(['UB - BB rotate 45:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
+
+currList = [];
+for i = 1:szQueryTraj
+    currList = [currList; cell2mat(queryTraj(i,44))]; 
+end
+currAvg = mean(currList);
+disp(['UB - ADF:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
+
+currList = [];
+for i = 1:szQueryTraj
+    currList = [currList; cell2mat(queryTraj(i,45))]; 
+end
+currAvg = mean(currList);
+disp(['UB - ADFR:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
+
+currList = [];
+for i = 1:szQueryTraj
+    currList = [currList; cell2mat(queryTraj(i,46))]; 
+end
+currAvg = mean(currList);
+disp(['UB - ADFD:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
+
+currList = [];
+for i = 1:szQueryTraj
+    currList = [currList; cell2mat(queryTraj(i,47))]; 
+end
+currAvg = mean(currList);
+disp(['UB - BB no rotation best?:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
+
+currList = [];
+for i = 1:szQueryTraj
+    currList = [currList; cell2mat(queryTraj(i,48))]; 
+end
+currAvg = mean(currList);
+disp(['UB - BB rotate 22.5 best?:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
+
+currList = [];
+for i = 1:szQueryTraj
+    currList = [currList; cell2mat(queryTraj(i,49))]; 
+end
+currAvg = mean(currList);
+disp(['UB - BB rotate 45 best?:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
+
+currList = [];
+for i = 1:szQueryTraj
+    currList = [currList; cell2mat(queryTraj(i,50))]; 
+end
+currAvg = mean(currList);
+disp(['UB - ADF best?:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
+
+currList = [];
+for i = 1:szQueryTraj
+    currList = [currList; cell2mat(queryTraj(i,51))]; 
+end
+currAvg = mean(currList);
+disp(['UB - ADFR best?:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
+
+currList = [];
+for i = 1:szQueryTraj
+    currList = [currList; cell2mat(queryTraj(i,52))]; 
+end
+currAvg = mean(currList);
+disp(['UB - ADFD best?:',num2str(currAvg)]);
+boundsTestRes = [boundsTestRes currAvg];
+
+
+
+
 

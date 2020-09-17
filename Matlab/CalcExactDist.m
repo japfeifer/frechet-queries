@@ -20,10 +20,7 @@ for k = 1:50
         for j = 1:size(candIdList,1)  % compare query traj to all traj in dataset
             P = cell2mat(trajData(candIdList(j,1),1));
 %             % calc using continuous frechet
-            currDist = ContFrechet(Q,P);
-            
-%             currDist = GetBestLowerBound(Q,P);
-            
+            currDist = ContFrechet(Q,P);           
             currDistList = cat(1,currDistList, [candIdList(j,1), currDist]);
         end 
 

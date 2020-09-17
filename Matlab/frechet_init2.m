@@ -11,6 +11,14 @@ if (I ~= N), error('P must be a d by I array'); end
 [M,N]=size(Q);
 if M<2, error('Q must be a d by I array where d >= 2'); end
 if (J ~= N), error('Q must be a d by J array'); end
+
+bP=[];bQ=[];lPQ=[];
+bP(1:I-1,1:J-1)=NaN;
+bQ(1:I-1,1:J-1)=NaN;
+lPQ(1:I,1:J)=NaN;
+lP(1:I-1)=NaN;
+lQ(1:J-1)=NaN;
+
 for i=1:I-1
     lP(i) = Dfcn1(P(:,i),P(:,i+1)); %--length^2 of the ith segment of P
 end

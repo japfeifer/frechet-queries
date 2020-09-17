@@ -88,7 +88,7 @@ D83 = VectorCreate(coordSz);
 D84 = VectorCreate(coordSz);
 
 % encode T1
-T1a = VectorMult(VectorRot(D57,4,1),VectorRot(D49,3,1));
+T1a = VectorMult(VectorRot(D57,10,1),VectorRot(D49,9,1));
 T1a = VectorMult(T1a,VectorRot(D41,8,1));
 T1a = VectorMult(T1a,VectorRot(D33,7,1));
 T1a = VectorMult(T1a,VectorRot(D25,6,1));

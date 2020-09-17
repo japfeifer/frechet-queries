@@ -1,7 +1,7 @@
 function [frechetDist] = ContFrechet(P,Q,frechetType,doBounds)
 
     global I J lP lQ lPQ bP bQ
-    
+
     dfcn = @(u,v) sqrt(sum( (u-v).^2 ));
 
     if ~exist('frechetType','var')
@@ -21,8 +21,8 @@ function [frechetDist] = ContFrechet(P,Q,frechetType,doBounds)
     
     % get upper/lower bounds.  If they equal we are done
     if doBounds == 1
-        upBnd = GetBestUpperBound(P,Q);
-        lowBnd = GetBestLowerBound(P,Q);
+        lowBnd = GetBestConstLB(P,Q);
+        upBnd = GetBestUpperBound(P,Q,0,0,0,lowBnd);
         if upBnd == lowBnd % we are done, this is the Continuous Frechet dist
             frechetDist = upBnd;
             return

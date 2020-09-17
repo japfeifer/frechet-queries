@@ -13,7 +13,7 @@ function dist = BoundBoxDist(P,Q,deg,cType,id1,id2)
     % get BB for P & Q
     if cType == 0 % compute P & Q bounding boxes
         PBB = ComputeBB(P,deg);
-        QBB = ComputeBB(P,deg);
+        QBB = ComputeBB(Q,deg);
     elseif cType == 1 || cType == 2 % the bounding box was pre-computed
         if deg == 0
             PBB = cell2mat(trajData(id1,3));
@@ -49,11 +49,6 @@ function dist = BoundBoxDist(P,Q,deg,cType,id1,id2)
                 if i ~= j % only check where dimensions are different
                     tmpDist1 = 0;
                     tmpDist2 = 0;
-                    % calc Pbox, Qbox if cType == 0
-                    if cType == 0
-                        PBB = [min(P);max(P)];
-                        Qbox = [min(Q);max(Q)];
-                    end
 
                     % get coordinates for P and Q
                     PMin = PBB(1,i);

@@ -11,7 +11,7 @@ function lowBnd = GetClusterLowerBound(nTrajID,cTrajID,pTrajID,cRSize,pRSize,pCI
     if isempty(bestLowBnd) == true %if bestLowBnd == -1 % dist is not pre-stored
         nTraj = cell2mat(trajData(nTrajID,1));
         cTraj = cell2mat(trajData(cTrajID,1));
-        bestLowBnd = GetBestLowerBound(nTraj,cTraj,(2*cRSize)+0.0000001,2,nTrajID,cTrajID);
+        bestLowBnd = GetBestConstLB(nTraj,cTraj,(2*cRSize)+0.0000001,2,nTrajID,cTrajID);
         if ((bestLowBnd/2) - cRSize) > 0
             lowBnd = bestLowBnd;
             return
@@ -26,7 +26,7 @@ function lowBnd = GetClusterLowerBound(nTrajID,cTrajID,pTrajID,cRSize,pRSize,pCI
     if isempty(currLowBnd) == true %if currLowBnd == -1 % dist is not pre-stored
         pTraj = cell2mat(trajData(pTrajID,1));
         cTraj = cell2mat(trajData(cTrajID,1));
-        currLowBnd = GetBestLowerBound(pTraj,cTraj,(2*cRSize)+0.0000001,2,nTrajID,cTrajID);
+        currLowBnd = GetBestConstLB(pTraj,cTraj,(2*cRSize)+0.0000001,2,nTrajID,cTrajID);
     end
     currLowBnd = currLowBnd - pRSize;
     if currLowBnd > bestLowBnd

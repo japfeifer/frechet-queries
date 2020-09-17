@@ -13,17 +13,6 @@ function [decide] = FrechetDecide(P,Q,len,simpFlag)
         Q = LinearSimp(Q,0);    
     end
     
-%     upBnd = GetBestUpperBound(P,Q);
-%     lowBnd = GetBestLowerBound(P,Q);
-%     if upBnd == lowBnd % we are done, this is the Continuous Frechet dist
-%         if upBnd <= len
-%             decide = 1;
-%         else
-%             decide = 0;
-%         end
-%         return
-%     end
-    
     I = size(P,1); J = size(Q,1);
     lP = []; lQ = []; lPQ = []; bP = []; bQ = [];
     
