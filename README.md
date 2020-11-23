@@ -17,4 +17,4 @@ Other potentially interesting sub-topics that have accompanying code include:
 
 For detailed information on each of the projects, including how to access the various data sets and how to install and run experiments, please click on the Wiki page.
 
-I acknowledge and thank my PhD supervisor, Dr. Joachim Gudmundsson, and auxilliary supervisor, Dr. Martin P. Seybold, for helping to contribute and guide me throughout the programme. 
+I acknowledge and thank my PhD supervisor, Dr. Joachim Gudmundsson, and auxilliary supervisor, Dr. Martin P. Seybold, for helping to contribute and guide me throughout the programme at the School of Computer Science, University of Sydney.
