@@ -5,7 +5,7 @@ This repository contains code and other information relating to my PhD Thesis. I
 The algorithms and data structures are designed to have smaller pre-processing and query computational complexity, as well as a smaller size complexity.  Our work includes both theoretical and experimental results, and can answer questions such as:
 1) Given an input set containing many trajectories and a query trajectory, provide exact or approximate nearest-neighbor, k-nearest-neighbor, or range (all trajectories within a distance threshold) results that are closest to the query, under the continuous Frechet similarity measure.
 2) Given a training set containing sign language skeletal movement with labels, classify a test (query) sign.
-3) Given a large trajectory input and a query trajectory, find the exact or approximate sub-trajectory segments within the large trajectory input for nearest-neighbor, k-nearest-neighbor, or range queries.
+3) Given a large trajectory input and a small query trajectory, find the exact or approximate sub-trajectory segments within the large trajectory input that are closest to the query for nearest-neighbor, k-nearest-neighbor, or range queries (under the discrete or continuous Fréchet distance measures).
 
 There are three main projects, each with their own associated paper:
 1) Trajectory Proximity Queries under the Continuous Fréchet Distance
