@@ -8,7 +8,7 @@ The algorithms and data structures are designed to have smaller pre-processing a
 3) Given a large trajectory input and a small query trajectory, find the exact or approximate sub-trajectory segments within the large trajectory input that are closest to the query for nearest-neighbor, k-nearest-neighbor, or range queries (under the discrete or continuous Fréchet distance measures).
 
 There are three main projects, each with their own associated paper:
-1) Trajectory Proximity Queries under the Continuous Fréchet Distance
+1) [Trajectory Proximity Queries](https://github.com/japfeifer/frechet-queries/wiki/Trajectory-Proximity-Queries) under the Continuous Fréchet Distance
 2) Sign Language Recognition from Skeletal Trajectory Data with Interpretable Classifiers
 3) Sub-trajectory Proximity Queries under the Discrete and Continuous Fréchet Distances
 
