@@ -14,9 +14,8 @@ disp(['--------------------']);
 disp([scriptName]);
 
 datasetType = 5; % 1 = KinTrans, 2 = MHAD, 3 = LM, 4 = UCF, 5 = MSRDA
+classifierCurr = 1;  % 1 = subspace discriminant compute all distances, 2 = NN search
 iterHMSub = 1; % number of iterations
-disp(['datasetType: ',num2str(datasetType),' Iterations: ',num2str(iterHMSub)]);
-
 featureSetNum = 0;
 normDistCurr = 0;
 kCurr = 0;
@@ -25,35 +24,48 @@ trajFeatureCurr = [6];
 distMeasCurr = [1 0];
 seqNormalCurr = [1 0 0 0 1];
 numTestCurr = -1;
-
 trainSubCurr = [1 3 5 7 9];
 testSubCurr = [2 4 6 8 10];
 % trainSampleCurr = 1;
 testSampleCurr = 0;
-
+edrTol = 0.15;  % edit distance tolerance
 % these variables should never be changed for this type of experiment
 implicitErrorFlg = 0;
 ConstructCCTType = 1;
 trainMethodCurr = 1;
-classifierCurr = 1;
 bestTrainRepFlgCurr = 0;
 swapKFoldCurr = 0;
 
 % output variable selections
-normDistCurr
-kCurr
-numTrainCurr
-trajFeatureCurr
-distMeasCurr
-seqNormalCurr
-numTestCurr
-trainSubCurr
-testSubCurr
-% trainSampleCurr
-testSampleCurr
-featureSetNum
+disp(['datasetType: ',num2str(datasetType)]);
+disp(['classifierCurr: ',num2str(classifierCurr)]);
+disp(['iterHMSub: ',num2str(iterHMSub)]);
+disp(['numPredictor: ',num2str(numPredictor)]);
+disp(['numLearner: ',num2str(numLearner)]);
+disp(['featureSetNum: ',num2str(featureSetNum)]);
+disp(['normDistCurr: ',num2str(normDistCurr)]);
+disp(['kCurr: ',num2str(kCurr)]);
+disp(['numTrainCurr: ',num2str(numTrainCurr)]);
+disp(['trajFeatureCurr: ',num2str(trajFeatureCurr)]);
+disp(['distMeasCurr: ',num2str(distMeasCurr)]);
+disp(['seqNormalCurr: ',num2str(seqNormalCurr)]);
+disp(['numTestCurr: ',num2str(numTestCurr)]);
+disp(['trainSubCurr: ',num2str(trainSubCurr)]);
+disp(['testSubCurr: ',num2str(testSubCurr)]);
+disp(['trainSampleCurr: ',num2str(trainSampleCurr)]);
+disp(['testSampleCurr: ',num2str(testSampleCurr)]);
+disp(['edrTol: ',num2str(edrTol)]);
+disp(['implicitErrorFlg: ',num2str(implicitErrorFlg)]);
+disp(['ConstructCCTType: ',num2str(ConstructCCTType)]);
+disp(['trainMethodCurr: ',num2str(trainMethodCurr)]);
+disp(['bestTrainRepFlgCurr: ',num2str(bestTrainRepFlgCurr)]);
+disp(['swapKFoldCurr: ',num2str(swapKFoldCurr)]);
 
+% load the dataset
+timeLoad = 0; tLoad = tic;
 LoadModelDataset;
+timeLoad = timeLoad + toc(tLoad);
+disp(['Data Load Time (sec): ',num2str(timeLoad)]);
 
 trainSampleHMSub = [1 2]; % run for several training samples
 for iHMSub = 1:size(trainSampleHMSub,2)
@@ -70,7 +82,10 @@ for iHMSub = 1:size(trainSampleHMSub,2)
     resultList(1,iHMSub) = classAccuracy;
 end
 
-resultList % output the results
+% output the results
+for iHMSub = 1:iterHMSub
+    disp(['resultList ',num2str(iHMSub),': ',num2str(resultList(iHMSub))]);
+end
 
 classAccuracyMean = mean(resultList(1,:));
 classAccuracyStdDev = std(resultList(1,:));

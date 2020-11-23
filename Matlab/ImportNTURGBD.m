@@ -3,6 +3,8 @@
 % Code from read_skeleton_file on https://github.com/shahroudy/NTURGB-D
 % was extracted and modified below for our purposes.
 
+% this version does NOT simplify the curves
+
 NTURGBDexclude; % load the file exclusion list (302 seq contain bad data)
 
 h = waitbar(0, 'Import NTU-RBG+D Dataset');

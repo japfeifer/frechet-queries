@@ -14,6 +14,7 @@ disp(['--------------------']);
 disp([scriptName]);
 
 datasetType = 1; % 1 = KinTrans, 2 = MHAD
+classifierType = 1;  % 1 = subspace discriminant compute all distances, 2 = NN search
 iterHMSub = 1; % number of iterations
 disp(['datasetType: ',num2str(datasetType),' Iterations: ',num2str(iterHMSub)]);
 
@@ -38,7 +39,11 @@ trainMethodCurr
 seqNormalCurr
 bestTrainRepFlgCurr
 
+% load the dataset
+timeLoad = 0; tLoad = tic;
 LoadModelDataset;
+timeLoad = timeLoad + toc(tLoad);
+disp(['Data Load Time (sec): ',num2str(timeLoad)]);
 
 for iHMSub = 1:iterHMSub
     rngSeed = iHMSub; % random seed value

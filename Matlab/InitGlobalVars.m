@@ -21,4 +21,4 @@ global Bk Ak S1 S2 rnnSearchResults numInsCFD numInsDP insertTrajData overlapWei
 global mTree mTreeRootId mTreeNodeCapacity mTreePtrList mTreeMaxCol
 global trainSet trainSet2 querySet CompMoveData 
 global tEncode timeEncode tHV timeHV nodeVisitCnt overrideLM implicitErrorFlg ConstructCCTType
-global querySetKFold currHMTrainSet
+global querySetKFold currHMTrainSet numCoordCurr classifierCurr numTrainDistComp numTestDistComp overrideNTURGBD

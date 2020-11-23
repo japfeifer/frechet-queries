@@ -1,6 +1,11 @@
 % get NTURGBD sign language sequence
-seqID = 559;   
-seq = cell2mat(CompMoveData(seqID,4));  
+% seqID = 14000;
+seqID = 48;
+seq = cell2mat(CompMoveData(seqID,4));
+
+seq = NTURGBDNormalizeSeq(seq,[0 1 0 1 0 0]);
+
+numSeqRows = size(seq,1);
 
 if size(seq,2) == 75
     seq(1:numSeqRows,76:150) = 0;
@@ -32,7 +37,7 @@ minzval = min(zval) - 0.1;
 maxzval = max(zval) + 0.1;
 
 figure(100);
-set(gcf, 'Position',  [100, 100, 600, 600]); % set figure window position and size
+set(gcf, 'Position',  [100, 100, 900, 600]); % set figure window position and size
 
 % Animation Loop
 
@@ -139,6 +144,13 @@ for i = 1:size(seq,1)
     p1 = LHIP2; p2 = LKNE2; xplot=[seq(i,p1(1)) seq(i,p2(1))]; yplot=[seq(i,p1(2)) seq(i,p2(2))]; zplot=[seq(i,p1(3)) seq(i,p2(3))]; plot3(xplot,yplot,zplot,'-k','linewidth',2,'Markerfacecolor','k'); hold on;
     p1 = LKNE2; p2 = LANK2; xplot=[seq(i,p1(1)) seq(i,p2(1))]; yplot=[seq(i,p1(2)) seq(i,p2(2))]; zplot=[seq(i,p1(3)) seq(i,p2(3))]; plot3(xplot,yplot,zplot,'-k','linewidth',2,'Markerfacecolor','k'); hold on;
     p1 = LANK2; p2 = LFOT2; xplot=[seq(i,p1(1)) seq(i,p2(1))]; yplot=[seq(i,p1(2)) seq(i,p2(2))]; zplot=[seq(i,p1(3)) seq(i,p2(3))]; plot3(xplot,yplot,zplot,'-k','linewidth',2,'Markerfacecolor','k'); hold on;
+
+    titleName = ['Sequence ID: ',num2str(seqID), ...
+    '    Word: ',cell2mat(CompMoveData(seqID,1)), ...
+    '    ',cell2mat(CompMoveData(seqID,2)), ...
+    '    View: ',num2str(cell2mat(CompMoveData(seqID,3))), ...
+    '    Frame: ',num2str(i),'/',num2str(size(seq,1))];
+    title(titleName)
 
     hold off;
     

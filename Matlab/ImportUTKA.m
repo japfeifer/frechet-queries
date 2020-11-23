@@ -32,6 +32,7 @@ for i=1:size(seqList,1)
     fid = fopen(filename, 'r');
     line = fgetl(fid);
     currTraj = [];
+    
     while ischar(line) % for each line in the file
         frame = sscanf(line,'%f',[1 61]); % extract frame
         if frame(1) >= seqList(i,4) && frame(1) <= seqList(i,5) % if this frame is within seq start/end frame

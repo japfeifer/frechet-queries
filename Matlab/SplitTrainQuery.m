@@ -1,8 +1,8 @@
 % take all sequences and split into the trainSet (and maybe trainSet2) and querySet
 
-function SplitTrainQuery(pctTrain,pctTest,trainMethodCurr,bestTrainRepFlg,trainSub,testSub,trainSample,testSample,switchFlg)
+function SplitTrainQuery(pctTrain,pctTest,trainMethodCurr,bestTrainRepFlg,trainSub,testSub,trainSample,testSample,switchFlg,testSetClass,testSetList,keepTrainSetClass,testSetSub,trainSetSub)
 
-    global trainSet trainSet2 querySet CompMoveData currHMTrainSet querySetKFold
+    global trainSet trainSet2 querySet CompMoveData currHMTrainSet querySetKFold classifierCurr
     
     trainSet = {[]};
     trainSet2 = {[]};
@@ -10,6 +10,9 @@ function SplitTrainQuery(pctTrain,pctTest,trainMethodCurr,bestTrainRepFlg,trainS
     trainSetCnt = 1;
     trainSet2Cnt = 1;
     querySetCnt = 1;
+    
+    disp(['Create training and testing sequences']);
+    tTrainTestSeqPrep = tic;
     
     CompMoveData = sortrows(CompMoveData,[1,2,3]); % sort by class,subject,seq id
     
@@ -69,6 +72,8 @@ function SplitTrainQuery(pctTrain,pctTest,trainMethodCurr,bestTrainRepFlg,trainS
                         currClassIDs = find(ismember(allSub,uniqueSub(k))); % get list of class ID's for this unique subject
                         % randomly choose one from currClassIDs list
                         if trainSample == 0
+                            currSz = size(currClassIDs,1);
+                        elseif isempty(keepTrainSetClass) == 0 && ismember(i,keepTrainSetClass) == 1
                             currSz = size(currClassIDs,1);
                         else
                             currSz = trainSample;
@@ -156,18 +161,81 @@ function SplitTrainQuery(pctTrain,pctTest,trainMethodCurr,bestTrainRepFlg,trainS
             for j = 1:size(classIDs,1) % process each item in classIDs list
                 if ismember(j,trainSetID) % put this one in the trainSet
                     trainSet(trainSetCnt,1) = num2cell(classIDs(j)); % source id
-                    trainSet(trainSetCnt,2) = num2cell(i);         % class
+                    trainSet(trainSetCnt,2) = CompMoveData(classIDs(j),5); % class
                     trainSetCnt = trainSetCnt + 1;
                 elseif ismember(j,trainSetID2) % put this one in the trainSet
                     trainSet2(trainSet2Cnt,1) = num2cell(classIDs(j)); % source id
-                    trainSet2(trainSet2Cnt,2) = num2cell(i);         % class
+                    trainSet2(trainSet2Cnt,2) = CompMoveData(classIDs(j),5); % class
                     trainSet2Cnt = trainSet2Cnt + 1;
                 elseif ismember(j,testSetID) % put this one in the querySet
                     querySet(querySetCnt,1) = num2cell(classIDs(j)); % source id
-                    querySet(querySetCnt,2) = num2cell(i);         % class            
+                    querySet(querySetCnt,2) = CompMoveData(classIDs(j),5); % class           
                     querySetCnt = querySetCnt + 1;            
                 end
             end
         end
     end
+    
+    % if subspace discriminant, and only 1 seq per class, then duplicate the last 
+    % seq in the training set - subspace discriminant requires
+    % that there are more trainers than classes.
+    if classifierCurr == 1 && size(classes,1) == size(trainSet,1)
+        trainSet(end+1,:) = trainSet(end,:);  
+    end
+    
+    if isempty(testSetClass) == 0 % only include certain classes in test set
+        querySetTmp = {[]};
+        cnt = 1;
+        for i = 1:size(querySet,1)
+            currClassID = cell2mat(querySet(i,2));
+            if ismember(currClassID,testSetClass) == 1
+                querySetTmp(cnt,1) = querySet(i,1);
+                querySetTmp(cnt,2) = querySet(i,2);
+                cnt = cnt + 1;
+            end
+        end
+        querySet = querySetTmp;
+    end
+    
+    if isempty(testSetSub) == 0 % only include certain subjects in test set
+        querySetTmp = {[]};
+        cnt = 1;
+        for i = 1:size(querySet,1)
+            currCompMoveID = cell2mat(querySet(i,1));
+            currSubID = cell2mat(CompMoveData(currCompMoveID,3));
+            if ismember(currSubID,testSetSub) == 1
+                querySetTmp(cnt,1) = querySet(i,1);
+                querySetTmp(cnt,2) = querySet(i,2);
+                cnt = cnt + 1;
+            end
+        end
+        querySet = querySetTmp;
+    end    
+
+    if isempty(trainSetSub) == 0 % only include certain subjects in test set
+        trainSetTmp = {[]};
+        cnt = 1;
+        for i = 1:size(trainSet,1)
+            currCompMoveID = cell2mat(trainSet(i,1));
+            currSubID = cell2mat(CompMoveData(currCompMoveID,3));
+            if ismember(currSubID,trainSetSub) == 1
+                trainSetTmp(cnt,1) = trainSet(i,1);
+                trainSetTmp(cnt,2) = trainSet(i,2);
+                cnt = cnt + 1;
+            end
+        end
+        trainSet = trainSetTmp;
+        end 
+    
+    if isempty(testSetList) == 0
+        querySet = {[]};
+        for i = 1:size(testSetList,2)
+            querySet(i,1) = num2cell(testSetList(1,i));
+            querySet(i,2) = CompMoveData(testSetList(1,i),5);
+        end
+    end
+    
+    timeTrainTestSeqPrep = toc(tTrainTestSeqPrep);
+    disp(['Create training and testing sequences time: ',num2str(timeTrainTestSeqPrep)]);
+
 end

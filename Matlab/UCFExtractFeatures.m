@@ -121,6 +121,155 @@ function seq2 = UCFExtractFeatures(seq,extractMethod,idx)
         seq2(:,a:a+2) = seq(:,LFOT); a=a+3;
         seq2(:,a:a+2) = seq(:,RKNE); a=a+3;
         seq2(:,a:a+2) = seq(:,LKNE); a=a+3;
+    elseif extractMethod == 10
+        seq2(:,a:a+2) = seq(:,LELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,RHND) - seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,RKNE) - seq(:,RHIP); a=a+3;
+        
+    elseif extractMethod == 20
+        seq2(:,a:a+2) = seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,RFOT); a=a+3;
+        seq2(:,a:a+2) = seq(:,LKNE); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,LHND) - seq(:,RSHO); a=a+3;
+    elseif extractMethod == 21
+        seq2(:,a:a+2) = seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,RHND) - seq(:,LSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,HEAD); a=a+3;
+        seq2(:,a:a+2) = seq(:,RKNE) - seq(:,RHIP); a=a+3;
+        seq2(:,a:a+2) = seq(:,LKNE); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,LSHO) - seq(:,NECK); a=a+3;
+    elseif extractMethod == 22
+        seq2(:,a:a+2) = seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,RKNE); a=a+3;
+        seq2(:,a:a+2) = seq(:,LHND) - seq(:,RSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,LSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,LKNE) - seq(:,LHIP); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,RFOT) - seq(:,RKNE); a=a+3;
+    elseif extractMethod == 23
+        seq2(:,a:a+2) = seq(:,LELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,RKNE) - seq(:,RHIP); a=a+3;
+        seq2(:,a:a+2) = seq(:,LKNE); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,TORS); a=a+3;
+    elseif extractMethod == 24
+        seq2(:,a:a+2) = seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,LHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,RKNE) - seq(:,RHIP); a=a+3;
+        seq2(:,a:a+2) = seq(:,LKNE); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,RHND) - seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,NECK); a=a+3;
+        seq2(:,a:a+2) = seq(:,RKNE); a=a+3;
+        seq2(:,a:a+2) = seq(:,LHIP); a=a+3;
+        seq2(:,a:a+2) = seq(:,LFOT) - seq(:,LKNE); a=a+3;
+    elseif extractMethod == 25
+        seq2(:,a:a+2) = seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,LHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,HEAD); a=a+3;
+        seq2(:,a:a+2) = seq(:,RKNE) - seq(:,RHIP); a=a+3;
+        seq2(:,a:a+2) = seq(:,LFOT) - seq(:,LKNE); a=a+3;
+    elseif extractMethod == 26
+        seq2(:,a:a+2) = seq(:,LSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,LHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,LHIP); a=a+3;
+        seq2(:,a:a+2) = seq(:,LKNE); a=a+3;
+        seq2(:,a:a+2) = seq(:,LFOT); a=a+3;
+    elseif extractMethod == 27
+        seq2(:,a:a+2) = seq(:,LFOT) - seq(:,LKNE); a=a+3;
+    elseif extractMethod == 28
+        seq2(:,a:a+2) = seq(:,LKNE) - seq(:,LHIP); a=a+3;
+    elseif extractMethod == 29
+        seq2(:,a:a+2) = seq(:,LHIP) - seq(:,TORS); a=a+3;
+        
+    elseif extractMethod == 101
+        seq2(:,a:a+2) = seq(:,LSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,LHND); a=a+3;
+    elseif extractMethod == 102
+        seq2(:,a:a+2) = seq(:,RSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,RHND); a=a+3;
+    elseif extractMethod == 103
+        seq2(:,a:a+2) = seq(:,HEAD); a=a+3;
+        seq2(:,a:a+2) = seq(:,NECK); a=a+3;
+        seq2(:,a:a+2) = seq(:,TORS); a=a+3;
+    elseif extractMethod == 104
+        seq2(:,a:a+2) = seq(:,LHIP); a=a+3;
+        seq2(:,a:a+2) = seq(:,LKNE); a=a+3;
+        seq2(:,a:a+2) = seq(:,LFOT); a=a+3;
+    elseif extractMethod == 105
+        seq2(:,a:a+2) = seq(:,RHIP); a=a+3;
+        seq2(:,a:a+2) = seq(:,RKNE); a=a+3;
+        seq2(:,a:a+2) = seq(:,RFOT); a=a+3;
+    elseif extractMethod == 106
+        seq2(:,a:a+2) = seq(:,LHND) - seq(:,LSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,LSHO); a=a+3;
+    elseif extractMethod == 107
+        seq2(:,a:a+2) = seq(:,RHND) - seq(:,RSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB) - seq(:,RSHO); a=a+3;
+    elseif extractMethod == 108
+        seq2(:,a:a+2) = seq(:,LHND) - seq(:,LELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,LSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,LSHO) - seq(:,NECK); a=a+3;
+    elseif extractMethod == 109
+        seq2(:,a:a+2) = seq(:,RHND) - seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB) - seq(:,RSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO) - seq(:,NECK); a=a+3;
+    elseif extractMethod == 110
+        seq2(:,a:a+2) = seq(:,LFOT) - seq(:,LKNE); a=a+3;
+        seq2(:,a:a+2) = seq(:,LKNE) - seq(:,LHIP); a=a+3;
+        seq2(:,a:a+2) = seq(:,LHIP) - seq(:,TORS); a=a+3;
+    elseif extractMethod == 111
+        seq2(:,a:a+2) = seq(:,RFOT) - seq(:,RKNE); a=a+3;
+        seq2(:,a:a+2) = seq(:,RKNE) - seq(:,RHIP); a=a+3;
+        seq2(:,a:a+2) = seq(:,RHIP) - seq(:,TORS); a=a+3;
+    elseif extractMethod == 112
+        seq2(:,a:a+2) = seq(:,LSHO) - seq(:,NECK); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO) - seq(:,NECK); a=a+3;
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,NECK); a=a+3;
+        seq2(:,a:a+2) = seq(:,HEAD) - seq(:,NECK); a=a+3;
+    elseif extractMethod == 113
+        seq2(:,a:a+2) = seq(:,RHIP) - seq(:,TORS); a=a+3; % RHIP relative to TORS
+        seq2(:,a:a+2) = seq(:,RKNE) - seq(:,RHIP); a=a+3; % RKNE relative to RHIP
+        seq2(:,a:a+2) = seq(:,RFOT) - seq(:,RKNE); a=a+3; % RFOT relative to RKNE
+        seq2(:,a:a+2) = seq(:,LHIP) - seq(:,TORS); a=a+3; % LHIP relative to TORS
+        seq2(:,a:a+2) = seq(:,LKNE) - seq(:,LHIP); a=a+3; % LKNE relative to LHIP
+        seq2(:,a:a+2) = seq(:,LFOT) - seq(:,LKNE); a=a+3; % LFOT relative to LKNE
+        seq2(:,a:a+2) = seq(:,RFOT); a=a+3;
+        seq2(:,a:a+2) = seq(:,LFOT); a=a+3;
+    elseif extractMethod == 114
+        seq2(:,a:a+2) = seq(:,RSHO) - seq(:,NECK); a=a+3; % RSHO relative to NECK
+        seq2(:,a:a+2) = seq(:,RELB) - seq(:,RSHO); a=a+3; % RELB relative to RSHO
+        seq2(:,a:a+2) = seq(:,RHND) - seq(:,RELB); a=a+3; % RHND relative to RELB
+        seq2(:,a:a+2) = seq(:,LSHO) - seq(:,NECK); a=a+3; % LSHO relative to NECK
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,LSHO); a=a+3; % LELB relative to LSHO
+        seq2(:,a:a+2) = seq(:,LHND) - seq(:,LELB); a=a+3; % LHND relative to LELB
+        seq2(:,a:a+2) = seq(:,HEAD) - seq(:,NECK); a=a+3; % HEAD relative to NECK
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,NECK); a=a+3; % TORS relative to NECK
+    elseif extractMethod == 115
+        seq2(:,a:a+2) = seq(:,RELB); a=a+3;
+    elseif extractMethod == 116
+        seq2(:,a:a+2) = seq(:,RHND) - seq(:,LSHO); a=a+3;
+    elseif extractMethod == 117
+        seq2(:,a:a+2) = seq(:,HEAD); a=a+3;
+    elseif extractMethod == 118
+        seq2(:,a:a+2) = seq(:,RKNE) - seq(:,RHIP); a=a+3;
+    elseif extractMethod == 119
+        seq2(:,a:a+2) = seq(:,LKNE); a=a+3;
+    elseif extractMethod == 120
+        seq2(:,a:a+2) = seq(:,LELB); a=a+3;
+    elseif extractMethod == 121
+        seq2(:,a:a+2) = seq(:,LSHO) - seq(:,NECK); a=a+3;
     end
 
 end

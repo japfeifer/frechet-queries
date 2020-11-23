@@ -7,7 +7,7 @@ else
     shiftVal = 0;
 end
 
-if distType == 2 
+if distType == 3 % continuous Frechet
     % build the CCT when processing training set, or doing half/half method
     if trainQueryType == 1 || trainMethodCurr == 2 
         % populate trajData with trainSet trajectories
@@ -95,6 +95,8 @@ if distType == 2
     end
 end
 
+h = waitbar(0, 'Construct Matrix');
+
 % compute queryResults
 queryResults = [];
 if trainQueryType == 1
@@ -109,7 +111,7 @@ end
 queryResults(1:szSet,1:7) = 0;
 wordIDs = cell2mat(trainSet(:,2));
 for i = 1:szSet  
-    if distType == 2 % get Frechet kNN distances
+    if distType == 3 % get Frechet kNN distances
         distResults = cell2mat(queryTraj(i,12));
         Q = cell2mat(queryTraj(i,1));
         for j=1:size(distResults,1) 
@@ -118,8 +120,8 @@ for i = 1:szSet
             distResults(j,2) = dist;
         end
         distResults = sortrows(distResults,2,'ascend'); % closest distance first
-    elseif distType == 1 % get DTW kNN distances
-        distResults = [];
+    elseif distType == 1 || distType == 2 || distType == 4 % get kNN distances for DTW or disc Frechet or Edit Distance
+        
         if trainQueryType == 1
             if halfHalfFlg == 2
                 Q = cell2mat(trainSet2(i,3));
@@ -130,18 +132,43 @@ for i = 1:szSet
             Q = cell2mat(querySet(i,3));
         end
         if trainQueryType == 1 && halfHalfFlg == 2
-            szSet = size(trainSet2,1);
+            szSet2 = size(trainSet2,1);
         else
-            szSet = size(trainSet,1);
+            szSet2 = size(trainSet,1);
         end
-        for j=1:szSet
-            if trainQueryType == 1 && halfHalfFlg == 2
+        
+        distResults = [];
+        distResults(1:szSet2,1:2) = 0;
+        if trainQueryType == 1 && halfHalfFlg == 2
+            parfor j=1:szSet2 % had to break up parfor into 2 separate parfor statements due to a weird error
                 P = cell2mat(trainSet2(j,3));
-            else
-                P = cell2mat(trainSet(j,3));
+                dist = 0;
+
+                if distType == 1
+                    dist = dtw(P',Q','euclidean'); % get the DTW distance, using euclidean metric
+                elseif distType == 2
+                    dist = DiscreteFrechetDist(P,Q); % get the discrete Frechet distance
+                elseif distType == 4  % get the edit distance
+                    dist = edr(P',Q',edrTol);
+                end
+
+                distResults(j,:) = [j dist];
             end
-            dist = dtw(P',Q','euclidean'); % get the DTW distance, using euclidean metric
-            distResults(end+1,:) = [j dist];
+        else
+            parfor j=1:szSet2
+                P = cell2mat(trainSet(j,3));
+                dist = 0;
+
+                if distType == 1
+                    dist = dtw(P',Q','euclidean'); % get the DTW distance, using euclidean metric
+                elseif distType == 2
+                    dist = DiscreteFrechetDist(P,Q); % get the discrete Frechet distance
+                elseif distType == 4  % get the edit distance
+                    dist = edr(P',Q',edrTol);
+                end
+
+                distResults(j,:) = [j dist];
+            end
         end
         distResults = sortrows(distResults,2,'ascend'); % closest distance first
     end
@@ -181,7 +208,13 @@ for i = 1:szSet
         queryResults(i,j+idx) = distResults(j+shiftVal,2); % kNN distance
     end    
     queryResults(i,5) = queryResults(i,4) == queryResults(i,6); % kNN accuracy, 1 = same label, 0 = different label
+    
+    if mod(i,10) == 0
+        X = ['Construct Matrix: ',num2str(i),'/',num2str(szSet)];
+        waitbar(i/szSet, h, X);
+    end
 end
+close(h);
 
 % put results in trainLabels, trainMat, and trainMatDist, or in
 % testLabels, testMat, and testMatDist

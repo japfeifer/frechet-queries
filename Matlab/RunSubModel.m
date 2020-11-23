@@ -44,11 +44,11 @@ for mHM = 1:size(distMeasCurr,2) % for each dist measure
 end
 
 % run the classifier
-if classifierCurr == 1 || classifierCurr == 2 % SVM classifier
+if classifierCurr == 3 || classifierCurr == 4 % SVM classifier
     CreateCatModel; % create the categorical model
     Mdl = fitcecoc(modelTrainMat,trainLabels,'Coding','onevsone','Learners','svm'); % train the classifier
     classifierRes = predict(Mdl,modelTestMat); % Classify the test data
-else % classifierCurr = 3, Maj Vote classifier
+elseif classifierCurr == 5 % Maj Vote classifier
     MajorityVote;
 end
 
@@ -56,4 +56,4 @@ end
 classifierRes(:,2) = testLabels;
 classifierRes(:,3) = classifierRes(:,1) == classifierRes(:,2);
 classAccuracy = mean(classifierRes(:,3)) * 100;  
-disp(['--> Classification accuracy: ',num2str(classAccuracy)]);
+disp(['Classification accuracy: ',num2str(classAccuracy)]);

@@ -1,11 +1,17 @@
 % export train and test datasets to MMSkeleton format 
 % for format see https://github.com/open-mmlab/mmskeleton/blob/master/doc/CUSTOM_DATASET.md
 
+% delete files in the Test and Train folders
+delete('Export\Train\train*.json');
+delete('Export\Test\test*.json');
+
+idcnt = 0;
+
 for i=1:size(trainSet,1)
 
     currSeqID = cell2mat(trainSet(i,1));
     currLabelID = cell2mat(trainSet(i,2));
-    currSeq = cell2mat(trainSet(i,3));
+    currSeq = cell2mat(CompMoveData(currSeqID,4));
     numFrame = size(currSeq,1);
     numJoints = size(currSeq,2) / 3;
 
@@ -19,17 +25,24 @@ for i=1:size(trainSet,1)
     fprintf(fid,'%s\n',currText);
     currText = '        {';
     fprintf(fid,'%s\n',currText);
-    currText = ['            "video_name": "train',num2str(currSeqID),'.mp4",'];
+%     currText = ['            "video_name": "train',num2str(currSeqID),'.mp4",'];
+%     fprintf(fid,'%s\n',currText);
+%     currText = '            "resolution": [340, 256],';
+%     fprintf(fid,'%s\n',currText);
+    currText = ['            "video_name": null,'];
     fprintf(fid,'%s\n',currText);
-    currText = '            "resolution": [340, 256],';
+    currText = '            "resolution": null,';
     fprintf(fid,'%s\n',currText);
     currText = ['            "num_frame": ',num2str(numFrame),','];
     fprintf(fid,'%s\n',currText);
     currText = ['            "num_keypoints": ',num2str(numJoints),','];
     fprintf(fid,'%s\n',currText);    
-    currText = '            "keypoint_channels": ["x", "y", "z", "score"],';
+%     currText = '            "keypoint_channels": ["x", "y", "z", "score"],';
+    currText = '            "keypoint_channels": ["x", "y", "z"],';
     fprintf(fid,'%s\n',currText);
-    currText = '            "version": "1.0"';
+%     currText = '            "version": "1.0"';
+%     fprintf(fid,'%s\n',currText);
+    currText = '            "version": null';
     fprintf(fid,'%s\n',currText);
     currText = '        },';
     fprintf(fid,'%s\n',currText);
@@ -43,7 +56,7 @@ for i=1:size(trainSet,1)
         fprintf(fid,'%s\n',currText);
         currText = ['                "frame_index": ',num2str(j-1),','];
         fprintf(fid,'%s\n',currText);
-        currText = ['                "id": ',num2str(j-1),','];
+        currText = ['                "id": ',num2str(idcnt),','];
         fprintf(fid,'%s\n',currText);
         currText = '                "person_id": null,';
         fprintf(fid,'%s\n',currText);
@@ -51,18 +64,25 @@ for i=1:size(trainSet,1)
         currText = '                "keypoints": [';
         for k = 1:numJoints
             idx1 = k*3-2; idx2 = k*3-1; idx3 = k*3;
-            currText = [currText,'[',num2str(currSeq(j,idx1)),', ',num2str(currSeq(j,idx2)),', ',num2str(currSeq(j,idx3)),', 1], '];
+%             currText = [currText,'[',num2str(currSeq(j,idx1)),', ',num2str(currSeq(j,idx2)),', ',num2str(currSeq(j,idx3)),', 1], '];
+            currText = [currText,'[',num2str(currSeq(j,idx1)),', ',num2str(currSeq(j,idx2)),', ',num2str(currSeq(j,idx3)),'], '];
         end
+        currText = currText(1:end-2);  % remove last comma
         currText = [currText,']'];
         fprintf(fid,'%s\n',currText);
         
         currText = '            },';
+        if j == numFrame
+            currText = currText(1:end-1);  % remove last comma
+        end
         fprintf(fid,'%s\n',currText);
+        
+        idcnt = idcnt + 1;
     end
     
     currText = '        ],';
     fprintf(fid,'%s\n',currText);
-    currText = ['    "category_id": ',num2str(currLabelID - 1),','];
+    currText = ['    "category_id": ',num2str(currLabelID - 1)];
     fprintf(fid,'%s\n',currText);
     currText = '}';
     fprintf(fid,'%s\n',currText);
@@ -74,7 +94,7 @@ for i=1:size(querySet,1)
 
     currSeqID = cell2mat(querySet(i,1));
     currLabelID = cell2mat(querySet(i,2));
-    currSeq = cell2mat(querySet(i,3));
+    currSeq = cell2mat(CompMoveData(currSeqID,4));
     numFrame = size(currSeq,1);
     numJoints = size(currSeq,2) / 3;
 
@@ -88,17 +108,22 @@ for i=1:size(querySet,1)
     fprintf(fid,'%s\n',currText);
     currText = '        {';
     fprintf(fid,'%s\n',currText);
-    currText = ['            "video_name": "test',num2str(currSeqID),'.mp4",'];
+%     currText = ['            "video_name": "train',num2str(currSeqID),'.mp4",'];
+%     fprintf(fid,'%s\n',currText);
+%     currText = '            "resolution": [340, 256],';
+%     fprintf(fid,'%s\n',currText);
+    currText = ['            "video_name": null,'];
     fprintf(fid,'%s\n',currText);
-    currText = '            "resolution": [340, 256],';
+    currText = '            "resolution": null,';
     fprintf(fid,'%s\n',currText);
     currText = ['            "num_frame": ',num2str(numFrame),','];
     fprintf(fid,'%s\n',currText);
     currText = ['            "num_keypoints": ',num2str(numJoints),','];
     fprintf(fid,'%s\n',currText); 
-    currText = '            "keypoint_channels": ["x", "y", "z", "score"],';
+%     currText = '            "keypoint_channels": ["x", "y", "z", "score"],';
+    currText = '            "keypoint_channels": ["x", "y", "z"],';
     fprintf(fid,'%s\n',currText);
-    currText = '            "version": "1.0"';
+    currText = '            "version": null';
     fprintf(fid,'%s\n',currText);
     currText = '        },';
     fprintf(fid,'%s\n',currText);
@@ -112,7 +137,7 @@ for i=1:size(querySet,1)
         fprintf(fid,'%s\n',currText);
         currText = ['                "frame_index": ',num2str(j-1),','];
         fprintf(fid,'%s\n',currText);
-        currText = ['                "id": ',num2str(j-1),','];
+        currText = ['                "id": ',num2str(idcnt),','];
         fprintf(fid,'%s\n',currText);
         currText = '                "person_id": null,';
         fprintf(fid,'%s\n',currText);
@@ -120,18 +145,25 @@ for i=1:size(querySet,1)
         currText = '                "keypoints": [';
         for k = 1:numJoints
             idx1 = k*3-2; idx2 = k*3-1; idx3 = k*3;
-            currText = [currText,'[',num2str(currSeq(j,idx1)),', ',num2str(currSeq(j,idx2)),', ',num2str(currSeq(j,idx3)),', 1], '];
+%             currText = [currText,'[',num2str(currSeq(j,idx1)),', ',num2str(currSeq(j,idx2)),', ',num2str(currSeq(j,idx3)),', 1], '];
+            currText = [currText,'[',num2str(currSeq(j,idx1)),', ',num2str(currSeq(j,idx2)),', ',num2str(currSeq(j,idx3)),'], '];
         end
+        currText = currText(1:end-2);  % remove last comma
         currText = [currText,']'];
         fprintf(fid,'%s\n',currText);
         
         currText = '            },';
+        if j == numFrame
+            currText = currText(1:end-1);  % remove last comma
+        end
         fprintf(fid,'%s\n',currText);
+        
+        idcnt = idcnt + 1;
     end
     
     currText = '        ],';
     fprintf(fid,'%s\n',currText);
-    currText = ['    "category_id": ',num2str(currLabelID - 1),','];
+    currText = ['    "category_id": ',num2str(currLabelID - 1)];
     fprintf(fid,'%s\n',currText);
     currText = '}';
     fprintf(fid,'%s\n',currText);

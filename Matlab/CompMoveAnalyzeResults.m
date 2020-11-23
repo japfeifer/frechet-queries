@@ -26,3 +26,5 @@ C = [A;B];
 
 figure(10);
 cm = confusionchart(queryResults2(:,5),queryResults2(:,6));
+% cm.ColumnSummary = 'column-normalized';
+
