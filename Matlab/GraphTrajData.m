@@ -1,5 +1,5 @@
 % create data
-P = trajData(:,:);
+P = trajData(4:5,:);
 % P = queryTraj(:,:);
 % P = anchorTraj;
 % P = trajData(1:1000,:);

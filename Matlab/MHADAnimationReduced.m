@@ -1,5 +1,6 @@
 % get MHAD sign language sequence
-seq = cell2mat(CompMoveData(117,4));  
+seqID = 117; 
+seq = cell2mat(CompMoveData(seqID,4));  
 % seq = MHADNormalizeSeq(seq);
 
 % set plot coordinate min/max values

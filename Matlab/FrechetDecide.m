@@ -1,9 +1,13 @@
-function [decide] = FrechetDecide(P,Q,len,simpFlag)
+function [decide] = FrechetDecide(P,Q,len,simpFlag,plotFSD)
 
     global I J lP lQ lPQ bP bQ
 
     if ~exist('simpFlag','var')
         simpFlag = 1;
+    end
+    
+    if ~exist('plotFSD','var')
+        plotFSD = 0;
     end
     
     % Remove duplicate consecutive vertices as there is a bug in continuous 
@@ -49,7 +53,7 @@ function [decide] = FrechetDecide(P,Q,len,simpFlag)
         end
     else % do actual frechet decision calc
         frechet_init2(P',Q');
-        decide = frechet_decide2(P',Q',len,0,0);
+        decide = frechet_decide2(P',Q',len,plotFSD,0);
     end    
 
 end  % function FrechetDecide
