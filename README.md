@@ -9,7 +9,7 @@ The algorithms and data structures are designed to have smaller pre-processing a
 
 There are three main projects, each with their own associated paper:
 1) [Trajectory Proximity Queries](https://github.com/japfeifer/frechet-queries/wiki/Trajectory-Proximity-Queries) under the Continuous Fréchet Distance
-2) [Sign Language Recognition](https://github.com/japfeifer/frechet-queries/wiki/Sign-Language-Recognition) from Skeletal Trajectory Data with Interpretable Classifiers
+2) [Sign Language Recognition](https://github.com/japfeifer/frechet-queries/wiki/Sign-Language-Recognition-Project) from Skeletal Trajectory Data with Interpretable Classifiers
 3) [Sub-trajectory Proximity Queries](https://github.com/japfeifer/frechet-queries/wiki/Sub-trajectory-Proximity-Queries) under the Discrete and Continuous Fréchet Distances
 
 Other potentially interesting sub-topics that have accompanying code include:
