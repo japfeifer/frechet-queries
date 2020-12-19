@@ -8,10 +8,11 @@ function [trajOverlapMean, trajOverlapStd] = GetCCTTrajOverlap()
     
     rng('default'); % reset the random seed so that experiments are reproducable
     randOrder = randperm(numel(trajData(:,1)));
-    if PSize > 1000
-        randOrder = randOrder(1:1000);
-        PSize = 1000;
-    end
+
+%     if PSize > 1000
+%         randOrder = randOrder(1:1000);
+%         PSize = 1000;
+%     end
     
     h = waitbar(0, 'GetCCTTrajOverlap');
     
