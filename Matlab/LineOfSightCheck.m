@@ -59,30 +59,63 @@ function [dir,numCellCheck,boundCutPath,boundCutIdx,backCellP,backCellQ,backFrom
         if currCellQ == toCellQ % we made it back to toPoint
             dir = 1;
             % just set variables below to any values (they are not used if we make it back to toPoint)
-            backCellP = [0 0];
-            backCellQ = [0 0];
+            backCellP = 0;
+            backCellQ = 0;
             backFromEdge = 'T';
             backCellStartPoint = [0 0];
             backCellCutE = [0 0];
             break
         end
         % shoot the ray from the right to left in this cell
-        segQ = [fp; Q(currCellQ+1,:)];
-        [sp,ep] = SegmentBallIntersect(segP(1,:),segP(2,:),segQ(1,:),len,1); 
+        segQ = [Q(currCellQ,:); Q(currCellQ+1,:)];
+        [sp,ep] = SegmentBallIntersect(segP(1,:),segP(2,:),segQ(1,:),len,1); % look for opening on left side of cell
         numCellCheck = numCellCheck + 1;
-        if sp > 0 % we have hit a non-free space cell
-            % get next cell cut, push from bottom (it will be a non-monotone direction)
-            [newCellCutS,backCellCutE,dir,backFromEdge,backCellStartPoint] = GetCellCut(toCellP,fp,segP,segQ,len,'B');
-            numCellCheck = numCellCheck + 1;
-            backCellP = toCellP;
-            backCellQ = currCellQ;
-            break
+        if (isempty(ep) == true && isempty(sp) == false && sp ~= fp(2)) || ...
+           (isempty(sp) == false && fp(2) < sp) || ...
+           (isempty(ep) == false && fp(2) > ep) || ...
+           (isempty(ep) == true && isempty(sp) == true) % the ray encountered some non-free space on left side of cell
+            if isempty(sp) == false && fp(2) < sp % can exit left side but non-monotone
+                dir = 0;
+                backCellP = toCellP;
+                backCellQ = currCellQ;
+                backFromEdge = 'R';
+                backCellStartPoint = [1 sp];
+                backCellCutE = [0 sp];
+                break;
+            end
+            [sp,ep] = SegmentBallIntersect(segQ(1,:),segQ(2,:),segP(2,:),len,1); % look for opening on top side of cell
+            if isempty(sp) == false
+                dir = 0;
+                backCellP = toCellP;
+                backCellQ = currCellQ;
+                backFromEdge = 'B';
+                backCellStartPoint = [sp 0];
+                backCellCutE = [sp 1];
+                break
+            end
+            
+            [sp,ep] = SegmentBallIntersect(segP(1,:),segP(2,:),segQ(2,:),len,1); % get right edge free space
+            if isempty(sp) == false
+                if (isempty(ep) == true)
+                    backCellCutE = [1 sp];
+                    backCellStartPoint = [0 sp];
+                else
+                    backCellCutE = [1 ep];
+                    backCellStartPoint = [0 ep];
+                end
+                dir = 0;
+                backCellP = toCellP;
+                backCellQ = currCellQ;
+                backFromEdge = 'L';
+                break
+            end
+
         end
         % the ray encountered only free space in this cell
         if fromCellQ == currCellQ % start point of cut in cell may be diff than [ep toPoint(2)]
-            boundCutPath(boundCutIdx,:) = [currCellQ toCellP spFirst sp toPoint(2)];
+            boundCutPath(boundCutIdx,:) = [currCellQ toCellP spFirst 0 toPoint(2)];
         else
-            boundCutPath(boundCutIdx,:) = [currCellQ toCellP ep toPoint(2) sp toPoint(2)];
+            boundCutPath(boundCutIdx,:) = [currCellQ toCellP 1 toPoint(2) 0 toPoint(2)];
         end
         boundCutIdx = boundCutIdx + 1;
         fp = [1 toPoint(2)];

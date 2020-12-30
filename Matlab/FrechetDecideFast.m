@@ -4,6 +4,8 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideFast(P,Q,len)
 
     ans = 0; % default answer is "false"
     numCellCheck = 0; % number of cells checked during the free-space search
+    floorStack = [];
+    floorIdx = 0;
     
     szP = size(P,1); szQ = size(Q,1);
     sDist = CalcPointDist(P(1,:),Q(1,:));
@@ -30,6 +32,7 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideFast(P,Q,len)
     currCellStartPoint = [1 1];
     boundCutPath = zeros(currCellP + currCellQ -1 , 6);
     boundCutIdx = 1;
+    prevDropFlg = 1;
     loopCnt = 0;
     maxLoop = currCellP * currCellQ * 2;
     
@@ -38,9 +41,14 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideFast(P,Q,len)
         if loopCnt > maxLoop
             error('too many loops in free-space cells');
         end
+        if floorIdx > 0 % check if we can pop record off floor stack
+            if currCellQ == floorStack(floorIdx,1) % got back to Q column, pop record
+                floorIdx = floorIdx - 1;
+            end
+        end
         if state == 1
             if currCellP == 1 && currCellQ == 1 % made it to the first cell, a monotone path has been found
-                [newCellCutS,newCellCutE,dir,nextFromEdge,nextCellStartPoint] = GetCellCut(currCellP,currCellStartPoint,segP,segQ,len,currFromEdge);
+                [newCellCutS,newCellCutE,dir,nextFromEdge,nextCellStartPoint,nextDropFlg] = GetCellCut(currCellP,currCellStartPoint,segP,segQ,len,currFromEdge,prevDropFlg,floorIdx,floorStack);
                 numCellCheck = numCellCheck + 1;
                 boundCutPath(boundCutIdx,:) = [currCellQ currCellP newCellCutS newCellCutE];
                 boundCutIdx = boundCutIdx + 1;
@@ -49,12 +57,17 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideFast(P,Q,len)
             end
             segP = [P(currCellP,:); P(currCellP+1,:)];
             segQ = [Q(currCellQ,:); Q(currCellQ+1,:)];
-            [newCellCutS,newCellCutE,dir,nextFromEdge,nextCellStartPoint] = GetCellCut(currCellP,currCellStartPoint,segP,segQ,len,currFromEdge);
+            [newCellCutS,newCellCutE,dir,nextFromEdge,nextCellStartPoint,nextDropFlg] = GetCellCut(currCellP,currCellStartPoint,segP,segQ,len,currFromEdge,prevDropFlg,floorIdx,floorStack);
             numCellCheck = numCellCheck + 1;
             if dir == 1 % heading down or to the left
                 boundCutPath(boundCutIdx,:) = [currCellQ currCellP newCellCutS newCellCutE];
                 boundCutIdx = boundCutIdx + 1;
             else
+                % still may need to save one more bound cut 
+                if newCellCutS(1) >= newCellCutE(1) && newCellCutS(2) >= newCellCutE(2)
+                    boundCutPath(boundCutIdx,:) = [currCellQ currCellP newCellCutS newCellCutE];
+                    boundCutIdx = boundCutIdx + 1;
+                end
                 state = 2;
             end
             if (currCellQ == 1 && newCellCutE(1) == 0) || (currCellP == szP - 1 && newCellCutE(2) == 1)
@@ -66,12 +79,11 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideFast(P,Q,len)
         else % state = 2
             segP = [P(currCellP,:); P(currCellP+1,:)];
             segQ = [Q(currCellQ,:); Q(currCellQ+1,:)];
-            [newCellCutS,newCellCutE,dir,nextFromEdge,nextCellStartPoint] = GetCellCut(currCellP,currCellStartPoint,segP,segQ,len,currFromEdge);
+            [newCellCutS,newCellCutE,dir,nextFromEdge,nextCellStartPoint,nextDropFlg] = GetCellCut(currCellP,currCellStartPoint,segP,segQ,len,currFromEdge,prevDropFlg,floorIdx,floorStack);
             numCellCheck = numCellCheck + 1;
-            if (currCellQ == 1 && newCellCutE(1) == 0) || (currCellP == szP - 1 && newCellCutE(2) == 1)
+            if (currCellQ == 1 && newCellCutE(1) == 0 && currCellP > 1) || (currCellP == szP - 1 && newCellCutE(2) == 1)
                 return % we hit the left or top free space boundary, return false
             end
-            
             if dir == 1 % switching back to monotone path, check if we can continue from here or need to backtrack
               
                 [dir,numCellCheck,boundCutPath,boundCutIdx,backCellP,backCellQ,backFromEdge,...
@@ -83,17 +95,29 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideFast(P,Q,len)
                     boundCutPath(boundCutIdx,:) = [currCellQ currCellP newCellCutS newCellCutE];
                     boundCutIdx = boundCutIdx + 1;
                     currCellStartPoint = nextCellStartPoint;
+                    if currCellP == 1 && currCellQ == 1 % made it to the first cell, a monotone path has been found
+                        ans = 1; % there is a monotone path
+                        return
+                    end
                 else %  non-free space is blocking direct line of sight, need to backtrack and head in a non-monotone path
+                    % push record onto floorStack
+                    floorIdx = floorIdx + 1;
+                    floorStack(floorIdx,1:3) = [currCellQ currCellP newCellCutS(2)];
+                    
                     currCellStartPoint = backCellStartPoint;
                     currCellP = backCellP;
                     currCellQ = backCellQ;
                     nextFromEdge = backFromEdge;
                     newCellCutE = backCellCutE;
+                    
                 end
-                if (currCellQ == 1 && newCellCutE(1) == 0) || (currCellP == szP - 1 && newCellCutE(2) == 1)
+                if (currCellQ == 1 && newCellCutE(1) == 0 && currCellP > 1) || (currCellP == szP - 1 && newCellCutE(2) == 1)
                     return % we hit the left or top free space boundary, return false
                 end
+            else
+                currCellStartPoint = nextCellStartPoint;
             end
+            
         end
         
         if nextFromEdge == 'B'
@@ -107,6 +131,7 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideFast(P,Q,len)
         end
                 
         currFromEdge = nextFromEdge;
+        prevDropFlg = nextDropFlg;
 
     end
 end

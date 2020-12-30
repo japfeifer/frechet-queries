@@ -13,9 +13,10 @@
 % nextEdge: next edge to check, T top, B bottom, L left, R right
 % nextSP: next cell start point
 
-function [currCellCutS,currCellCutE,dir,nextEdge,nextSP] = GetCellCut(currCellP,currSP,segP,segQ,len,startEdge)
+function [currCellCutS,currCellCutE,dir,nextEdge,nextSP,nextDropFlg] = GetCellCut(currCellP,currSP,segP,segQ,len,startEdge,prevDropFlg,floorIdx,floorStack)
 
     currCellCutS = currSP;
+    nextDropFlg = 1;
     
     if startEdge == 'T' % top edge
         
@@ -23,38 +24,72 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP] = GetCellCut(currCellP,
         [sp,ep] = SegmentBallIntersect(segQ(1,:),segQ(2,:),segP(1,:),len,1); % get bottom edge free space
         if (isempty(sp) == false && isempty(ep) == true && sp == currSP(1)) || ...
            (isempty(sp) == false && isempty(ep) == false && sp <= currSP(1) && ep >= currSP(1))
-           currCellCutE = [currSP(1) 0];
-           nextSP = [currSP(1) 1];
-           dir = 1;
-           if currCellP == 1 % at bottom row in free-space diagram
-               [currCellCutS,currCellCutE,dir,nextEdge,nextSP] = GetCellCut(currCellP,currCellCutE,segP,segQ,len,'R');
-           else
-               nextEdge = 'T';
+
+           if prevDropFlg == 1 % we are allowed to fall in this state - cell type A
+
+               currCellCutE = [currSP(1) 0];
+               nextSP = [currSP(1) 1];
+               dir = 1;
+               if currCellP == 1 % at bottom row in free-space diagram
+                   if sp == 0 % we can reach bottom left edge
+                       currCellCutE = [0 0];
+                       nextSP = [1 0];
+                       nextEdge = 'R';
+                       dir = 1;
+                   else % part of left side of cell is blocked, we must go up
+                       [garbage,currCellCutE,dir,nextEdge,nextSP,nextDropFlg] = GetCellCut(currCellP,[sp 0],segP,segQ,len,'B',prevDropFlg,floorIdx,floorStack);
+                       if currCellCutE(2) <= currCellCutS(2) && currCellCutE(2) ~= 1 % still have monotone path
+                           dir = 1;
+                           nextEdge = 'R';
+                           nextSP = [1 currCellCutE(2)];
+                       end
+                   end
+               else
+                   nextEdge = 'T';
+               end
+               % check if we went beneath floor
+               if floorIdx > 0 && currCellP == floorStack(floorIdx,2) && floorStack(floorIdx,3) < currCellCutE(2)
+                   % we went beneath floor, get new cell cut and do not go beneath floor
+                   [currCellCutE,dir,nextEdge,nextSP] = GetFloorCellCut(currCellP,currSP,segP,segQ,len,startEdge,prevDropFlg,floorIdx,floorStack);
+               end
+               
+               return
            end
-           return
         end
-        
-        % check if there is free-space on bottom edge that is further left of currSP
+
+        % check if there is free-space on bottom edge that is further left of currSP - cell type B
         % already got bottom edge free-space info so do not have to get it again
         if (isempty(sp) == false && isempty(ep) == true && sp <= currSP(1)) || ...
            (isempty(sp) == false && isempty(ep) == false && ep < currSP(1))
            if isempty(ep) == true 
                currCellCutE = [sp 0];
-               nextSP = [sp 0];
+               nextSP = [sp 1];
            else
                currCellCutE = [ep 0];
-               nextSP = [ep 0];
+               nextSP = [ep 1];
            end
            dir = 1;
            if currCellP == 1 % at bottom row in free-space diagram
-               [currCellCutS,currCellCutE,dir,nextEdge,nextSP] = GetCellCut(currCellP,currCellCutE,segP,segQ,len,'R');
+               if sp == 0 % we can reach bottom left edge
+                   currCellCutE = [0 0];
+                   nextSP = [1 0];
+                   nextEdge = 'R';
+                   dir = 1;
+               else % part of left side of cell is blocked, we must go up
+                   [garbage,currCellCutE,dir,nextEdge,nextSP,nextDropFlg] = GetCellCut(currCellP,[sp 0],segP,segQ,len,'B',prevDropFlg,floorIdx,floorStack);
+                   if currCellCutE(2) <= currCellCutS(2) && currCellCutE(2) ~= 1 % still have monotone path
+                       dir = 1;
+                       nextEdge = 'R';
+                       nextSP = [1 currCellCutE(2)];
+                   end
+               end
            else
                nextEdge = 'T';
            end
            return
         end
-        
-        % check if there is free-space on left edge
+
+        % check if there is free-space on left edge - cell type C
         [sp,ep] = SegmentBallIntersect(segP(1,:),segP(2,:),segQ(1,:),len,1); % get left edge free space
         if isempty(sp) == false
             currCellCutE = [0 sp];
@@ -63,12 +98,55 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP] = GetCellCut(currCellP,
             nextEdge = 'R';
             return
         end
-        
+
+       if prevDropFlg == 0 % we are not allowed to fall in this state
+           % check if there is free-space on right edge - cell type F
+           [sp,ep] = SegmentBallIntersect(segP(1,:),segP(2,:),segQ(2,:),len,1); % get right edge free space
+           if isempty(sp) == false
+               if (isempty(ep) == true)
+                   currCellCutE = [1 sp];
+                   nextSP = [0 sp];
+               else
+                   currCellCutE = [1 ep];
+                   nextSP = [0 ep];
+               end
+               dir = 0;
+               nextEdge = 'L';
+               return
+           else % see if we can reach bottom edge free space to right of currSP - cell Type E
+               [sp,ep] = SegmentBallIntersect(segQ(1,:),segQ(2,:),segP(1,:),len,1); % get bottom edge free space
+               if (isempty(sp) == false && isempty(ep) == true && sp > currSP(1)) || ...
+                  (isempty(sp) == false && isempty(ep) == false && ep > currSP(1) && ep < 1)
+                   if isempty(ep) == true
+                       currCellCutE = [sp 0];
+                       nextSP = [sp 1];
+                   else
+                       currCellCutE = [ep 0];
+                       nextSP = [ep 1];
+                   end
+                   nextEdge = 'T';
+                   dir = 0;
+                   nextDropFlg = 0; % For type E
+                   return
+               end
+           end   
+       end
+       
+        % check if there is free-space on top edge - cell type D
+        [sp,ep] = SegmentBallIntersect(segQ(1,:),segQ(2,:),segP(2,:),len,1); % get top edge free space
+        if isempty(sp) == false
+           currCellCutE = [sp 1];
+           nextSP = [sp 0];
+           dir = 0;
+           nextEdge = 'B';
+           return
+        end
+       
         error('Unknown cell cut scenario for startEdge = T');
         
     elseif startEdge == 'R' % right edge
         
-        % check if there is free-space on bottom edge
+        % check if there is free-space on bottom edge - cell type G
         [sp,ep] = SegmentBallIntersect(segQ(1,:),segQ(2,:),segP(1,:),len,1); % get bottom edge free space
         if isempty(sp) == false
            if currCellP > 1 % not at bottom row in free-space diagram
@@ -88,14 +166,18 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP] = GetCellCut(currCellP,
                    nextEdge = 'R';
                    dir = 1;
                else % part of left side of cell is blocked, we must go up
-                   currCellCutE = [sp 0];
-                   [currCellCutS,currCellCutE,dir,nextEdge,nextSP] = GetCellCut(currCellP,currCellCutE,segP,segQ,len,'B');
+                   [garbage,currCellCutE,dir,nextEdge,nextSP,nextDropFlg] = GetCellCut(currCellP,[sp 0],segP,segQ,len,'B',prevDropFlg,floorIdx,floorStack);
+                   if currCellCutE(2) <= currCellCutS(2) && currCellCutE(2) ~= 1 % still have monotone path
+                       dir = 1;
+                       nextEdge = 'R';
+                       nextSP = [1 currCellCutE(2)];
+                   end
                end
            end
            return
         end
         
-        % check if there is free-space on left edge that is same or below currSP
+        % check if there is free-space on left edge that is same or below currSP  - cell type H
         [sp,ep] = SegmentBallIntersect(segP(1,:),segP(2,:),segQ(1,:),len,1); % get left edge free space
         if isempty(sp) == false && sp <= currSP(2)
            currCellCutE = [0 sp];
@@ -105,7 +187,7 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP] = GetCellCut(currCellP,
            return
         end
         
-        % check if there is free-space on left edge that is above currSP
+        % check if there is free-space on left edge that is above currSP - cell type I
         % already got left edge free-space info so do not have to get it again
         if (isempty(sp) == false && sp > currSP(2))
            currCellCutE = [0 sp];
@@ -115,7 +197,7 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP] = GetCellCut(currCellP,
            return
         end
         
-        % check if there is free-space on top edge
+        % check if there is free-space on top edge - cell type J
         [sp,ep] = SegmentBallIntersect(segQ(1,:),segQ(2,:),segP(2,:),len,1); % get top edge free space
         if isempty(sp) == false
            currCellCutE = [sp 1];
@@ -125,21 +207,7 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP] = GetCellCut(currCellP,
            return
         end
         
-        error('Unknown cell cut scenario for startEdge = R');
-   
-    elseif startEdge == 'L' % left edge
-        
-        % check if there is free-space on top edge
-        [sp,ep] = SegmentBallIntersect(segQ(1,:),segQ(2,:),segP(2,:),len,1); % get top edge free space
-        if isempty(sp) == false
-           currCellCutE = [sp 1];
-           nextSP = [sp 0];
-           dir = 0;
-           nextEdge = 'B';
-           return
-        end
-        
-        % check if there is free-space on right edge
+        % check if there is free-space on right edge - cell type K
         [sp,ep] = SegmentBallIntersect(segP(1,:),segP(2,:),segQ(2,:),len,1); % get right edge free space
         if isempty(sp) == false
            if (isempty(ep) == true)
@@ -154,7 +222,36 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP] = GetCellCut(currCellP,
            return
         end
         
-        % check if there is free-space on bottom edge
+        error('Unknown cell cut scenario for startEdge = R');
+   
+    elseif startEdge == 'L' % left edge
+        
+        % check if there is free-space on top edge  - cell type L
+        [sp,ep] = SegmentBallIntersect(segQ(1,:),segQ(2,:),segP(2,:),len,1); % get top edge free space
+        if isempty(sp) == false
+           currCellCutE = [sp 1];
+           nextSP = [sp 0];
+           dir = 0;
+           nextEdge = 'B';
+           return
+        end
+        
+        % check if there is free-space on right edge - cell type M
+        [sp,ep] = SegmentBallIntersect(segP(1,:),segP(2,:),segQ(2,:),len,1); % get right edge free space
+        if isempty(sp) == false
+           if (isempty(ep) == true)
+               currCellCutE = [1 sp];
+               nextSP = [0 sp];
+           else
+               currCellCutE = [1 ep];
+               nextSP = [0 ep];
+           end
+           dir = 0;
+           nextEdge = 'L';
+           return
+        end
+        
+        % check if there is free-space on bottom edge - cell type N
         [sp,ep] = SegmentBallIntersect(segQ(1,:),segQ(2,:),segP(1,:),len,1); % get bottom edge free space
         if isempty(sp) == false
            if isempty(ep) == true 
@@ -166,14 +263,25 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP] = GetCellCut(currCellP,
            end
            dir = 0;
            nextEdge = 'T';
+           nextDropFlg = 0;
            return
+        end
+        
+        % check if there is free-space on left edge - cell type O
+        [sp,ep] = SegmentBallIntersect(segP(1,:),segP(2,:),segQ(1,:),len,1); % get left edge free space
+        if isempty(sp) == false
+            currCellCutE = [0 sp];
+            nextSP = [1 sp];
+            dir = 1;
+            nextEdge = 'R';
+            return
         end
         
         error('Unknown cell cut scenario for startEdge = L');
         
     else % startEdge == 'B'  bottom edge
         
-        % check if there is free-space on left edge
+        % check if there is free-space on left edge - cell type P
         [sp,ep] = SegmentBallIntersect(segP(1,:),segP(2,:),segQ(1,:),len,1); % get left edge free space
         if isempty(sp) == false
             currCellCutE = [0 sp];
@@ -183,7 +291,7 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP] = GetCellCut(currCellP,
             return
         end
         
-        % check if there is free-space on top edge
+        % check if there is free-space on top edge - cell type Q
         [sp,ep] = SegmentBallIntersect(segQ(1,:),segQ(2,:),segP(2,:),len,1); % get top edge free space
         if isempty(sp) == false
            currCellCutE = [sp 1];
@@ -193,7 +301,7 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP] = GetCellCut(currCellP,
            return
         end
         
-        % check if there is free-space on right edge
+        % check if there is free-space on right edge - cell type R
         [sp,ep] = SegmentBallIntersect(segP(1,:),segP(2,:),segQ(2,:),len,1); % get right edge free space
         if isempty(sp) == false
            if (isempty(ep) == true)
@@ -205,6 +313,22 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP] = GetCellCut(currCellP,
            end
            dir = 0;
            nextEdge = 'L';
+           return
+        end
+        
+         % check if there is free-space on bottom edge - cell type S
+        [sp,ep] = SegmentBallIntersect(segQ(1,:),segQ(2,:),segP(1,:),len,1); % get bottom edge free space
+        if isempty(sp) == false
+           if isempty(ep) == true 
+               currCellCutE = [sp 0];
+               nextSP = [sp 1];
+           else
+               currCellCutE = [ep 0];
+               nextSP = [ep 1];
+           end
+           dir = 0;
+           nextEdge = 'T';
+           nextDropFlg = 0;
            return
         end
         
