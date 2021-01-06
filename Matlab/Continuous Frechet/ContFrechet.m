@@ -1,4 +1,4 @@
-function [frechetDist] = ContFrechet(P,Q,frechetType,doBounds)
+function [frechetDist] = ContFrechet(P,Q,frechetType,doBounds,bndCutFlg)
 
     global I J lP lQ lPQ bP bQ
 
@@ -10,6 +10,10 @@ function [frechetDist] = ContFrechet(P,Q,frechetType,doBounds)
     
     if ~exist('doBounds','var')
         doBounds = 1;
+    end
+    
+    if ~exist('bndCutFlg','var')
+        bndCutFlg = 1;
     end
 
     frechetDist = 0;
@@ -66,7 +70,7 @@ function [frechetDist] = ContFrechet(P,Q,frechetType,doBounds)
     else % do actual frechet calc
         if frechetType == 1
             frechet_init2(P',Q');
-            frechetDist = frechet_compute2(P',Q',0,upBnd,lowBnd);
+            frechetDist = frechet_compute2(P',Q',0,upBnd,lowBnd,bndCutFlg);
         elseif frechetType == 0
             frechet_init(P',Q');
             frechetDist = frechet_compute(P',Q',0);

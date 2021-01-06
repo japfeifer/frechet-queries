@@ -20,6 +20,39 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP,nextDropFlg] = GetCellCu
     
     if startEdge == 'T' % top edge
         
+       if prevDropFlg == 0 % we are not allowed to fall in this state
+           % check if there is free-space on right edge - cell type F
+           [sp,ep] = SegmentBallIntersect(segP(1,:),segP(2,:),segQ(2,:),len,1); % get right edge free space
+           if isempty(sp) == false
+               if (isempty(ep) == true)
+                   currCellCutE = [1 sp];
+                   nextSP = [0 sp];
+               else
+                   currCellCutE = [1 ep];
+                   nextSP = [0 ep];
+               end
+               dir = 0;
+               nextEdge = 'L';
+               return
+           else % see if we can reach bottom edge free space to right of currSP - cell Type E
+               [sp,ep] = SegmentBallIntersect(segQ(1,:),segQ(2,:),segP(1,:),len,1); % get bottom edge free space
+               if (isempty(sp) == false && isempty(ep) == true && sp > currSP(1)) || ...
+                  (isempty(sp) == false && isempty(ep) == false && ep >= currSP(1) && ep < 1)
+                   if isempty(ep) == true
+                       currCellCutE = [sp 0];
+                       nextSP = [sp 1];
+                   else
+                       currCellCutE = [ep 0];
+                       nextSP = [ep 1];
+                   end
+                   nextEdge = 'T';
+                   dir = 0;
+                   nextDropFlg = 0; % For type E
+                   return
+               end
+           end   
+       end
+        
         % check if we can "fall" down to bottom edge
         [sp,ep] = SegmentBallIntersect(segQ(1,:),segQ(2,:),segP(1,:),len,1); % get bottom edge free space
         if (isempty(sp) == false && isempty(ep) == true && sp == currSP(1)) || ...
@@ -48,11 +81,10 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP,nextDropFlg] = GetCellCu
                    nextEdge = 'T';
                end
                % check if we went beneath floor
-               if floorIdx > 0 && currCellP == floorStack(floorIdx,2) && floorStack(floorIdx,3) < currCellCutE(2)
+               if floorIdx > 0 && currCellP == floorStack(floorIdx,2) && floorStack(floorIdx,3) > currCellCutE(2)
                    % we went beneath floor, get new cell cut and do not go beneath floor
-                   [currCellCutE,dir,nextEdge,nextSP] = GetFloorCellCut(currCellP,currSP,segP,segQ,len,startEdge,prevDropFlg,floorIdx,floorStack);
+                   [currCellCutE,dir,nextEdge,nextSP] = GetFloorCellCut(currSP,segP,segQ,len,floorIdx,floorStack);
                end
-               
                return
            end
         end
@@ -86,6 +118,11 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP,nextDropFlg] = GetCellCu
            else
                nextEdge = 'T';
            end
+           % check if we went beneath floor
+           if floorIdx > 0 && currCellP == floorStack(floorIdx,2) && floorStack(floorIdx,3) > currCellCutE(2)
+               % we went beneath floor, get new cell cut and do not go beneath floor
+               [currCellCutE,dir,nextEdge,nextSP] = GetFloorCellCut(currSP,segP,segQ,len,floorIdx,floorStack);
+           end
            return
         end
 
@@ -96,42 +133,14 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP,nextDropFlg] = GetCellCu
             nextSP = [1 sp];
             dir = 1;
             nextEdge = 'R';
+            % check if we went beneath floor
+            if floorIdx > 0 && currCellP == floorStack(floorIdx,2) && floorStack(floorIdx,3) > currCellCutE(2)
+               % we went beneath floor, get new cell cut and do not go beneath floor
+               [currCellCutE,dir,nextEdge,nextSP] = GetFloorCellCut(currSP,segP,segQ,len,floorIdx,floorStack);
+            end
             return
         end
 
-       if prevDropFlg == 0 % we are not allowed to fall in this state
-           % check if there is free-space on right edge - cell type F
-           [sp,ep] = SegmentBallIntersect(segP(1,:),segP(2,:),segQ(2,:),len,1); % get right edge free space
-           if isempty(sp) == false
-               if (isempty(ep) == true)
-                   currCellCutE = [1 sp];
-                   nextSP = [0 sp];
-               else
-                   currCellCutE = [1 ep];
-                   nextSP = [0 ep];
-               end
-               dir = 0;
-               nextEdge = 'L';
-               return
-           else % see if we can reach bottom edge free space to right of currSP - cell Type E
-               [sp,ep] = SegmentBallIntersect(segQ(1,:),segQ(2,:),segP(1,:),len,1); % get bottom edge free space
-               if (isempty(sp) == false && isempty(ep) == true && sp > currSP(1)) || ...
-                  (isempty(sp) == false && isempty(ep) == false && ep > currSP(1) && ep < 1)
-                   if isempty(ep) == true
-                       currCellCutE = [sp 0];
-                       nextSP = [sp 1];
-                   else
-                       currCellCutE = [ep 0];
-                       nextSP = [ep 1];
-                   end
-                   nextEdge = 'T';
-                   dir = 0;
-                   nextDropFlg = 0; % For type E
-                   return
-               end
-           end   
-       end
-       
         % check if there is free-space on top edge - cell type D
         [sp,ep] = SegmentBallIntersect(segQ(1,:),segQ(2,:),segP(2,:),len,1); % get top edge free space
         if isempty(sp) == false
@@ -174,6 +183,11 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP,nextDropFlg] = GetCellCu
                    end
                end
            end
+           % check if we went beneath floor
+           if floorIdx > 0 && currCellP == floorStack(floorIdx,2) && floorStack(floorIdx,3) > currCellCutE(2)
+               % we went beneath floor, get new cell cut and do not go beneath floor
+               [currCellCutE,dir,nextEdge,nextSP] = GetFloorCellCut(currSP,segP,segQ,len,floorIdx,floorStack);
+           end
            return
         end
         
@@ -184,6 +198,11 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP,nextDropFlg] = GetCellCu
            nextSP = [1 sp];
            dir = 1;
            nextEdge = 'R';
+           % check if we went beneath floor
+           if floorIdx > 0 && currCellP == floorStack(floorIdx,2) && floorStack(floorIdx,3) > currCellCutE(2)
+               % we went beneath floor, get new cell cut and do not go beneath floor
+               [currCellCutE,dir,nextEdge,nextSP] = GetFloorCellCut(currSP,segP,segQ,len,floorIdx,floorStack);
+           end
            return
         end
         

@@ -2,7 +2,7 @@
 % epsilon value.  Based on the Driemel et al. (2012) method.
 % search.
 
-function newTraj = LinearSimp(P,epsilonDist)
+function [newTraj] = LinearSimp(P,epsilonDist)
 
     % initialize some variables
     Pos1 = 1; 
@@ -15,7 +15,7 @@ function newTraj = LinearSimp(P,epsilonDist)
     Pos2 = min(2,sP); % initialize Pos2 to 2, or the size of P if it is less than 2
 
     if sP <=2 % there are already 2 or less vertices, so can't simplify
-        newTraj = P;    
+        newTraj = P;
     else    
         % initialize the new traj with the first index
         newTraj = P(Pos1,:);

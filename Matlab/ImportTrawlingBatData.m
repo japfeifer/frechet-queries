@@ -14,7 +14,7 @@ dataSize = size(TBData,1);
 
 for i = 2:dataSize     
     currRec = split(TBData(i),",");
-    currID = str2num(cell2mat(currRec(9)));
+    currID = str2num(cell2mat(strrep(currRec(9),'"','')));
     currX = str2num(cell2mat(currRec(4)));
     currY = str2num(cell2mat(currRec(5)));
     

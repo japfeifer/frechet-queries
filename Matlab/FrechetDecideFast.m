@@ -1,4 +1,5 @@
 % Use a boundary cut method to answer true/false if curve P and Q are at most "len" Continuous Frechet distance apart
+% For P & Q, rows are vertices, and columns dimensional coordinates
 
 function [ans,numCellCheck,boundCutPath] = FrechetDecideFast(P,Q,len)
 
@@ -6,10 +7,35 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideFast(P,Q,len)
     numCellCheck = 0; % number of cells checked during the free-space search
     floorStack = [];
     floorIdx = 0;
-    
+
     szP = size(P,1); szQ = size(Q,1);
+    if szP == 0 || szQ == 0
+        error('Trajectory P and/or Q are size 0'); 
+    end
+    if size(P,2) ~= size(Q,2)
+        error('Trajectory P and Q do not have the same dimensionality'); 
+    end
+    if szP == 1 % P is a single vertex, create a second vertex by copying the first vertex
+        P(2,:) = P(1,:);
+        szP = 2;
+    end
+    if szQ == 1 % Q is a single vertex, create a second vertex by copying the first vertex
+        Q(2,:) = Q(1,:);
+        szQ = 2;
+    end
     sDist = CalcPointDist(P(1,:),Q(1,:));
     eDist = CalcPointDist(P(szP,:),Q(szQ,:));
+    
+    state = 1;
+    currFromEdge = 'T';
+    currCellP = szP - 1;
+    currCellQ = szQ - 1;
+    currCellStartPoint = [1 1];
+    boundCutPath = zeros(currCellP + currCellQ -1 , 6);
+    boundCutIdx = 1;
+    prevDropFlg = 1;
+    loopCnt = 0;
+    maxLoop = currCellP * currCellQ * 2;
     
     if  sDist > len || eDist > len % P & Q start/end vertices are too far apart
         return
@@ -25,16 +51,10 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideFast(P,Q,len)
         end
     end
     
-    state = 1;
-    currFromEdge = 'T';
-    currCellP = szP - 1;
-    currCellQ = szQ - 1;
-    currCellStartPoint = [1 1];
-    boundCutPath = zeros(currCellP + currCellQ -1 , 6);
-    boundCutIdx = 1;
-    prevDropFlg = 1;
-    loopCnt = 0;
-    maxLoop = currCellP * currCellQ * 2;
+    if szP - 1 == 1 && szQ - 1 == 1 % each curve has just 2 vertices, hence just one cell
+        ans = 1; % there is a monotone path
+        return
+    end
     
     while 1 == 1
         loopCnt = loopCnt + 1;

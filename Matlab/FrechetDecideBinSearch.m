@@ -3,7 +3,7 @@
 % distance.  Since the length list is sorted it uses a binary divide and
 % conquer approach to find the first length >= frechet.
 
-function [decide,minlen,maxlen,dCount] = FrechetDecideBinSearch(P,Q,lenList)
+function [decide,minlen,maxlen,dCount] = FrechetDecideBinSearch(P,Q,lenList,bndCutFlg)
 
     decide = 0;
     dCount = 0;
@@ -17,7 +17,11 @@ function [decide,minlen,maxlen,dCount] = FrechetDecideBinSearch(P,Q,lenList)
         if sizeLenList <=2 % there are only 1 or 2 lengths to check, just do linear search
             for i=1:sizeLenList
                 len = lenList(i);
-                decide = frechet_decide2(P,Q,len,0,0);
+                if bndCutFlg == 1
+                    decide = FrechetDecideFast(P',Q',len);
+                else
+                    decide = frechet_decide2(P,Q,len,0,0);
+                end
                 dCount = dCount + 1;
                 if decide == 1 % we found the first length >= frechet
                     if i==1
@@ -41,7 +45,11 @@ function [decide,minlen,maxlen,dCount] = FrechetDecideBinSearch(P,Q,lenList)
             pos2=ceil(sizeLenList/2); % find middle position
             len = lenList(pos2);
             while decide == 0 && pos1 <= sizeLenList
-                decide = frechet_decide2(P,Q,len,0,0);
+                if bndCutFlg == 1
+                    decide = FrechetDecideFast(P',Q',len);
+                else
+                    decide = frechet_decide2(P,Q,len,0,0);
+                end
 %                 disp(['pos1: ',num2str(pos1),', pos2: ',num2str(pos2),', length: ',num2str(lenList(pos2))]);
                 dCount = dCount + 1;
                 if decide == 0
@@ -61,7 +69,11 @@ function [decide,minlen,maxlen,dCount] = FrechetDecideBinSearch(P,Q,lenList)
                         % we just have to check pos1 as we know pos2 has
                         % decide == 1
                         len = lenList(pos1);
-                        decide = frechet_decide2(P,Q,len,0,0);
+                        if bndCutFlg == 1
+                            decide = FrechetDecideFast(P',Q',len);
+                        else
+                            decide = frechet_decide2(P,Q,len,0,0);
+                        end
                         dCount = dCount + 1;
                         if decide == 0 % it's pos2
                             decide = 1;
@@ -72,7 +84,11 @@ function [decide,minlen,maxlen,dCount] = FrechetDecideBinSearch(P,Q,lenList)
                     else % test a middle pos and reduce size of lenList
                         midpos = ceil((pos2-pos1+1)/2) -1 + pos1;
                         len = lenList(midpos);
-                        decide = frechet_decide2(P,Q,len,0,0);
+                        if bndCutFlg == 1
+                            decide = FrechetDecideFast(P',Q',len);
+                        else
+                            decide = frechet_decide2(P,Q,len,0,0);
+                        end
                         dCount = dCount + 1;
                         if decide == 0
                             pos1 = midpos;

@@ -1,4 +1,4 @@
-function [currCellCutE,dir,nextEdge,nextSP] = GetFloorCellCut(currCellP,currSP,segP,segQ,len,startEdge,prevDropFlg,floorIdx,floorStack)
+function [currCellCutE,dir,nextEdge,nextSP] = GetFloorCellCut(currSP,segP,segQ,len,floorIdx,floorStack)
 
     currCellCutS = currSP;
     floorYPos = floorStack(floorIdx,3);
@@ -30,8 +30,25 @@ function [currCellCutE,dir,nextEdge,nextSP] = GetFloorCellCut(currCellP,currSP,s
     
     [sp,ep] = SegmentBallIntersect(segQ(1,:),segQ(2,:),segP(2,:),len,1); % get top edge free space
     if isempty(sp) == false % there is some free space on top edge
-        
-        
+        currCellCutE = [sp 1];
+        nextSP = [sp 0];
+        nextEdge = 'B';
+        dir = 0;
+        return
+    end
+    
+    [sp,ep] = SegmentBallIntersect(segP(1,:),segP(2,:),segQ(2,:),len,1); % get right edge free space
+    if isempty(sp) == false % there is some free space on right edge
+        if isempty(ep) == false
+            currCellCutE = [1 ep];
+            nextSP = [0 ep];
+        else
+            currCellCutE = [1 sp];
+            nextSP = [0 sp];
+        end
+        nextEdge = 'L';
+        dir = 0;
+        return
     end
 
     error('Unknown cell cut scenario in GetFloorCellCut');

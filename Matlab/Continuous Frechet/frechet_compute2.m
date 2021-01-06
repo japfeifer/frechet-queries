@@ -1,4 +1,4 @@
-function sol_len = frechet_compute2(P,Q,prntflg,upBnd,lowBnd)
+function sol_len = frechet_compute2(P,Q,prntflg,upBnd,lowBnd,bndCutFlg)
 %-- function to compute the frechet distance between two polygonal curves
 %--modified:    1-May-2012  To include other edge cases in type A missed in
 %                           Alt and Godau
@@ -6,6 +6,10 @@ global I J lP lQ lPQ bP bQ
 
 dfcn1 = @(a,b,c,d) sqrt(sum(((a+b.*(c-a))-d).^2));
 
+if ~exist('bndCutFlg','var')
+    bndCutFlg = 1;
+end
+    
 upBnd = round(upBnd,10)+0.00000000009; % getting rounding errors, this fixes it
 lowBnd = round(lowBnd,10)+0.00000000009; % getting rounding errors, this fixes it
 
@@ -21,6 +25,9 @@ cnt1=0;
 cnt2=0;
 LsortedE=0;
 LsortedE2=0;
+
+timeOldFreDP = 0;
+
 %--type B critical values
 
 for i = 1:I-1
@@ -52,7 +59,9 @@ E1 = unique(E1);
 E1(E1 < lowBnd | E1 > upBnd) = []; % reduce the list by the up/lower bounds
 [sortedE indx] = sort(E1);
 LsortedE = length(sortedE);
-[decide,min_len,max_len,cnt1] = FrechetDecideBinSearch(P,Q,sortedE);
+
+[decide,min_len,max_len,cnt1] = FrechetDecideBinSearch(P,Q,sortedE,bndCutFlg);
+
 % disp(['min len: ',num2str(min_len),', max len:',num2str(max_len)]);
 %fprintf('after the first pass: %f < len <= %f\n',min_len,max_len);
 if max_len<Inf
@@ -122,7 +131,9 @@ if ~isempty(E2)
     sortedE = unique(sortedE);
     LsortedE2 = length(sortedE);
     prev_max_len = max_len;
-    [decide,min_len,max_len,cnt2] = FrechetDecideBinSearch(P,Q,sortedE);
+    
+    [decide,min_len,max_len,cnt2] = FrechetDecideBinSearch(P,Q,sortedE,bndCutFlg);
+
     if decide==0
         max_len = prev_max_len; % set max_len to the previous
     else

@@ -81,6 +81,10 @@ function [dir,numCellCheck,boundCutPath,boundCutIdx,backCellP,backCellQ,backFrom
                 backFromEdge = 'R';
                 backCellStartPoint = [1 sp];
                 backCellCutE = [0 sp];
+                if fromCellQ == currCellQ % at first cell to shoot ray from, update path
+                    boundCutPath(boundCutIdx,:) = [currCellQ toCellP spFirst 0 toPoint(2)];
+                    boundCutIdx = boundCutIdx + 1;
+                end
                 break;
             end
             [sp,ep] = SegmentBallIntersect(segQ(1,:),segQ(2,:),segP(2,:),len,1); % look for opening on top side of cell
@@ -91,6 +95,10 @@ function [dir,numCellCheck,boundCutPath,boundCutIdx,backCellP,backCellQ,backFrom
                 backFromEdge = 'B';
                 backCellStartPoint = [sp 0];
                 backCellCutE = [sp 1];
+                if fromCellQ == currCellQ % at first cell to shoot ray from, update path
+                    boundCutPath(boundCutIdx,:) = [currCellQ toCellP spFirst 0 toPoint(2)];
+                    boundCutIdx = boundCutIdx + 1;
+                end
                 break
             end
             

@@ -1,3 +1,5 @@
+% test naive brute-force (no query error)
+
 InitGlobalVars;
 
 scriptName = 'ProcessConstCCT1FootballSubTrajTest';
@@ -14,6 +16,7 @@ CCTType = 'CCT1';
 dataList = ["FootballData"];
 
 for iProc = 1:size(dataList,2)   
+    tProcess = tic;
     trajSimpData = []; trajOrigData = []; trajData = []; queryTraj = []; clusterTrajNode = []; clusterNode = [];
     dataName = char(dataList(iProc));
     disp(['--------------------']);
@@ -36,15 +39,6 @@ for iProc = 1:size(dataList,2)
             trajCnt = trajCnt + 1;
         end
     end
-    
-%     
-%     % simplify trajectories
-%     AverageVert;
-%     avgVertBefore = avgVert;
-%     TrajSimpAll; 
-%     trajOrigData = trajData;
-%     trajData = trajSimpData;
-%     AverageVert;
     
     % generate queries and Pre-process input
     InitDatasetVars(dataName);
@@ -70,12 +64,15 @@ for iProc = 1:size(dataList,2)
     GetCCTReductFact;
     [overlapMean, overlapStd] = GetOverlap();
     
-    resultList = [resultList ; avgVertBefore avgVert numCFD numDP overlapMean ...
-        overlapStd ceil(avgNodeHeight) ...
-        std(totNodeList) maxNodeCnt ceil(log2(size(trajData,1))) ...
-        reductFacMean reductFacStd];
+    timeProcess = toc(tProcess);
+    disp(['timeProcess: ',num2str(timeProcess)]);
+    
+%     resultList = [resultList ; avgVertBefore avgVert numCFD numDP overlapMean ...
+%         overlapStd ceil(avgNodeHeight) ...
+%         std(totNodeList) maxNodeCnt ceil(log2(size(trajData,1))) ...
+%         reductFacMean reductFacStd];
 
 end
 
-save(matFile,'resultList');
+% save(matFile,'resultList');
 diary off;
