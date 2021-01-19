@@ -3,7 +3,7 @@
 tic;
 
 h = waitbar(0, 'NN Search');
-numQ = size(queryTraj,1);
+numQ = size(queryStrData,2);
 
 for i = 1:numQ  % do NN search for each query traj
     

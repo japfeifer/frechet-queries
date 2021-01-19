@@ -6,10 +6,11 @@
 
 function kNN(Qid,typeQ,kNum,eVal,stage)
 
-    global clusterNode S1 nodeCheckCnt trajData queryTraj
+    global clusterNode S1 nodeCheckCnt trajStrData queryStrData
     global Bk Ak stopCheckNodes distCalcCnt kUBList
     
-    if ~exist('stage','var')
+    switch nargin
+    case 4
         stage = 3;
     end
 
@@ -27,9 +28,9 @@ function kNN(Qid,typeQ,kNum,eVal,stage)
     eMultImplicit = 0;
     foundTraj = false;
     
-    Q = cell2mat(queryTraj(Qid,1)); % query vertices
+    Q = queryStrData(Qid).traj; % query vertices
     centerTrajID = clusterNode(1,6); % root center traj id
-    centreTraj = cell2mat(trajData(centerTrajID,1)); % get root center traj vertices 
+    centreTraj = trajStrData(centerTrajID).traj; % get root center traj vertices 
     lowBnd = GetBestConstLB(centreTraj,Q,Inf,1,centerTrajID,Qid); % root center traj LB call
     distCalcCnt = distCalcCnt + 1; % root LB count
     
@@ -52,10 +53,10 @@ function kNN(Qid,typeQ,kNum,eVal,stage)
     end
     
     % save results from Prune Stage
-    queryTraj(Qid,4) = mat2cell(nodeCheckCnt,size(nodeCheckCnt,1),size(nodeCheckCnt,2));
-    queryTraj(Qid,6) = mat2cell(distCalcCnt,size(distCalcCnt,1),size(distCalcCnt,2));
-    queryTraj(Qid,8) = mat2cell(S1,size(S1,1),size(S1,2)); % S1 list (node id)
-    queryTraj(Qid,9) = num2cell(size(S1,1)); % |S1|
+    queryStrData(Qid).prunenodecnt = nodeCheckCnt;
+    queryStrData(Qid).prunedistcnt = distCalcCnt;
+    queryStrData(Qid).prunes1 = S1;
+    queryStrData(Qid).prunes1sz = size(S1,1);
     
     if stage >= 2
         % Reduce Stage - compute S2 (and maybe result set)
@@ -84,7 +85,7 @@ function kNN(Qid,typeQ,kNum,eVal,stage)
             S1 = S1(1:kNum,:);
             for i=1:size(tmpS1,1)
                 Pid = clusterNode(tmpS1(i,1),6);
-                currTraj = cell2mat(trajData(Pid,1));
+                currTraj = trajStrData(Pid).traj;
                 linearLB = GetBestLinearLBDP(currTraj,Q,Bk - eAdd,1,Pid,Qid);
                 if linearLB == false
                      S1(end+1,:) = tmpS1(i,:);
@@ -93,8 +94,8 @@ function kNN(Qid,typeQ,kNum,eVal,stage)
         end
 
         % save results from Reduce Stage
-        queryTraj(Qid,3) = mat2cell(S1,size(S1,1),size(S1,2));
-        queryTraj(Qid,5) = num2cell(size(S1,1));
+        queryStrData(Qid).reduces1 = S1;
+        queryStrData(Qid).reduces1sz = size(S1,1);
 
         % get pruned node trajectories
         for i=1:size(S1,1)
@@ -102,7 +103,7 @@ function kNN(Qid,typeQ,kNum,eVal,stage)
         end
 
         % save results from Reduce Stage
-        queryTraj(Qid,7) = mat2cell(S1,size(S1,1),size(S1,2));
+        queryStrData(Qid).reduces1trajid = S1;
     end
     
     if stage >= 3
@@ -162,7 +163,7 @@ function kNN(Qid,typeQ,kNum,eVal,stage)
                         pivot = randi([1 size(S1,1)]); % randomly choose the pivot
                         pivotRecord = S1(pivot,:);
                         centerTrajID = S1(pivot,1);
-                        currTraj = cell2mat(trajData(centerTrajID,1));
+                        currTraj = trajStrData(centerTrajID).traj;
                         pivotDist = ContFrechet(Q,currTraj);
                         numCFD = numCFD + 1;
 
@@ -173,7 +174,7 @@ function kNN(Qid,typeQ,kNum,eVal,stage)
                                 elseif S1(i,3) < pivotDist
                                     markWithinDist(end+1) = i;
                                 else
-                                    currTraj = cell2mat(trajData(S1(i,1),1));
+                                    currTraj = trajStrData(S1(i,1)).traj;
                                     linearLB = GetBestLinearLBDP(currTraj,Q,pivotDist,1,S1(i,1),Qid);
                                     if linearLB == true
                                        markOutsideDist(end+1) = i; % traj is further
@@ -223,13 +224,13 @@ function kNN(Qid,typeQ,kNum,eVal,stage)
         end
 
         % save results from decide stage
-        queryTraj(Qid,10) = num2cell(numCFD);
-        queryTraj(Qid,11) = num2cell(numDP);
-        queryTraj(Qid,12) = mat2cell(kNNTrajList,size(kNNTrajList,1),size(kNNTrajList,2));
-        queryTraj(Qid,13) = num2cell(size(kNNTrajList,1));
+        queryStrData(Qid).decidecfdcnt = numCFD;
+        queryStrData(Qid).decidedpcnt = numDP;
+        queryStrData(Qid).decidetrajids = kNNTrajList;
+        queryStrData(Qid).decidetrajcnt = size(kNNTrajList,1);
         if typeQ == 3
-            queryTraj(Qid,14) = num2cell(eAddImplicit);
-            queryTraj(Qid,15) = num2cell(eMultImplicit);
+            queryStrData(Qid).decideeadd = eAddImplicit;
+            queryStrData(Qid).decideemult = eMultImplicit;
         end
     end
 

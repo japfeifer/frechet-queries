@@ -11,9 +11,16 @@ resultList = [];
 
 CCTType = 'CCT1';
 
+% dataList = ["TruckData" "SchoolBusData" "PetCatsData" ...
+%     "ShippingMississippiData" "ShippingYangtzeData" "FootballData" ...
+%     "TaxiData" "BlackBackedGullsData" "PigeonHomingData" ...
+%     "MaskedBoobiesData" "KrugerBuffaloData" "TrawlingBatsData" ...
+%     "NBABasketballData" "GeoLifeData" "Hurdat2AtlanticData" ...
+%     "PenTipData"];
+
 dataList = ["TruckData" "SchoolBusData" "PetCatsData" ...
     "ShippingMississippiData" "ShippingYangtzeData" "FootballData" ...
-    "TaxiData" "BlackBackedGullsData" "PigeonHomingData" ...
+    "BlackBackedGullsData" "PigeonHomingData" ...
     "MaskedBoobiesData" "KrugerBuffaloData" "TrawlingBatsData" ...
     "NBABasketballData" "GeoLifeData" "Hurdat2AtlanticData" ...
     "PenTipData"];
@@ -26,14 +33,15 @@ for iProc = 1:size(dataList,2)
     InitDatasetVars(dataName);
     
     % load trajectory input file
-    load(['MatlabData/RealInputData/' dataName '.mat']);  
+    load(['MatlabData/RealInputData/' dataName '.mat']); 
+    CreateTrajStr2;
     
     % simplify trajectories
     AverageVert;
     avgVertBefore = avgVert;
     TrajSimpAll; 
-    trajOrigData = trajData;
-    trajData = trajSimpData;
+    trajOrigStrData = trajStrData;
+    trajStrData = trajSimpStrData;
     AverageVert;
     
     % generate queries and Pre-process input

@@ -3,7 +3,7 @@
 tic;
 
 h = waitbar(0, 'kNN Search');
-numQ = size(queryTraj,1);
+numQ = size(queryStrData,2);
 
 for i = 1:numQ  % do kNN search for each query traj
     

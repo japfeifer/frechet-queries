@@ -1,18 +1,17 @@
-function [currBestErr,PSimp,maxSegLenP,maxSegLenPSimp] = DriemelError(P,iterPolyExp,szPolyExp,dispFact,dispFlg)
+function [currBestErr,currBestIdxListP,PSimp,maxSegLenP,maxSegLenPSimp] = DriemelError(P,iterPolyExp,szPolyExp,dispFact,dispFlg)
 
-    if ~exist('iterPolyExp','var')
+    switch nargin
+    case 1
         iterPolyExp = 1;
-    end
-    
-    if ~exist('szPolyExp','var')
         szPolyExp = 0;
-    end
-    
-    if ~exist('dispFact','var')
         dispFact = 1;
-    end
-    
-    if ~exist('dispFlg','var')
+        dispFlg = 0;
+    case 2
+        szPolyExp = 0;
+        dispFact = 1;
+        dispFlg = 0;
+    case 3
+        dispFact = 1;
         dispFlg = 0;
     end
     
@@ -41,6 +40,7 @@ function [currBestErr,PSimp,maxSegLenP,maxSegLenPSimp] = DriemelError(P,iterPoly
     minVal = 0; % minimum simp value
     maxVal = maxSimpLen; % maximum simp value
     PSimp = []; % P'
+    currBestIdxListP = [];
     isFirstSame = 1;
     rngSeed = 1; % random seed value
     rng(rngSeed); % reset random seed so experiments are reproducable
@@ -52,7 +52,7 @@ function [currBestErr,PSimp,maxSegLenP,maxSegLenPSimp] = DriemelError(P,iterPoly
     
     for i = 1:numIter
         currErr = minVal + (maxVal - minVal)*rand; % uniformly distributed random real in the interval [minVal,minVal]
-        currPSimp = LinearSimp(P,currErr); % call Driemel linear-time simplification algorithm
+        [currPSimp,idxListP] = DriemelSimp(P,currErr); % call Driemel linear-time simplification algorithm
         szCurrPSimp = size(currPSimp,1); % |P'|
         if i == 1
             currBestErr = currErr;
@@ -67,23 +67,27 @@ function [currBestErr,PSimp,maxSegLenP,maxSegLenPSimp] = DriemelError(P,iterPoly
             PSimp = currPSimp;
             currBestErr = currErr;
             currBestSz = szCurrPSimp;
+            currBestIdxListP = idxListP;
         else % check if this iteration P' should be set to current best P'
             if szCurrPSimp == nSimp  % current |P'| is same as preferred |P'|
                 if currErr < currBestErr || isFirstSame == 1 % current P' has smaller error
                     PSimp = currPSimp;
                     currBestErr = currErr;
                     currBestSz = szCurrPSimp;
+                    currBestIdxListP = idxListP;
                 end
                 isFirstSame = 0;
             elseif abs(szCurrPSimp - nSimp) < abs(currBestSz - nSimp) % current |P'| is closer to preferred |P'|
                 PSimp = currPSimp;
                 currBestErr = currErr;
                 currBestSz = szCurrPSimp;
+                currBestIdxListP = idxListP;
             elseif abs(szCurrPSimp - nSimp) == abs(currBestSz - nSimp) % current |P'| is same num vertices away from preferred |P'| as currBest |P'|
                 if currErr < currBestErr % current P' has smaller error
                     PSimp = currPSimp;
                     currBestErr = currErr;
                     currBestSz = szCurrPSimp;
+                    currBestIdxListP = idxListP;
                 end
             end
         end

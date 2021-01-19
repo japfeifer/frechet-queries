@@ -3,14 +3,14 @@
 tic;
 
 h = waitbar(0, 'NN Search');
-numQ = size(queryTraj,1);
+numQ = size(queryStrData,2);
 
 for i = 1:numQ  % do NN search for each query traj
     
     linLBcnt = 0; linUBcnt = 0; conLBcnt = 0; timeConstLB = 0; timeLinLB = 0; timeLinUB = 0; 
     
     % get reach
-    currQueryTraj = cell2mat(queryTraj(i,1));
+    currQueryTraj = queryStrData(i).traj;
     currReach = TrajReach(currQueryTraj);
     eVal = eMult * currReach;
     

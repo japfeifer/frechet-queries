@@ -3,14 +3,14 @@
 tic;
 
 h = waitbar(0, 'kNN Search');
-numQ = size(queryTraj,1);
+numQ = size(queryStrData,2);
 
 for i = 1:numQ  % do kNN search for each query traj
     
     searchStat = [];
     
     % get reach
-    currQueryTraj = cell2mat(queryTraj(i,1));
+    currQueryTraj = queryStrData(i).traj;
     currReach = TrajReach(currQueryTraj);
     eVal = eMult * currReach;
     

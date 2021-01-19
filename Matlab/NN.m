@@ -6,10 +6,12 @@
 
 function NN(Qid,typeQ,eVal,stage)
 
-    global clusterNode S1 nodeCheckCnt trajData queryTraj
+    global clusterNode S1 nodeCheckCnt 
     global Bk Ak stopCheckNodes distCalcCnt conLBcnt
+    global trajStrData queryStrData
 
-    if ~exist('stage','var')
+    switch nargin
+    case 3
         stage = 3;
     end
 
@@ -28,9 +30,9 @@ function NN(Qid,typeQ,eVal,stage)
     eMultImplicit = 0;
     foundTraj = false;
     
-    Q = cell2mat(queryTraj(Qid,1)); % query vertices
+    Q = queryStrData(Qid).traj; % query vertices
     centerTrajID = clusterNode(1,6); % root center traj id
-    centreTraj = cell2mat(trajData(centerTrajID,1)); % get root center traj vertices 
+    centreTraj = trajStrData(centerTrajID).traj; % get root center traj vertices
     lowBnd = GetBestConstLB(centreTraj,Q,Inf,1,centerTrajID,Qid); % root center traj LB call
     conLBcnt = conLBcnt + 1;
     distCalcCnt = distCalcCnt + 1;
@@ -42,7 +44,7 @@ function NN(Qid,typeQ,eVal,stage)
     else
         eAdd = 0;
     end
-
+    
     NNPrune(1,Q,Qid,lowBnd,eAdd); % traverse the CCT
 
     if typeQ == 2 % multiplicative error
@@ -50,10 +52,10 @@ function NN(Qid,typeQ,eVal,stage)
     end
     
     % save results from Prune Stage
-    queryTraj(Qid,4) = mat2cell(nodeCheckCnt,size(nodeCheckCnt,1),size(nodeCheckCnt,2));
-    queryTraj(Qid,6) = mat2cell(distCalcCnt,size(distCalcCnt,1),size(distCalcCnt,2));
-    queryTraj(Qid,8) = mat2cell(S1,size(S1,1),size(S1,2)); % S1 list (node id)
-    queryTraj(Qid,9) = num2cell(size(S1,1)); % |S1|
+    queryStrData(Qid).prunenodecnt = nodeCheckCnt;
+    queryStrData(Qid).prunedistcnt = distCalcCnt;
+    queryStrData(Qid).prunes1 = S1;
+    queryStrData(Qid).prunes1sz = size(S1,1);
     
     if stage >= 2
         % Reduce Stage - compute S2 (and maybe result set)
@@ -80,7 +82,7 @@ function NN(Qid,typeQ,eVal,stage)
             S1 = S1(1,:);
             for i=1:size(tmpS1,1)
                 Pid = clusterNode(tmpS1(i,1),6);
-                currTraj = cell2mat(trajData(Pid,1));
+                currTraj = trajStrData(Pid).traj;
                 linearLB = GetBestLinearLBDP(currTraj,Q,Bk - eAdd,1,Pid,Qid);
                 if linearLB == false
                      S1(end+1,:) = tmpS1(i,:);
@@ -89,8 +91,8 @@ function NN(Qid,typeQ,eVal,stage)
         end
 
         % save results from Reduce Stage
-        queryTraj(Qid,3) = mat2cell(S1,size(S1,1),size(S1,2));
-        queryTraj(Qid,5) = num2cell(size(S1,1));
+        queryStrData(Qid).reduces1 = S1;
+        queryStrData(Qid).reduces1sz = size(S1,1);
 
         % get pruned node trajectories
         for i=1:size(S1,1)
@@ -98,7 +100,7 @@ function NN(Qid,typeQ,eVal,stage)
         end
 
         % save results from Reduce Stage
-        queryTraj(Qid,7) = mat2cell(S1,size(S1,1),size(S1,2));
+        queryStrData(Qid).reduces1trajid = S1;
     end
     
     if stage >= 3
@@ -126,7 +128,7 @@ function NN(Qid,typeQ,eVal,stage)
                 % check frechet dec proc for the curve with the second Lowest LB
                 candTrajID2List = sortrows(S1,2,'ascend'); % sort asc by LB
                 secondLowestLB = candTrajID2List(2,2);
-                currTraj = cell2mat(trajData(candTrajID2List(1,1),1));
+                currTraj = trajStrData(candTrajID2List(1,1)).traj;
 
                 linearLB = GetBestLinearLBDP(currTraj,Q,secondLowestLB,1,candTrajID2List(1,1),Qid);
                 if linearLB == false
@@ -144,7 +146,7 @@ function NN(Qid,typeQ,eVal,stage)
             if foundTraj == false
                 for i = 1:size(S1,1)
                     centerTrajID = S1(i,1);
-                    currTraj = cell2mat(trajData(centerTrajID,1)); % get center traj 
+                    currTraj = trajStrData(centerTrajID).traj; % get center traj 
                     if i == 1
                         % this is first traj we check, so just get the CFD
                         bestDist = ContFrechet(Q,currTraj);
@@ -185,13 +187,13 @@ function NN(Qid,typeQ,eVal,stage)
         end
 
         % save results from decide stage
-        queryTraj(Qid,10) = num2cell(numCFD);
-        queryTraj(Qid,11) = num2cell(numDP);
-        queryTraj(Qid,12) = mat2cell(bestTrajID,1,1);
-        queryTraj(Qid,13) = num2cell(size(bestTrajID,1));
+        queryStrData(Qid).decidecfdcnt = numCFD;
+        queryStrData(Qid).decidedpcnt = numDP;
+        queryStrData(Qid).decidetrajids = bestTrajID;
+        queryStrData(Qid).decidetrajcnt = size(bestTrajID,1);
         if typeQ == 3
-            queryTraj(Qid,14) = num2cell(eAddImplicit);
-            queryTraj(Qid,15) = num2cell(eMultImplicit);
+            queryStrData(Qid).decideeadd = eAddImplicit;
+            queryStrData(Qid).decideemult = eMultImplicit;
         end
     end
 

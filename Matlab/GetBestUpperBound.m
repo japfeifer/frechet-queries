@@ -3,21 +3,21 @@
 
 function upBound = GetBestUpperBound(P,Q,cType,id1,id2,threshBound,doCnt)
 
-    global trajData queryTraj
-
+%     global trajData queryTraj
+    global trajStrData queryStrData
     global cntBBUB cntADF cntADFR cntADFD cntBBUBConst cntBBUBLin
-    
-    if ~exist('cType','var')
+
+    switch nargin
+    case 2
         cType = 0;
         id1 = 0;
         id2 = 0;
-    end
-    
-    if ~exist('threshBound','var')
         threshBound = 0;
-    end
-    
-    if ~exist('doCnt','var')
+        doCnt = 0;
+    case 5
+        threshBound = 0;
+        doCnt = 0;
+    case 6
         doCnt = 0;
     end
     
@@ -39,22 +39,31 @@ function upBound = GetBestUpperBound(P,Q,cType,id1,id2,threshBound,doCnt)
             QBB45 = ComputeBB(Q,45);
         end
     elseif cType == 1 || cType == 2 % the bounding box was pre-computed
-        PBB = cell2mat(trajData(id1,3));
+%         PBB = cell2mat(trajData(id1,3));
+        PBB = trajStrData(id1).bb1;
         if dimSize <=3
-            PBB225 =cell2mat(trajData(id1,4));
-            PBB45 = cell2mat(trajData(id1,5));
+%             PBB225 = cell2mat(trajData(id1,4));
+%             PBB45 = cell2mat(trajData(id1,5));
+            PBB225 = trajStrData(id1).bb2;
+            PBB45 = trajStrData(id1).bb3;
         end
         if cType == 1
-            QBB = cell2mat(queryTraj(id2,20));
+%             QBB = cell2mat(queryTraj(id2,20));
+            QBB = queryStrData(id2).bb1;
             if dimSize <=3
-                QBB225 = cell2mat(queryTraj(id2,21));
-                QBB45 = cell2mat(queryTraj(id2,22));
+%                 QBB225 = cell2mat(queryTraj(id2,21));
+%                 QBB45 = cell2mat(queryTraj(id2,22));
+                QBB225 = queryStrData(id2).bb2;
+                QBB45 = queryStrData(id2).bb3;
             end
         else
-            QBB = cell2mat(trajData(id2,3));
+%             QBB = cell2mat(trajData(id2,3));
+            QBB = trajStrData(id2).bb1;
             if dimSize <=3
-                QBB225 = cell2mat(trajData(id2,4));
-                QBB45 = cell2mat(trajData(id2,5));
+%                 QBB225 = cell2mat(trajData(id2,4));
+%                 QBB45 = cell2mat(trajData(id2,5));
+                QBB225 = trajStrData(id2).bb2;
+                QBB45 = trajStrData(id2).bb3;
             end
         end
     end
@@ -103,28 +112,43 @@ function upBound = GetBestUpperBound(P,Q,cType,id1,id2,threshBound,doCnt)
         end
         upBound = round(upBound,10)+0.00000000009;
         upBound = fix(upBound * 10^10)/10^10;
+
         return
     end
 
-    % do not do padding as it usually only filters a small number of
-    % candidates and the runtime increases substantially
-    if vertSize <= 0 
-        if cType == 0
-            padP = PadTraj(P,2);
-            padQ = PadTraj(Q,2);
-        elseif cType == 1
-            padP = cell2mat(trajData(id1,7));
-            padQ = cell2mat(queryTraj(id2,24));
-        elseif cType == 2
-            padP = cell2mat(trajData(id1,7));
-            padQ = cell2mat(trajData(id2,7));
-        end
-    end
+%     % do not do padding as it usually only filters a small number of
+%     % candidates and the runtime increases substantially
+%     if vertSize <= 0 
+%         if cType == 0
+%             padP = PadTraj(P,2);
+%             padQ = PadTraj(Q,2);
+%         elseif cType == 1
+%             padP = cell2mat(trajData(id1,7));
+%             padQ = cell2mat(queryTraj(id2,24));
+%         elseif cType == 2
+%             padP = cell2mat(trajData(id1,7));
+%             padQ = cell2mat(trajData(id2,7));
+%         end
+%     end
 
     if doCnt == 1
         cntBBUBLin = cntBBUBLin + 1;
     end
 
+% % code below runs in parallel. Seems to be faster for very large curves P & Q, e.g. 1 million vertices
+% tic
+% spmd(3)
+%     if labindex == 1
+%         a1 = ApproxDiscFrechet(P,Q);
+%     elseif labindex == 2
+%         a1 = ApproxDiscFrechetRev(P,Q);
+%     else
+%         a1 = ApproxDiscFrechetDiag(P,Q);
+%     end
+% end
+% toc
+% disp(['ans1: ',num2str(a1{1}),' ans2: ',num2str(a1{2}),' ans3: ',num2str(a1{3})]);
+    
     % do Approx Discrete Frechet (ADF)
     ADFBound = ApproxDiscFrechet(P,Q);
     upBound = min(upBound,ADFBound);

@@ -3,13 +3,14 @@
 function CalcLBUBTest(k,P,Q,cType,id1,id2)
 
     global trajData queryTraj
-
-    if ~exist('cType','var')
+    
+    switch nargin
+    case 3
         cType = 0;
         id1 = 0;
         id2 = 0;
     end
-    
+
     lowBound = 0;
     dimSize = size(P,2);
     
@@ -50,8 +51,8 @@ function CalcLBUBTest(k,P,Q,cType,id1,id2)
     if cType == 0
         simpP = [P(1,:); P(end,:)]; % P'
         simpQ = [Q(1,:); Q(end,:)]; % Q'
-        distP = ContFrechet(P,simpP,1,0);
-        distQ = ContFrechet(Q,simpQ,1,0);
+        distP = ContFrechet(P,simpP,2,0);
+        distQ = ContFrechet(Q,simpQ,2,0);
     elseif cType == 1
         distP = cell2mat(trajData(id1,6));
         distQ = cell2mat(queryTraj(id2,23));

@@ -3,7 +3,7 @@
 tic;
 totNodeCnt = 0;
 maxNodeCnt = 0;
-trajSz = size(trajData,1);
+trajSz = size(trajStrData,2);
 totNodeList = [];
 
 for i = 1:trajSz % calc height for each traj
@@ -30,11 +30,11 @@ for i = 1:trajSz % calc height for each traj
     
 end
 
-avgNodeHeight = totNodeCnt/size(trajData,1);
+avgNodeHeight = totNodeCnt/size(trajStrData,2);
 disp(['-------------------']);
 disp(['Avg Depth: ',num2str(ceil(avgNodeHeight))]);
 disp(['Avg Depth STD: ',num2str(std(totNodeList))]);
 disp(['Max Depth: ',num2str(maxNodeCnt)]);
-disp(['Optimal Depth: ',num2str(ceil(log2(size(trajData,1))))]);
+disp(['Optimal Depth: ',num2str(ceil(log2(size(trajStrData,2))))]);
 
 

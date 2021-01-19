@@ -2,34 +2,43 @@
 
 tic;
 
-numCandCurve = size(trajData,1);
+numCandCurve = size(trajStrData,2);
 
-for k = 1:10
-% for k = 1:size(queryTraj,1)  % do NN search for each query traj
+h = waitbar(0, 'NN Search');
+numQ = size(queryStrData,2);
+
+for i = 1:numQ  % do NN search for each query traj
     bestCenterTraj = 0;
     bestDist = Inf;
     numCFD = numCandCurve;
     numDP = 0;
 
-    currQueryTraj = cell2mat(queryTraj(k,1));
+    currQueryTraj = queryStrData(i).traj;
 
-    for i = 1:numCandCurve
-        currTraj = cell2mat(trajData(i,1)); % get center traj 
-        currDist = ContFrechet(currQueryTraj,currTraj,1,0);  % cont frechet, do not use up/low bounds
+    for j = 1:numCandCurve % do Cont Frechet dist call on each input traj
+        currTraj = trajStrData(j).traj; % get center traj 
+%         currDist = ContFrechet(currQueryTraj,currTraj,2,0);  % cont frechet dist
+        currDist = FrechetDistBringmann(currQueryTraj,currTraj);  % cont frechet dist
         if currDist < bestDist
             bestDist = currDist;
-            bestCenterTraj = i;
+            bestCenterTraj = j;
         end
     end
     
     % save info on query
-    queryTraj(k,8) = num2cell(numCandCurve);
-    queryTraj(k,9) = num2cell(0);
-    queryTraj(k,10) = num2cell(numCFD);
-    queryTraj(k,11) = num2cell(numDP);
-    queryTraj(k,12) = mat2cell([bestCenterTraj bestDist],size([bestCenterTraj bestDist],1),size([bestCenterTraj bestDist],2));
-    queryTraj(k,13) = num2cell(size(bestCenterTraj,1));
-    
+    queryStrData(i).prunes1 = numCandCurve;
+    queryStrData(i).prunes1sz = 0;
+    queryStrData(i).decidecfdcnt = numCFD;
+    queryStrData(i).decidedpcnt = numDP;
+    queryStrData(i).decidetrajids = bestCenterTraj;
+    queryStrData(i).decidetrajcnt = size(bestCenterTraj,1);
+
+    if mod(i,20) == 0
+        X = ['NN Search: ',num2str(i),'/',num2str(numQ)];
+        waitbar(i/numQ, h, X);
+    end
 end
 
+close(h);
 timeElapsed = toc;
+disp(['Query latency runtime (milli-seconds per query): ',num2str(timeElapsed/i*1000)]);

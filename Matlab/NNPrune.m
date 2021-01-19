@@ -2,10 +2,13 @@
 
 function NNPrune(cNodeID,Q,Qid,lowBnd,eAdd)
 
-    global clusterNode S1 trajData
+    global clusterNode S1 % trajData
     global Bk Ak stopCheckNodes distCalcCnt nodeCheckCnt
     global linLBcnt linUBcnt conLBcnt
     global timeConstLB timeLinLB timeLinUB
+    global trajStrData
+    
+    global t5 t6 time5Sum time6Sum
 
     if stopCheckNodes == false
  
@@ -19,16 +22,20 @@ function NNPrune(cNodeID,Q,Qid,lowBnd,eAdd)
         end
 
         if (clusterNode(cNodeID,5) == 1) % at the leaf
+            
 
             if lowBnd < Bk
-                
+                t5 = tic;
                 % compute upper bound
                 Cid = clusterNode(cNodeID,6);
-                cTraj = cell2mat(trajData(Cid,1));
+%                 cTraj = cell2mat(trajData(Cid,1));
+                cTraj = trajStrData(Cid).traj;
                 tStartLinUB = tic;
                 upBnd = GetBestUpperBound(cTraj,Q,1,Cid,Qid);
                 timeLinUB = timeLinUB + toc(tStartLinUB);
                 linUBcnt = linUBcnt + 1;
+                
+                time5Sum = time5Sum + toc(t5);
 
                 % see if we have found a close enough node
                 if upBnd <= eAdd % we have found a NN within the approximation threshold
@@ -68,9 +75,10 @@ function NNPrune(cNodeID,Q,Qid,lowBnd,eAdd)
                     end
                 end                
             end
-
+            
         elseif lowBnd <= Bk + crad - eAdd % the node may contain a traj that is closer
-
+            
+            t6 = tic;
             child1NodeID = clusterNode(cNodeID,2);
             Cid = clusterNode(child1NodeID,6);
             % if next child centre traj = curr parent centre traj then do
@@ -78,7 +86,8 @@ function NNPrune(cNodeID,Q,Qid,lowBnd,eAdd)
             if Cid == clusterNode(cNodeID,6)
                 lowBnd1 = lowBnd;
             else
-                cTraj = cell2mat(trajData(Cid,1)); % get center traj 
+%                 cTraj = cell2mat(trajData(Cid,1)); % get center traj
+                cTraj = trajStrData(Cid).traj; % get center traj 
                 childCrad = clusterNode(child1NodeID,4);
                 tStartConstLB = tic;
                 lowBnd1 = GetBestConstLB(cTraj,Q,childCrad + Bk,1,Cid,Qid);
@@ -94,7 +103,8 @@ function NNPrune(cNodeID,Q,Qid,lowBnd,eAdd)
             if Cid == clusterNode(cNodeID,6) 
                 lowBnd2 = lowBnd;
             else
-                cTraj = cell2mat(trajData(Cid,1)); % get center traj 
+%                 cTraj = cell2mat(trajData(Cid,1)); % get center traj 
+                cTraj = trajStrData(Cid).traj; % get center traj
                 childCrad = clusterNode(child2NodeID,4);
                 tStartConstLB = tic;
                 lowBnd2 = GetBestConstLB(cTraj,Q,childCrad + Bk,1,Cid,Qid);
@@ -102,7 +112,7 @@ function NNPrune(cNodeID,Q,Qid,lowBnd,eAdd)
                 conLBcnt = conLBcnt + 1;
                 distCalcCnt = distCalcCnt + 1;
             end
-
+            time6Sum = time6Sum + toc(t6);
             if lowBnd1 < lowBnd2
                 NNPrune(child1NodeID,Q,Qid,lowBnd1,eAdd);
                 NNPrune(child2NodeID,Q,Qid,lowBnd2,eAdd);

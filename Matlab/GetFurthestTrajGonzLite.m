@@ -1,15 +1,15 @@
 
 function [furthestTrajID,largestRSize,tList] = GetFurthestTrajGonzLite(cTrajId,tList)
 
-    global numCFD trajData numFurthestCFD
+    global numCFD trajStrData numFurthestCFD
     
     bndList = []; cTraj = []; tTraj = []; currDist = 0;
 
     % first get upper and lower bounds for each traj
-    cTraj = cell2mat(trajData(cTrajId,1));
+    cTraj = trajStrData(cTrajId).traj;
     for i = 1:size(tList,1)
         if tList(i,3) == -1
-            tTraj = cell2mat(trajData(tList(i,1),1));
+            tTraj = trajStrData(tList(i,1)).traj;
             currUpBnd = GetBestUpperBound(cTraj,tTraj,2,cTrajId,tList(i,1));
             currLowBnd = GetBestConstLB(cTraj,tTraj,Inf,2,cTrajId,tList(i,1));
             if currLowBnd > currUpBnd % this fixes a precision error with the football data
@@ -39,7 +39,7 @@ function [furthestTrajID,largestRSize,tList] = GetFurthestTrajGonzLite(cTrajId,t
     largestRSize = 0;
     for i = 1:size(bndList,1)
         if bndList(i,2) == -1
-            tTraj = cell2mat(trajData(bndList(i,1),1));
+            tTraj = trajStrData(bndList(i,1)).traj;
             currDist = ContFrechet(cTraj, tTraj);
             numCFD = numCFD + 1;
             numFurthestCFD = numFurthestCFD + 1;

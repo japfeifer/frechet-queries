@@ -1,13 +1,13 @@
 % Create a bunch of query trajectories
 
 tic;
-queryTraj = {[]};
+queryStrData = [];
 bestTrajId = 0;
 bestTrajDist = 0;
 currReach = 0;
 currNumVertices = 0;
 perturbDist = 0;
-totalTraj = size(trajData,1);
+totalTraj = size(trajStrData,2);
 
 for k = 1:numQueryTraj
     
@@ -30,7 +30,7 @@ for k = 1:numQueryTraj
         end
     elseif genQueryType == 2  % generate traj similar to an existing traj
         currTrajDataCell = randi(totalTraj);
-        sampleTraj = cell2mat(trajData(currTrajDataCell,1));
+        sampleTraj = trajStrData(currTrajDataCell).traj;
         currNumVertices = size(sampleTraj,1);
         currReach = TrajReach(sampleTraj);
         perturbDist = currReach * 0.03;
@@ -44,7 +44,7 @@ for k = 1:numQueryTraj
         end
     elseif genQueryType == 3  % generate traj similar to an existing traj but translate fairly far
         currTrajDataCell = randi(totalTraj);
-        sampleTraj = cell2mat(trajData(currTrajDataCell,1));
+        sampleTraj = trajStrData(currTrajDataCell).traj;
         currNumVertices = size(sampleTraj,1);
         currReach = TrajReach(sampleTraj);
         perturbDist = currReach * 0.03;
@@ -58,14 +58,15 @@ for k = 1:numQueryTraj
         end
     elseif genQueryType == 4  % generate traj same as an existing traj
         currTrajDataCell = randi(totalTraj);
-        sampleTraj = cell2mat(trajData(currTrajDataCell,1));
+        sampleTraj = trajStrData(currTrajDataCell).traj;
         currNumVertices = size(sampleTraj,1);
     end
     
     % update queryTraj with the traj that was generated
     tmpTrajStartEnd = [sampleTraj(1,:); sampleTraj(currNumVertices,:)];
-    queryTraj(k,1) = mat2cell(sampleTraj,size(sampleTraj,1),size(sampleTraj,2));
-    queryTraj(k,2) = mat2cell(tmpTrajStartEnd,size(tmpTrajStartEnd,1),size(tmpTrajStartEnd,2));
+    queryStrData(k).traj = sampleTraj;
+    queryStrData(k).se = tmpTrajStartEnd;
 
 end
 timeElapsed = toc;
+disp(['Time to generate initial query traj: ',num2str(timeElapsed)]);

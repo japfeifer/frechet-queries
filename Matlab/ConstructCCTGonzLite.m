@@ -4,7 +4,7 @@
 tic;
 h = waitbar(0, 'Build Cluster');
 
-totalTraj = size(trajData,1);  % get number of trajectories to process
+totalTraj = size(trajStrData,2);  % get number of trajectories to process
 totNode = (totalTraj * 2) - 1;  % calc total nodes
 numCFD = 0;
 numDP = 0;

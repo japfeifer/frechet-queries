@@ -2,7 +2,7 @@
 function SplitNodeGonzLite(cNodeID,tDistList)
 
     % global variables
-    global numCFD numDP clusterNode clusterTrajNode currNodeID trajData totNode h numSplitCFD
+    global numCFD numDP clusterNode clusterTrajNode currNodeID trajStrData totNode h numSplitCFD
 
     % initialize variables
     pDistList = [];
@@ -36,8 +36,8 @@ function SplitNodeGonzLite(cNodeID,tDistList)
     newCenterTrajID = clusterNode(cNodeID,7);
     centerToCenterDist = clusterNode(cNodeID,4);
     
-    pTraj = cell2mat(trajData(prevCenterTrajID,1)); % prev center traj 
-    nTraj = cell2mat(trajData(newCenterTrajID,1)); % new center traj 
+    pTraj = trajStrData(prevCenterTrajID).traj; % prev center traj 
+    nTraj = trajStrData(newCenterTrajID).traj; % new center traj 
 
     % determine what center each traj in the cluster is closest to
     for k = 1:size(tDistList,1) 
@@ -53,7 +53,7 @@ function SplitNodeGonzLite(cNodeID,tDistList)
             pCenter = 0; nCenter = 0; foundCenter = 0; currDist = 0; 
 
             % get the upper/lower bounds from traj to new and prev center
-            cTraj = cell2mat(trajData(currTrajID,1)); % curr traj
+            cTraj = trajStrData(currTrajID).traj; % curr traj
 
             nLowBnd = GetBestConstLB(nTraj,cTraj,Inf,2,newCenterTrajID,currTrajID);
             pLowBnd = tDistList(k,3);

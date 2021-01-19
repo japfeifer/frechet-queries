@@ -1,5 +1,6 @@
 clear all;
 addpath('Continuous Frechet');
+addpath('MexCode');
 
 global numCFD numDP clusterNode clusterTrajNode currNodeID trajData totNode h doDFD
 global distMap trajDistMatrix queryTraj
@@ -22,3 +23,10 @@ global mTree mTreeRootId mTreeNodeCapacity mTreePtrList mTreeMaxCol
 global trainSet trainSet2 querySet CompMoveData 
 global tEncode timeEncode tHV timeHV nodeVisitCnt overrideLM implicitErrorFlg ConstructCCTType
 global querySetKFold currHMTrainSet numCoordCurr classifierCurr numTrainDistComp numTestDistComp overrideNTURGBD
+
+global time2 time3 time4 t2 t3 t4 t5 t6 time5Sum time6Sum
+global trajStrData queryStrData
+
+global decimalPrecision
+
+decimalPrecision = 1e-8;

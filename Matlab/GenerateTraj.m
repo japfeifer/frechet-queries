@@ -1,9 +1,14 @@
 % create a bunch of randomly generated 2D trajectories
 tic;
 trajCounter = 0;
-trajData = {[]};
+trajStrData = [];
 
-trajData(numDiffTraj*numSimilarTraj,1:7) = {0}; % pre-populate trajData with nulls - performance improvement
+trajStrData(numDiffTraj*numSimilarTraj).traj = 0; % pre-populate trajData  - performance improvement
+trajStrData(numDiffTraj*numSimilarTraj).se = 0;
+trajStrData(numDiffTraj*numSimilarTraj).bb1 = 0;
+trajStrData(numDiffTraj*numSimilarTraj).bb2 = 0;
+trajStrData(numDiffTraj*numSimilarTraj).bb3 = 0;
+trajStrData(numDiffTraj*numSimilarTraj).st = 0;
 
 h = waitbar(0, 'Generate Trajectory');
 
@@ -43,9 +48,9 @@ for k = 1:numDiffTraj
         
         % store the new traj
         trajCounter = trajCounter + 1;
-        trajData(trajCounter,1) = mat2cell(curr_Traj,size(curr_Traj,1),size(curr_Traj,2));
+        trajStrData(trajCounter).traj = curr_Traj;
         tmpTrajStartEnd = [curr_Traj(1,:); curr_Traj(currNumVertices,:)];
-        trajData(trajCounter,2) = mat2cell(tmpTrajStartEnd,size(tmpTrajStartEnd,1),size(tmpTrajStartEnd,2));
+        trajStrData(trajCounter).se = tmpTrajStartEnd;
         
     end
     
@@ -58,3 +63,4 @@ end
 
 close(h);
 timeElapsed = toc;
+disp(['Time to run generate traj (s): ',num2str(timeElapsed)]);

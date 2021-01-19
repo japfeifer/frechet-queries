@@ -4,7 +4,7 @@
 tic;
 
 h = waitbar(0, 'NN Search M-tree');
-numQ = size(queryTraj,1);
+numQ = size(queryStrData,2);
 
 for i = 1:numQ  % do NN search for each query traj
     if mod(i,100) == 0

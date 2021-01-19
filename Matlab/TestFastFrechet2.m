@@ -1,9 +1,8 @@
 CCTType = 'CCT1';
 rngSeed = 1; % random seed value
 rng(rngSeed); % reset random seed so experiments are reproducable
-jNum = 50000;
+jNum = 1000;
 kNum = 100;
-SimplFlg = 1;
 timeOldFreDP = 0;
 timeNewFreDP = 0;
 
@@ -14,7 +13,7 @@ timeNewFreDP = 0;
 %     "NBABasketballData" "GeoLifeData" "Hurdat2AtlanticData" ...
 %     "PenTipData"];
 
-dataList = ["FootballData"];
+dataList = ["PenTipData"];
 
 h = waitbar(0, 'Test Fast Frechet');
 for i = 1:size(dataList,2)   
@@ -22,25 +21,17 @@ for i = 1:size(dataList,2)
     disp(['--------------------']);
     disp([CCTType dataName]);
     load(['MatlabData/' CCTType dataName '.mat']);
+    InitDatasetVars(dataName);
+    CreateTrajStr;
     
     for j = 1:jNum
-            X = [num2str(i),': ',dataName,': ',num2str(j)];
-            waitbar(j/jNum, h, X);
-            
+
         % get a P and Q curve
-        if SimplFlg == 1
-            sz = size(trajData,1);
-            idxP = randi(sz);
-            idxQ = randi(sz);
-            P = cell2mat(trajData(idxP,1));
-            Q = cell2mat(trajData(idxQ,1));
-        else
-            sz = size(trajOrigData,1);
-            idxP = randi(sz);
-            idxQ = randi(sz);
-            P = cell2mat(trajOrigData(idxP,1));
-            Q = cell2mat(trajOrigData(idxQ,1));
-        end
+        sz = size(trajData,1);
+        idxP = randi(sz);
+        idxQ = randi(sz);
+        P = trajStrData(idxP).traj;
+        Q = trajStrData(idxQ).traj;
         
         % get UB and LB
         distLB = GetBestConstLB(P,Q,Inf,2,idxP,idxQ);
@@ -61,17 +52,23 @@ for i = 1:size(dataList,2)
             currDist = distList(k);
             
             tOldFreDP = tic;
-            ans1 = FrechetDecide(P,Q,currDist);
+%             ans1 = FrechetDecide(P,Q,currDist,1,0,0);
+            ans1 = FrechetDPBringmann(P,Q,currDist);
+%             ans1 = FrechetDistBringmann(P,Q);
             timeOldFreDP = timeOldFreDP + toc(tOldFreDP);
             
             tNewFreDP = tic;
-
             ans2 = FrechetDecideFast(P,Q,currDist);
+%             ans2 = ContFrechetPrecision(P,Q);
             timeNewFreDP = timeNewFreDP + toc(tNewFreDP);
             
             if ans1 ~= ans2
                 error('different results');
             end
+        end
+        if mod(j,500) == 0
+            X = [num2str(i),': ',dataName,': ',num2str(j)];
+            waitbar(j/jNum, h, X);
         end
     end
 end

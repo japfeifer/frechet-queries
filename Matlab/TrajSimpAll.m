@@ -4,8 +4,8 @@
 
 tic;
 h = waitbar(0, 'Simplify All Trajectories');
-trajSimpData = {[]};
-sizeData = size(trajData,1);
+trajSimpStrData = [];
+sizeData = size(trajStrData,2);
 numDecisionCalls = 0;
 totDecisionCalls = 0;
 
@@ -13,7 +13,7 @@ totDecisionCalls = 0;
 
 if sizeData > 0
     for i = 1:sizeData
-        currTraj = cell2mat(trajData(i,1));
+        currTraj = trajStrData(i).traj;
         currReach = TrajReach(currTraj);
         epsilonDist = reachPercent * currReach;
         
@@ -22,7 +22,7 @@ if sizeData > 0
         [currTraj,numDecisionCalls] = TrajSimp(currTraj,epsilonDist); % Agarwal method
         
         totDecisionCalls = totDecisionCalls + numDecisionCalls;
-        trajSimpData(i,1) = mat2cell(currTraj,size(currTraj,1),size(currTraj,2));
+        trajSimpStrData(i).traj = currTraj;
         if mod(i,20) == 0
             X = ['Simplify ',num2str(i),'/',num2str(sizeData), ...
                 ', ',num2str(totDecisionCalls),' Tot Decision Proc Calls'];
@@ -33,3 +33,4 @@ end
 
 close(h);
 timeElapsed = toc;
+disp(['Time to run Agarwal et al. simplification (s): ',num2str(timeElapsed)]);

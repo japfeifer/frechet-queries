@@ -7,7 +7,7 @@ tic;
 nodeCheckCnt = 0; linLBcnt = 0; linUBcnt = 0; conLBcnt = 0; timeConstLB = 0;
 timeLinLB = 0; timeLinUB = 0; 
 
-for i = 1:size(queryTraj,1)  % for each query traj
+for i = 1:size(queryStrData,2)  % for each query traj
 
     NN(i,1,0,1); % NN exact search, do only Prune stage
 
@@ -30,14 +30,14 @@ tic;
 nodeCheckCnt = 0; linLBcnt = 0; linUBcnt = 0; conLBcnt = 0; timeConstLB = 0;
 timeLinLB = 0; timeLinUB = 0; 
 
-for i = 1:size(queryTraj,1)  % for each query traj
+for i = 1:size(queryStrData,2)  % for each query traj
 
     % Naive pruning linear scan with filters
     prunedNodes = [];
-    Q = cell2mat(queryTraj(i,1));
-    for j = 1:size(trajData,1)
+    Q = queryStrData(i).traj;
+    for j = 1:size(trajStrData,2)
         if j == 1
-            centreTraj = cell2mat(trajData(j,1)); % get center traj 
+            centreTraj = trajStrData(j).traj; % get center traj 
             tStartConstLB = tic;
             lowBnd = GetBestConstLB(centreTraj,Q,Inf,1,j,i);
             timeConstLB = timeConstLB + toc(tStartConstLB);
@@ -50,7 +50,7 @@ for i = 1:size(queryTraj,1)  % for each query traj
             currBestUpNodeDist = upBnd;
             prunedNodes = [j lowBnd upBnd];
         else
-            centreTraj = cell2mat(trajData(j,1)); % get center traj 
+            centreTraj = trajStrData(j).traj; % get center traj 
             tStartConstLB = tic;
             lowBnd = GetBestConstLB(centreTraj,Q,currBestUpNodeDist,1,j,i);
             timeConstLB = timeConstLB + toc(tStartConstLB);

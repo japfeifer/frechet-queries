@@ -24,6 +24,7 @@ for iProc = 1:size(dataList,2)
     disp([CCTType dataName]);
     load(['MatlabData/' CCTType dataName '.mat']);
     InitDatasetVars(dataName);
+    CreateTrajStr;
     NNS1;
     QueryResultsAvgStdDev;
     resultList = [resultList ; queryResults1];

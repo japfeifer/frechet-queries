@@ -1,3 +1,5 @@
+% test naive brute-force (no query error)
+
 InitGlobalVars;
 
 scriptName = 'ProcessConstCCT1KrugerBuffaloSubTrajTest';

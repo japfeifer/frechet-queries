@@ -1,9 +1,9 @@
 tic;
     
 h = waitbar(0, 'Preprocess Queries');
-sP = size(queryTraj,1);
+sP = size(queryStrData,2);
 
-for i = 1:size(queryTraj,1)
+for i = 1:sP
     PreprocessQuery(i);
     
     if mod(i,100) == 0
@@ -14,3 +14,4 @@ end
 
 close(h);
 timeElapsed = toc;
+disp(['Time to preprocess query traj: ',num2str(timeElapsed)]);

@@ -1,18 +1,21 @@
 
 function lowBound = GetBestConstLBLessBnd(P,Q,epsilon,cType,id1,id2)
 
-    global trajData queryTraj
+%     global trajData queryTraj
+    global trajStrData queryStrData
 
-    if ~exist('epsilon','var')
+    switch nargin
+    case 2
         epsilon = Inf;
-    end
-    
-    if ~exist('cType','var')
+        cType = 0;
+        id1 = 0;
+        id2 = 0;
+    case 3
         cType = 0;
         id1 = 0;
         id2 = 0;
     end
-    
+
     sPDim = size(P,2);
     done = false;
     lowBound = 0;
@@ -34,34 +37,45 @@ function lowBound = GetBestConstLBLessBnd(P,Q,epsilon,cType,id1,id2)
 
     % bounding box lower bound, use Dutsch and Vahrenhold algo
     if done == false
+        
+        % get BB for P & Q
         if cType == 0 % compute P & Q bounding boxes
             PBB = ComputeBB(P,deg);
             QBB = ComputeBB(Q,deg);
         elseif cType == 1 || cType == 2 % the bounding box was pre-computed
             if deg == 0
-                PBB = cell2mat(trajData(id1,3));
+    %             PBB = cell2mat(trajData(id1,3));
+                PBB = trajStrData(id1).bb1;
                 if cType == 1
-                    QBB = cell2mat(queryTraj(id2,20));
+    %                 QBB = cell2mat(queryTraj(id2,20));
+                    QBB = queryStrData(id2).bb1;
                 else
-                    QBB = cell2mat(trajData(id2,3));
+    %                 QBB = cell2mat(trajData(id2,3));
+                    QBB = trajStrData(id2).bb1;
                 end
             elseif deg == 22.5
-                PBB = cell2mat(trajData(id1,4));
+    %             PBB = cell2mat(trajData(id1,4));
+                PBB = trajStrData(id1).bb2;
                 if cType == 1
-                    QBB = cell2mat(queryTraj(id2,21));
+    %                 QBB = cell2mat(queryTraj(id2,21));
+                    QBB = queryStrData(id2).bb2;
                 else
-                    QBB = cell2mat(trajData(id2,4));
+    %                 QBB = cell2mat(trajData(id2,4));
+                    QBB = trajStrData(id2).bb2;
                 end
             elseif deg == 45
-                PBB = cell2mat(trajData(id1,5));
+    %             PBB = cell2mat(trajData(id1,5));
+                PBB = trajStrData(id1).bb3;
                 if cType == 1
-                    QBB = cell2mat(queryTraj(id2,22));
+    %                 QBB = cell2mat(queryTraj(id2,22));
+                    QBB = queryStrData(id2).bb3;
                 else
-                    QBB = cell2mat(trajData(id2,5));
+    %                 QBB = cell2mat(trajData(id2,5));
+                    QBB = trajStrData(id2).bb3;
                 end
             end
-        end
-
+        end        
+        
         dist = max(max(abs(PBB - QBB)));
         dist = round(dist,10)+0.00000000009;
         dist = fix(dist * 10^10)/10^10;

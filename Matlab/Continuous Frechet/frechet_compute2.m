@@ -4,12 +4,11 @@ function sol_len = frechet_compute2(P,Q,prntflg,upBnd,lowBnd,bndCutFlg)
 %                           Alt and Godau
 global I J lP lQ lPQ bP bQ
 
-dfcn1 = @(a,b,c,d) sqrt(sum(((a+b.*(c-a))-d).^2));
-
-if ~exist('bndCutFlg','var')
+switch nargin
+case 5
     bndCutFlg = 1;
 end
-    
+        
 upBnd = round(upBnd,10)+0.00000000009; % getting rounding errors, this fixes it
 lowBnd = round(lowBnd,10)+0.00000000009; % getting rounding errors, this fixes it
 
@@ -85,7 +84,6 @@ for i=1:I-1 %--looking for a_i,j = b_i,k for some k>j (see Alt and Godau)
             if den~=0
                 u1 = (lPQ(i,k)-lPQ(i,j))/den;
                 if (u1>=0)&&(u1<=1)
-%                     tst = dfcn1(P(:,i),u1,P(:,i+1),Q(:,j));
                     tst = sqrt(sum(((P(:,i)+u1.*(P(:,i+1)-P(:,i)))-Q(:,j)).^2)); % this is faster
                     if (tst>min_len)&&(tst<max_len)
                         ecount = ecount + 1;
@@ -104,7 +102,6 @@ for j=1:J-1 %--looking for c_i,j = d_k,j for some k>i (see Alt and Godau)
             if den~=0
                 u2 = (lPQ(k,j)-lPQ(i,j))/den;
                 if (u2>=0)&&(u2<=1)
-%                     tst = dfcn1(Q(:,j),u2,Q(:,j+1),P(:,i));
                     tst = sqrt(sum(((Q(:,j)+u2.*(Q(:,j+1)-Q(:,j)))-P(:,i)).^2)); % this is faster
                     if (tst>min_len)&&(tst<max_len)
                         ecount = ecount + 1;

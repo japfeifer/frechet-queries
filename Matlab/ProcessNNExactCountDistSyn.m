@@ -25,12 +25,13 @@ for iProc = 1:size(dataList,2)
     disp(['--------------------']);
     disp([CCTType dataName]);
     load(['MatlabData/' CCTType dataName '.mat']);
+    CreateTrajStr;
     eAdd = 0; eMult = 0;
     NNS2;
     QueryResultsAvgStdDev;
-    zeroFrechet = sum(cell2mat(queryTraj(:,10)) == 0);
-    oneFrechet = sum(cell2mat(queryTraj(:,10)) == 1);
-    twoOrMoreFrechet = sum(cell2mat(queryTraj(:,10)) >= 2);
+    zeroFrechet = sum([queryStrData.decidecfdcnt] == 0);
+    oneFrechet = sum([queryStrData.decidecfdcnt] == 1);
+    twoOrMoreFrechet = sum([queryStrData.decidecfdcnt] > 1);
     resultList = [resultList ; zeroFrechet oneFrechet twoOrMoreFrechet];
 end
 

@@ -4,6 +4,13 @@
 % cab is unchanged for more than 30 minutes.  This should provide slightly
 % better trajectories for doing queries.
 
+% After this script is run, then run simplification:
+% TrajSimpAll; 
+% trajOrigData = trajData;
+% trajData = trajSimpData;
+%
+% Then run: CutTaxiData
+
 tic;
 
 h = waitbar(0, 'Import Taxi Data');

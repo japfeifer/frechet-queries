@@ -4,7 +4,8 @@ function NNLessBnd(Qid,typeQ,eVal,stage)
     global clusterNode S1 nodeCheckCnt trajData queryTraj
     global Bk Ak stopCheckNodes distCalcCnt conLBcnt
 
-    if ~exist('stage','var')
+    switch nargin
+    case 3
         stage = 3;
     end
 

@@ -4,21 +4,21 @@ function upBound = GetBestUpperBoundLessBnd(P,Q,cType,id1,id2,threshBound,doCnt)
     global trajData queryTraj
 
     global cntBBUB cntADF cntADFR cntADFD cntBBUBConst cntBBUBLin
-    
-    if ~exist('cType','var')
+
+    switch nargin
+    case 2
         cType = 0;
         id1 = 0;
         id2 = 0;
-    end
-    
-    if ~exist('threshBound','var')
         threshBound = 0;
-    end
-    
-    if ~exist('doCnt','var')
+        doCnt = 0;
+    case 5
+        threshBound = 0;
+        doCnt = 0;
+    case 6
         doCnt = 0;
     end
-    
+
     vertSize = max(size(P,1),size(Q,1));
     dimSize = size(P,2);
     upBound = Inf;

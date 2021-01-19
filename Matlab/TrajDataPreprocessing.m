@@ -4,40 +4,40 @@
 % 3) calc bounding boxes
 % 4) calc simplification prune
 
-numTraj = size(trajData,1);
+numTraj = size(trajStrData,2);
 
 % 1) if the trajectory is a single vertex, add another duplicate vertex 
 % as the code assumes at least two vertices per trajectory.
 for i=1:numTraj
-    currTraj = cell2mat(trajData(i,1));
+    currTraj = trajStrData(i).traj;
     if size(currTraj,1) == 1 % simplified traj is only a single vertex
         currTraj = [currTraj; currTraj]; % so add one more vertex 
-        trajData(i,1) = mat2cell(currTraj,size(currTraj,1),size(currTraj,2));
+        trajStrData(i).traj = currTraj;
     end
 end
 
 % 2) generate  traj start/end info - the synthetic generator creates this
 % automatically but this is needed when loading in real-world data
 for i=1:numTraj
-    currTraj = cell2mat(trajData(i,1));
+    currTraj = trajStrData(i).traj;
     currTrajSize = size(currTraj,1);
 	currTrajStartEnd = [currTraj(1,:); currTraj(currTrajSize,:)];
-    trajData(i,2) = mat2cell(currTrajStartEnd,size(currTrajStartEnd,1),size(currTrajStartEnd,2));
+    trajStrData(i).se = currTrajStartEnd;
 end
 
 % 3) calculate traj data boundng box
 tic;
 h = waitbar(0, 'Compute Bounding Box');
 for i = 1:numTraj % calc bounding box for each traj
-    P = cell2mat(trajData(i,1));
+    P = trajStrData(i).traj;
     sPDim = size(P,2);
     BB = ComputeBB(P,0);
-    trajData(i,3) = mat2cell(BB,size(BB,1),size(BB,2));
+    trajStrData(i).bb1 = BB;
     if (sPDim == 2 || sPDim == 3)  % only compute BB for 2-d and 3-d traj
         BB = ComputeBB(P,22.5);
-        trajData(i,4) = mat2cell(BB,size(BB,1),size(BB,2));
+        trajStrData(i).bb2 = BB;
         BB = ComputeBB(P,45);
-        trajData(i,5) = mat2cell(BB,size(BB,1),size(BB,2));
+        trajStrData(i).bb3 = BB;
     end
     if mod(i,10000) == 0
         X = ['Compute Bounding Box ',num2str(i),'/',num2str(numTraj)];
@@ -55,10 +55,10 @@ tic;
 h = waitbar(0, 'Simplification Prune Pre-compute Step');
 for i = 1:numTraj % for each trajectory in dataset do
     % get P and P'
-    sampleTraj = cell2mat(trajData(i,1)); % P
-    currTraj = cell2mat(trajData(i,2));   % P'
-    Eq = ContFrechet(sampleTraj,currTraj,1,0); % calc cont frechet dist between P and P'
-    trajData(i,6) = mat2cell(Eq,size(Eq,1),size(Eq,2)); % store result
+    sampleTraj = trajStrData(i).traj; % P
+    currTraj = trajStrData(i).se;   % P'
+    Eq = ContFrechet(sampleTraj,currTraj,2,0); % calc cont frechet dist between P and P'
+    trajStrData(i).st = Eq; % store result
     if mod(i,10000) == 0
         X = ['Simplification Prune Pre-compute Step ',num2str(i),'/',num2str(numTraj)];
         waitbar(i/numTraj, h, X);

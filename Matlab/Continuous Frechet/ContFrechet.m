@@ -4,16 +4,21 @@ function [frechetDist] = ContFrechet(P,Q,frechetType,doBounds,bndCutFlg)
 
     dfcn = @(u,v) sqrt(sum( (u-v).^2 ));
 
-    if ~exist('frechetType','var')
-        frechetType = 1;
-    end
-    
-    if ~exist('doBounds','var')
+    switch nargin
+    case 2
+        frechetType = 2;
         doBounds = 1;
+        bndCutFlg = 1;
+    case 3
+        doBounds = 1;
+        bndCutFlg = 1;
+    case 4
+        bndCutFlg = 1;
     end
     
-    if ~exist('bndCutFlg','var')
-        bndCutFlg = 1;
+    if frechetType == 2
+        [frechetDist] = ContFrechetPrecision(P,Q);
+        return
     end
 
     frechetDist = 0;

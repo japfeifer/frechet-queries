@@ -126,7 +126,7 @@ if trainQueryType == 2
             Q = cell2mat(queryTraj(i,1));
             for j=1:size(distResults,1) 
                 P = cell2mat(trajData(distResults(j),1));
-                dist = ContFrechet(P,Q,1); % get Frechet distance
+                dist = ContFrechet(P,Q,2); % get Frechet distance
                 distResults(j,2) = dist;
             end
             distResults = sortrows(distResults,2,'ascend'); % closest distance first

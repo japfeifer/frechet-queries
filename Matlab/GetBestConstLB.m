@@ -4,20 +4,27 @@
 % if cType = 1, then id1 = traj id and id2 = query id
 % if cType = 2, then id1 = traj id and id2 = traj id
 
-function lowBound = GetBestConstLB(P,Q,epsilon,cType,id1,id2)
+function lowBound = GetBestConstLB(P,Q,epsilon,cType,id1,id2,excludeSSE)
 
-    global trajData queryTraj
+%     global trajData queryTraj
+    global trajStrData queryStrData
 
-    if ~exist('epsilon','var')
+    switch nargin
+    case 2
         epsilon = Inf;
-    end
-    
-    if ~exist('cType','var')
         cType = 0;
         id1 = 0;
         id2 = 0;
+        excludeSSE = 0;
+    case 3
+        cType = 0;
+        id1 = 0;
+        id2 = 0;
+        excludeSSE = 0;
+    case 6
+        excludeSSE = 0;
     end
-    
+
     sPDim = size(P,2);
     done = false;
     lowBound = 0;
@@ -72,25 +79,31 @@ function lowBound = GetBestConstLB(P,Q,epsilon,cType,id1,id2)
     end
 
     % simplified single edge lower bound
-    if done == false
-        % get distances to single edge
-        if cType == 0
-            simpP = [P(1,:); P(end,:)]; % P'
-            simpQ = [Q(1,:); Q(end,:)]; % Q'
-            distP = ContFrechet(P,simpP,1,0);
-            distQ = ContFrechet(Q,simpQ,1,0);
-        elseif cType == 1
-            distP = cell2mat(trajData(id1,6));
-            distQ = cell2mat(queryTraj(id2,23));
-        elseif cType == 2
-            distP = cell2mat(trajData(id1,6));
-            distQ = cell2mat(trajData(id2,6));
-        end
-        currBnd = abs(distP - distQ)/2;
-        if currBnd > lowBound
-            lowBound = currBnd;
-            if lowBound >= epsilon
-                done = true;
+    if excludeSSE == 0
+        if done == false
+            % get distances to single edge
+            if cType == 0
+                simpP = [P(1,:); P(end,:)]; % P'
+                simpQ = [Q(1,:); Q(end,:)]; % Q'
+                distP = ContFrechet(P,simpP,2,0);
+                distQ = ContFrechet(Q,simpQ,2,0);
+            elseif cType == 1
+    %             distP = cell2mat(trajData(id1,6));
+                distP = trajStrData(id1).st;
+    %             distQ = cell2mat(queryTraj(id2,23));
+                distQ = queryStrData(id2).st;
+            elseif cType == 2
+    %             distP = cell2mat(trajData(id1,6));
+                distP = trajStrData(id1).st;
+    %             distQ = cell2mat(trajData(id2,6));
+                distQ = trajStrData(id2).st;
+            end
+            currBnd = abs(distP - distQ)/2;
+            if currBnd > lowBound
+                lowBound = currBnd;
+                if lowBound >= epsilon
+                    done = true;
+                end
             end
         end
     end

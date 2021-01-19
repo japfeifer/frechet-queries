@@ -1,6 +1,6 @@
 % create a bunch of randomly generated 2D trajectories
 tic;
-trajCounter = size(trajData,1);
+trajCounter = size(trajStrData,2);
 
 for k = 1:numNoiseTraj
     % generate a random sample traj
@@ -26,9 +26,9 @@ for k = 1:numNoiseTraj
 
     % store the new traj
     trajCounter = trajCounter + 1;
-    trajData(trajCounter,1) = mat2cell(sampleTraj,size(sampleTraj,1),size(sampleTraj,2));
+    trajStrData(trajCounter).traj = sampleTraj;
     tmpTrajStartEnd = [sampleTraj(1,:); sampleTraj(currNumVertices,:)];
-    trajData(trajCounter,2) = mat2cell(tmpTrajStartEnd,size(tmpTrajStartEnd,1),size(tmpTrajStartEnd,2));
+    trajStrData(trajCounter).se = tmpTrajStartEnd;
 
 end
 timeElapsed = toc;

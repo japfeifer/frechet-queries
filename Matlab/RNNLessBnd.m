@@ -9,11 +9,11 @@ function RNNLessBnd(Qid,typeQ,tau,eVal,stage,doCnt)
     global clusterNode S1 nodeCheckCnt trajData queryTraj
     global distCalcCnt
     
-    if ~exist('stage','var')
+    switch nargin
+    case 4
         stage = 3;
-    end
-    
-    if ~exist('doCnt','var')
+        doCnt = 0;
+    case 5
         doCnt = 0;
     end
 

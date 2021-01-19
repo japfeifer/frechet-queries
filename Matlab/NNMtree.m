@@ -5,7 +5,7 @@
 
 function NNMtree(Qid)
 
-    global S1 nodeCheckCnt queryTraj mTreeRootId numCFD numDP
+    global S1 nodeCheckCnt queryStrData mTreeRootId numCFD numDP
     global Ak
 
     S1 = [];
@@ -16,29 +16,28 @@ function NNMtree(Qid)
     numDP = 0;
     
     % Prune Stage - compute S1 (since we are doing an exact search using Frechet distance, S1 will only contain 1 result)
-    Q = cell2mat(queryTraj(Qid,1)); % query vertices
+    Q = queryStrData(Qid).traj; % query vertices
     NNPruneMtree(mTreeRootId,Q,0); % traverse the M-tree starting at the root
 
     % save results from Prune Stage
-    queryTraj(Qid,4) = mat2cell(nodeCheckCnt,size(nodeCheckCnt,1),size(nodeCheckCnt,2));
-    queryTraj(Qid,6) = num2cell(0);
-    queryTraj(Qid,8) = mat2cell(S1,size(S1,1),size(S1,2)); % S1 list (node id)
-    queryTraj(Qid,9) = num2cell(size(S1,1)); % |S1|
-    
-    queryTraj(Qid,3) = mat2cell(S1,size(S1,1),size(S1,2));
-    queryTraj(Qid,5) = num2cell(size(S1,1));
-    
+    queryStrData(Qid).prunenodecnt = nodeCheckCnt;
+    queryStrData(Qid).prunedistcnt = 0;
+    queryStrData(Qid).prunes1 = S1;
+    queryStrData(Qid).prunes1sz = size(S1,1);
+    queryStrData(Qid).reduces1 = S1;
+    queryStrData(Qid).reduces1sz = size(S1,1);
+
     % set the bestTrajID
     bestTrajID = S1(3);
 
     % save results from Reduce Stage
-    queryTraj(Qid,7) = mat2cell(S1,size(S1,1),size(S1,2));
+    queryStrData(Qid).reduces1trajid = S1;
     
     % save results from Decide stage
-    queryTraj(Qid,10) = num2cell(numCFD);
-    queryTraj(Qid,11) = num2cell(numDP);
-    queryTraj(Qid,12) = mat2cell(bestTrajID,1,1);
-    queryTraj(Qid,13) = num2cell(size(bestTrajID,1));
+    queryStrData(Qid).decidecfdcnt = numCFD;
+    queryStrData(Qid).decidedpcnt = numDP;
+    queryStrData(Qid).decidetrajids = bestTrajID;
+    queryStrData(Qid).decidetrajcnt = size(bestTrajID,1);
  
 end
 

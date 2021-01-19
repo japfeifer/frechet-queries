@@ -21,5 +21,5 @@ hold on;
 axis equal
 
 
-% ContFrechet(P,Q,1,1)
+% ContFrechet(P,Q,2,1)
 % FrechetDecide(P,Q,0.03,1,1)

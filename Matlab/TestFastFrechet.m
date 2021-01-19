@@ -21,7 +21,7 @@
 
 % ans = FrechetDecide(P,Q,currDist,1,1);
 
-% dist1 = ContFrechet(P,Q,1);
+% dist1 = ContFrechet(P,Q,2);
 
 
 % tic
