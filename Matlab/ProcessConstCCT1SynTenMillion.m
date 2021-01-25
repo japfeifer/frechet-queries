@@ -14,7 +14,7 @@ CCTType = 'CCT1';
 dataList = ["SyntheticData25"];
 
 for iProc = 1:size(dataList,2)   
-    trajSimpData = []; trajOrigData = []; trajData = []; queryTraj = []; clusterTrajNode = []; clusterNode = [];
+    trajSimpData = []; trajOrigData = []; queryTraj = []; clusterTrajNode = []; clusterNode = [];
     dataName = char(dataList(iProc));
     disp(['--------------------']);
     disp([CCTType dataName]);
@@ -31,8 +31,8 @@ for iProc = 1:size(dataList,2)
     ConstructCCTGonzLite;
 
     % save result set
-%     save(['MatlabData/' CCTType dataName '.mat'],'trajData','queryTraj','clusterTrajNode','clusterNode','-v7.3','-nocompression'); 
-    save(['MatlabData/' CCTType dataName '.mat'],'trajData','queryTraj','clusterTrajNode','clusterNode','-v7.3');  
+%     save(['MatlabData/' CCTType dataName '.mat'],'trajStrData','queryTraj','clusterTrajNode','clusterNode','-v7.3','-nocompression'); 
+%     save(['MatlabData/' CCTType dataName '.mat'],'trajStrData','queryTraj','clusterTrajNode','clusterNode','-v7.3');  
     
     % get tree info
     GetAvgTreeHeight;
@@ -41,7 +41,7 @@ for iProc = 1:size(dataList,2)
     
     resultList = [resultList ; avgVert avgVert numCFD numDP overlapMean ...
         overlapStd ceil(avgNodeHeight) ...
-        std(totNodeList) maxNodeCnt ceil(log2(size(trajData,1))) ...
+        std(totNodeList) maxNodeCnt ceil(log2(size(trajStrData,2))) ...
         reductFacMean reductFacStd];
 
 end

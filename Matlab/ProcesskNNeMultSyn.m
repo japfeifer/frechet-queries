@@ -25,6 +25,7 @@ for iProc = 1:size(dataList,2)
     disp(['--------------------']);
     disp([CCTType dataName]);
     load(['MatlabData/' CCTType dataName '.mat']);
+    CreateTrajStr;
     eAdd = 0; eMult = 0.5;
     kNum = 5;
     kNNS2;

@@ -6,7 +6,7 @@ distList2 = distList;
 rng('default'); % reset the random seed so that experiments are reproducable
 
 for i=1:numSamples
-    [tmpTraj,trajIdx] = datasample(trajData,2,'Replace',false); % uniformly randomly sample two traj
+    [tmpTraj,trajIdx] = datasample(trajStrData,2,'Replace',false); % uniformly randomly sample two traj
     P = cell2mat(tmpTraj(1,1));
     Q = cell2mat(tmpTraj(2,1));
     

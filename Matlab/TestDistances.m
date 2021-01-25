@@ -1,8 +1,8 @@
 % Test distances
 
 tic;
-PSize = size(trajData,1);
-numQuery = size(trajData,1);
+PSize = size(trajStrData,2);
+numQuery = size(trajStrData,2);
 
 PSize = 100;
 numQuery = 100;
@@ -12,9 +12,9 @@ qcnt = 0;
 testDist = [];
 h = waitbar(0, 'Test Distances');
 for i = 1:numQuery % number of different queries
-    Q = cell2mat(trajData(i,1));
+    Q = trajStrData(i).traj;
     for j = 1:PSize
-        P = cell2mat(trajData(j,1));
+        P = trajStrData(j).traj;
         % continuous frechet
         distCont = ContFrechet(P,Q);
         distOldCont = ContFrechet(P,Q,0);

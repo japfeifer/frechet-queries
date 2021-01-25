@@ -48,7 +48,7 @@ close(h);
 timeElapsed = toc;
 
 % 4) Simplification Prune Pre-compute Step
-% Precompute frechet dist from P to P' for each curve in trajData.
+% Precompute frechet dist from P to P' for each curve in trajStrData.
 % p' is an edge that is comprised of the first and last vertex of P.
 
 tic;
@@ -70,9 +70,9 @@ timeElapsed = toc;
 % % padding
 % for k = 1:sP % for each trajectory in dataset do
 %     
-%     P = cell2mat(trajData(k,1));
+%     P = trajStrData(k).traj;
 %     padP = PadTraj(P,2);
-%     trajData(k,7) = mat2cell(padP,size(padP,1),size(padP,2));
+%     trajStrData(k).padtraj = padP;
 %     
 % end
 

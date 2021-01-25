@@ -25,12 +25,13 @@ for iProc = 1:size(dataList,2)
 
     for jProc = 1:size(insertPct,2) 
 
-        numInsertTraj = ceil(size(trajData,1) * insertPct(jProc));
+        numInsertTraj = ceil(size(trajStrData,2) * insertPct(jProc));
         saveFileName = ['MatlabData/' CCTType dataName 'InsertImplicit' num2str(numInsertTraj) '.mat'];
         disp(['--------------------']);
         disp(saveFileName);
         
         load([saveFileName]);
+        CreateTrajStr;
         
         % get tree info
         [stabMean,stabSTD] = GetCCTTrajOverlap();

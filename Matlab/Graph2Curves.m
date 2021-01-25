@@ -1,35 +1,8 @@
 % create data
-P = cell2mat(trajData(2444,1));
-Q = cell2mat(trajData(2445,1));
+P = trajStrData(2444).traj;
+Q = trajStrData(2445).traj;
 
-% RotMatrix2d45 = [cosd(45) -sind(45); ...
-%                      sind(45) cosd(45)];
-% RotMatrix2d45 = [cosd(45) sind(45); ...
-%                      -sind(45) cosd(45)];     
-% P = cell2mat(trajData(54,1));
-% Q = cell2mat(trajSimpData(54,1));
-% Q = Q*RotMatrix2d45;
 
-% P = cell2mat(trajData(55,1));
-% Q = cell2mat(trajSimpData(55,1));
-
-% P = cell2mat(trajData(7950,1));
-% Q = cell2mat(queryTraj(5,1));
-
-% P = P(Pos1:Pos2,:);
-% Q = cat(1,P(Pos1,:),P(Pos2,:));
-
-% P = cell2mat(trajData(1,1));
-% Q = cell2mat(trajData(2,1));
-
-% P = currTraj;
-% Q = currSimpTraj;
-
-% P = Q;
-% Q = simpQ;
-
-% P = PadTraj(P,1);
-% Q = PadTraj(Q,1);
 
 % [cm, cSq] = DiscreteFrechetDist(P,Q);
 cm = ContFrechet(P,Q);

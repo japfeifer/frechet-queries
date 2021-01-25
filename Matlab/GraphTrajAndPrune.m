@@ -4,21 +4,20 @@
 % query traj is thick black line
 
 QIdx = 1; % query index
-P = trajData(:,:);
-Q = cell2mat(queryTraj(QIdx,1)); % query trajectory
-NN = cell2mat(queryTraj(QIdx,7)); % pruned candidate trajectories
+Q = queryStrData(QIdx).traj; % query trajectory
+NN = queryStrData(QIdx).traj; % pruned candidate trajectories
 
 % plot all traj
 figure
 hold on;
-for k = 1 : size(P,1)
-    currP = cell2mat(P(k,1));
+for k = 1 : size(trajStrData,2)
+    currP = trajStrData(k).traj;
     plot(currP(:,1),currP(:,2),'linewidth',1); 
 end
 
 % plot all NN traj
 % for k = 2 : size(NN,1)
-%     P2NN = cell2mat(trajData(NN(k,1),1));
+%     P2NN = trajStrData(NN(k,1)).traj;
 %     sP2NN = size(P2NN,1);
 %     plot(P2NN(:,1),P2NN(:,2),'r-','linewidth',2);
 %     plot([P2NN(1,1) P2NN(1,1)],[P2NN(1,2) P2NN(1,2)],'ko','MarkerSize',8,'MarkerEdgeColor','k'); 

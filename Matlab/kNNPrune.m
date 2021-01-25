@@ -2,7 +2,7 @@
 
 function kNNPrune(cNodeID,Q,Qid,lowBnd,kNum,eAdd)
 
-    global clusterNode S1 nodeCheckCnt trajData
+    global clusterNode S1 nodeCheckCnt trajStrData
     global Bk stopCheckNodes distCalcCnt kUBList searchStat
 
     if stopCheckNodes == false
@@ -23,7 +23,7 @@ function kNNPrune(cNodeID,Q,Qid,lowBnd,kNum,eAdd)
                 
                 % compute upper bound
                 Cid = clusterNode(cNodeID,6);
-                cTraj = cell2mat(trajData(Cid,1));
+                cTraj = trajStrData(Cid).traj;
                 upBnd = GetBestUpperBound(cTraj,Q,1,Cid,Qid);
  
                 if upBnd < Bk % this traj is a candidate
@@ -60,7 +60,7 @@ function kNNPrune(cNodeID,Q,Qid,lowBnd,kNum,eAdd)
             if Cid == clusterNode(cNodeID,6)
                 lowBnd1 = lowBnd;
             else
-                cTraj = cell2mat(trajData(Cid,1)); % get center traj 
+                cTraj = trajStrData(Cid).traj; % get center traj 
                 childCrad = clusterNode(child1NodeID,4);
                 lowBnd1 = GetBestConstLB(cTraj,Q,childCrad + Bk,1,Cid,Qid);
                 distCalcCnt = distCalcCnt + 1;
@@ -73,7 +73,7 @@ function kNNPrune(cNodeID,Q,Qid,lowBnd,kNum,eAdd)
             if Cid == clusterNode(cNodeID,6) 
                 lowBnd2 = lowBnd;
             else
-                cTraj = cell2mat(trajData(Cid,1)); % get center traj 
+                cTraj = trajStrData(Cid).traj; % get center traj 
                 childCrad = clusterNode(child2NodeID,4);
                 lowBnd2 = GetBestConstLB(cTraj,Q,childCrad + Bk,1,Cid,Qid);
                 distCalcCnt = distCalcCnt + 1;

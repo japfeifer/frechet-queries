@@ -23,11 +23,12 @@ for iProc = 1:size(dataList,2)
     disp(['--------------------']);
     disp([CCTType dataName]);
     load(['MatlabData/' CCTType dataName '.mat']);
+    CreateTrajStr;
     
-    sqSZ = size(trajData,1);
+    sqSZ = size(trajStrData,2);
     reachList = [];
     for i = 1:sqSZ
-        P = cell2mat(trajData(i,1));
+        P = trajStrData(i).traj;
         reach = TrajReach(P);
         reachList(end+1) = reach;
     end
@@ -37,7 +38,7 @@ for iProc = 1:size(dataList,2)
 
     lengthList = [];
     for i = 1:sqSZ
-        P = cell2mat(trajData(i,1));
+        P = trajStrData(i).traj;
         length = TrajLength(P);
         lengthList(end+1) = length;
     end

@@ -1,13 +1,13 @@
 function [trajOverlapMean, trajOverlapStd] = GetCCTTrajOverlap()
 
-    global clusterNode trajData allNodesCnt clusterTrajNode trajOverlapNodesCnt trajOverlapList trajOverlapNodesCnt2
+    global clusterNode trajStrData allNodesCnt clusterTrajNode trajOverlapNodesCnt trajOverlapList trajOverlapNodesCnt2
     
-    PSize = size(trajData,1);
+    PSize = size(trajStrData,2);
     trajOverlapList = [];
     trajOverlapNodesCnt = [];
     
     rng('default'); % reset the random seed so that experiments are reproducable
-    randOrder = randperm(numel(trajData(:,1)));
+    randOrder = randperm(size(trajStrData,2));
 
 %     if PSize > 1000
 %         randOrder = randOrder(1:1000);
@@ -19,7 +19,7 @@ function [trajOverlapMean, trajOverlapStd] = GetCCTTrajOverlap()
     for i=1:PSize
 
         Qid = randOrder(i);
-        Q = cell2mat(trajData(Qid,1));
+        Q = trajStrData(Qid).traj;
         cNodeID = clusterTrajNode(Qid); % leaf node
         parentCnt = 0;
         

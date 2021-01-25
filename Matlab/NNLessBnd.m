@@ -1,7 +1,7 @@
 
 function NNLessBnd(Qid,typeQ,eVal,stage)
 
-    global clusterNode S1 nodeCheckCnt trajData queryTraj
+    global clusterNode S1 nodeCheckCnt trajStrData queryTraj
     global Bk Ak stopCheckNodes distCalcCnt conLBcnt
 
     switch nargin
@@ -26,7 +26,7 @@ function NNLessBnd(Qid,typeQ,eVal,stage)
     
     Q = cell2mat(queryTraj(Qid,1)); % query vertices
     centerTrajID = clusterNode(1,6); % root center traj id
-    centreTraj = cell2mat(trajData(centerTrajID,1)); % get root center traj vertices 
+    centreTraj = trajStrData(centerTrajID).traj; % get root center traj vertices 
     lowBnd = GetBestConstLBLessBnd(centreTraj,Q,Inf,1,centerTrajID,Qid); % root center traj LB call
     conLBcnt = conLBcnt + 1;
     distCalcCnt = distCalcCnt + 1;
@@ -76,7 +76,7 @@ function NNLessBnd(Qid,typeQ,eVal,stage)
             S1 = S1(1,:);
             for i=1:size(tmpS1,1)
                 Pid = clusterNode(tmpS1(i,1),6);
-                currTraj = cell2mat(trajData(Pid,1));
+                currTraj = trajStrData(Pid).traj;
 %                 linearLB = GetBestLinearLBDP(currTraj,Q,Bk - eAdd,1,Pid,Qid);
 %                 if linearLB == false
                      S1(end+1,:) = tmpS1(i,:);
@@ -122,7 +122,7 @@ function NNLessBnd(Qid,typeQ,eVal,stage)
                 % check frechet dec proc for the curve with the second Lowest LB
                 candTrajID2List = sortrows(S1,2,'ascend'); % sort asc by LB
                 secondLowestLB = candTrajID2List(2,2);
-                currTraj = cell2mat(trajData(candTrajID2List(1,1),1));
+                currTraj = trajStrData(candTrajID2List(1,1)).traj;
 
 %                 linearLB = GetBestLinearLBDP(currTraj,Q,secondLowestLB,1,candTrajID2List(1,1),Qid);
 %                 if linearLB == false
@@ -140,7 +140,7 @@ function NNLessBnd(Qid,typeQ,eVal,stage)
             if foundTraj == false
                 for i = 1:size(S1,1)
                     centerTrajID = S1(i,1);
-                    currTraj = cell2mat(trajData(centerTrajID,1)); % get center traj 
+                    currTraj = trajStrData(centerTrajID).traj; % get center traj 
                     if i == 1
                         % this is first traj we check, so just get the CFD
                         bestDist = ContFrechet(Q,currTraj);

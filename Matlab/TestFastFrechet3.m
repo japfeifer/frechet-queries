@@ -39,11 +39,11 @@ for i = 1:size(dataList,2)
             
         % get a P and Q curve
         if SimplFlg == 1
-            sz = size(trajData,1);
+            sz = size(trajStrData,2);
             idxP = randi(sz);
             idxQ = randi(sz);
-            P = cell2mat(trajData(idxP,1));
-            Q = cell2mat(trajData(idxQ,1));
+            P = trajStrData(idxP).traj;
+            Q = trajStrData(idxQ).traj;
         else
             sz = size(trajOrigData,1);
             idxP = randi(sz);

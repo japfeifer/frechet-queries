@@ -3,7 +3,7 @@ tic;
 trajCounter = 0;
 trajStrData = [];
 
-trajStrData(numDiffTraj*numSimilarTraj).traj = 0; % pre-populate trajData  - performance improvement
+trajStrData(numDiffTraj*numSimilarTraj).traj = 0; % pre-populate trajStrData  - performance improvement
 trajStrData(numDiffTraj*numSimilarTraj).se = 0;
 trajStrData(numDiffTraj*numSimilarTraj).bb1 = 0;
 trajStrData(numDiffTraj*numSimilarTraj).bb2 = 0;

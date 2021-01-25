@@ -28,9 +28,9 @@ for i = 1:trajSz % calc height for each traj
     
 end
 
-avgNodeHeight = totNodeCnt/size(trajData,1);
+avgNodeHeight = totNodeCnt/size(trajStrData,2);
 disp(['-------------------']);
 disp(['Avg Depth: ',num2str(ceil(avgNodeHeight))]);
 disp(['Max Depth: ',num2str(maxNodeCnt)]);
-disp(['Optimal Depth: ',num2str(ceil(log2(size(trajData,1))))]);
+disp(['Optimal Depth: ',num2str(ceil(log2(size(trajStrData,2))))]);
 

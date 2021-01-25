@@ -27,7 +27,7 @@ for i = 1:size(dataList,2)
     for j = 1:jNum
 
         % get a P and Q curve
-        sz = size(trajData,1);
+        sz = size(trajStrData,2);
         idxP = randi(sz);
         idxQ = randi(sz);
         P = trajStrData(idxP).traj;

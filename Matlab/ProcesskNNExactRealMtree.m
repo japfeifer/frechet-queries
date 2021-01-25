@@ -30,6 +30,7 @@ for iProc = 1:size(dataList,2)
     disp(['--------------------']);
     disp([CCTType dataName]);
     load(['MatlabData/' CCTType dataName '.mat']);
+    CreateTrajStr;
     InitDatasetVars(dataName);
     kNum = 5;
     kNNSMtree;

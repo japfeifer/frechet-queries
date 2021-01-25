@@ -23,6 +23,7 @@ for iProc = 1:size(dataList,2)
     disp([CCTType dataName]);
     load(['MatlabData/' CCTType dataName '.mat']);
     InitDatasetVars(dataName);
+    CreateTrajStr2;
 
     % choose a trajectory P
     Pidx = 2;
@@ -36,7 +37,7 @@ for iProc = 1:size(dataList,2)
     doDFD = false;
 
     % clear the CCT
-    trajData = {[]};
+    trajStrData = [];
     clusterNode = [];
     clusterTrajNode = [];
     trajStrData = struct;
@@ -113,7 +114,7 @@ for iProc = 1:size(dataList,2)
     
 %     resultList = [resultList ; avgVertBefore avgVert numCFD numDP overlapMean ...
 %         overlapStd ceil(avgNodeHeight) ...
-%         std(totNodeList) maxNodeCnt ceil(log2(size(trajData,1))) ...
+%         std(totNodeList) maxNodeCnt ceil(log2(size(trajStrData,2))) ...
 %         reductFacMean reductFacStd];
 
 end

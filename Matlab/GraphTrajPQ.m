@@ -7,7 +7,7 @@
 % % Q = Q(3000:3100,:);
 
 P = cell2mat(trajOrigData(2,1));
-Q = cell2mat(trajData(4,1));
+Q = trajStrData(4).traj;
 P = P(1:300,:);
 Q = Q(1:10,:);
 

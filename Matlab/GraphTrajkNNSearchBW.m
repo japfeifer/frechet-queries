@@ -12,8 +12,8 @@ axes('Units', 'normalized', 'Position', [0 0 1 1])
 hold on;
 
 % % plot all traj
-% for i = 1 : size(trajData,1)
-%     P = cell2mat(trajData(i,1));
+% for i = 1 : size(trajStrData,2)
+%     P = trajStrData(i).traj;
 %     p1 = plot(P(:,1),P(:,2),'linewidth',1,'Color',[0.7,0.7,0.7],'LineStyle',':','DisplayName','A'); 
 % end
 
@@ -21,26 +21,26 @@ hold on;
 for i = 1 : size(searchStat,2)
     if tmpCCT(searchStat(i),5) == 1 % a leaf
         trajID = tmpCCT(searchStat(i),6);
-        P = cell2mat(trajData(trajID,1));
+        P = trajStrData(trajID).traj;
         p2 = plot(P(:,1),P(:,2),'linewidth',1,'Color',[0.5,0.5,0.5],'DisplayName','B');  
     end
 end
 
 % plot S1
 for i = 1 : size(s1Stat,2)
-    P = cell2mat(trajData(s1Stat(i),1)); 
+    P = trajStrData(s1Stat(i)).traj; 
     p3 = plot(P(:,1),P(:,2),'linewidth',4,'Color',[0.5,0.5,0.5],'LineStyle',':','DisplayName','C'); 
 end
 
 % plot S2
 for i = 1 : size(s2Stat,2)
-    P = cell2mat(trajData(s2Stat(i),1));
+    P = trajStrData(s2Stat(i)).traj;
     p4 = plot(P(:,1),P(:,2),'linewidth',5,'Color',[0.1,0.1,0.1],'LineStyle',':','DisplayName','D'); 
 end
 
 % plot result set
 for i = 1 : size(resStat,2)
-    P = cell2mat(trajData(resStat(i),1));
+    P = trajStrData(resStat(i)).traj;
     p5 = plot(P(:,1),P(:,2),'linewidth',6,'Color',[0,0,0],'DisplayName','A','DisplayName','E'); 
 end
 

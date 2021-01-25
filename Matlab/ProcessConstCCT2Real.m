@@ -25,6 +25,7 @@ for iProc = 1:size(dataList,2)
     InitDatasetVars(dataName);
     
     load(['MatlabData/CCT1' dataName '.mat']);  % load the CCT1 - use as base to construct CCT2
+    CreateTrajStr;
     
     % construct CCT
     ConstructCCTApproxRadii;
@@ -57,7 +58,7 @@ for iProc = 1:size(dataList,2)
     
     resultList = [resultList ; overlapMean ...
         overlapStd ceil(avgNodeHeight) ...
-        std(totNodeList) maxNodeCnt ceil(log2(size(trajData,1))) ...
+        std(totNodeList) maxNodeCnt ceil(log2(size(trajStrData,2))) ...
         reductFacMean reductFacStd];
 
 end

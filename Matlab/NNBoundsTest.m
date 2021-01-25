@@ -19,7 +19,7 @@ for k = 1:size(queryTraj,1)  % do NN search for each query traj
     NN(k,1,0); % get exact NN
 
     % now do test on the bounds
-    currTraj = cell2mat(trajData(bestCenterTraj,1)); % get center traj 
+    currTraj = trajStrData(bestCenterTraj).traj; % get center traj 
     CalcLBUBTest(k,currTraj,currQueryTraj,1,bestCenterTraj,k);
     
     if mod(k,10) == 0

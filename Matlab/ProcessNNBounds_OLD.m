@@ -31,6 +31,7 @@ for realListCnt = 1:size(realDataList,2)
     disp(['--------------------']);
     disp(realDataName);
     load(['MatlabData/' realFolderName '/' realDataName]);
+    CreateTrajStr;
     InitDatasetVars(realDataName);
     eAdd = 0; eMult = 0;
     NNBoundsTest;

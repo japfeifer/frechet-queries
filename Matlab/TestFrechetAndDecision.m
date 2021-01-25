@@ -3,7 +3,7 @@ tic;
 
 
 for i = 1:20
-    P = cell2mat(trajData(i,1));
+    P = trajStrData(i).traj;
     P = LinearSimp(P,0);
     currReach = TrajReach(P);
     epsilonDist = reachPercent * currReach;

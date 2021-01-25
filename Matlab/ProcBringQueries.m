@@ -1,13 +1,13 @@
-% this script imports a set of Bringmann queries from a file into the queryTraj cell datatype 
+% this script imports a set of Bringmann queries from a file into the queryStrData   
 %
 % file data row example:
 % trajectory-1.dat 5.7120472240598223479
 function ProcBringQueries(fileName,synDataName,dirName)
 
-    global queryTraj trajData
+    global querStrData trajStrData
 
     fileName = [dirName synDataName '/' fileName];
-    queryTraj = {[]};
+    queryStrData = [];
 
     % read query datafile into a cell datatype
     fileID = fopen(fileName,'r');
@@ -22,8 +22,8 @@ function ProcBringQueries(fileName,synDataName,dirName)
     qValueList = cell2mat(tmpA(1,2));
 
     for i = 1:size(qIDList,1)
-        queryTraj(i,1) = trajData(qIDList(i),1);
-        queryTraj(i,2) = trajData(qIDList(i),2);
-        queryTraj(i,25) = mat2cell(qValueList(i),size(qValueList(i),1),size(qValueList(i),2));
+        querStrData(i).traj = trajStrData(qIDList(i)).traj;
+        querStrData(i).se = trajStrData(qIDList(i)).se;
+        querStrData(i,25).qrv = qValueList;
     end
 end

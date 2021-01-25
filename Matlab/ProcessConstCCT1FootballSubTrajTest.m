@@ -17,25 +17,26 @@ dataList = ["FootballData"];
 
 for iProc = 1:size(dataList,2)   
     tProcess = tic;
-    trajSimpData = []; trajOrigData = []; trajData = []; queryTraj = []; clusterTrajNode = []; clusterNode = [];
+    trajSimpData = []; trajOrigData = []; queryTraj = []; clusterTrajNode = []; clusterNode = [];
     dataName = char(dataList(iProc));
     disp(['--------------------']);
     disp([CCTType dataName]);
     InitDatasetVars(dataName);
     
     % load trajectory input file
-    load(['MatlabData/RealInputData/' dataName '.mat']);  
+    load(['MatlabData/RealInputData/' dataName '.mat']); 
+    CreateTrajStr2;
     
     % generate all pair-wise sub-traj
     Pidx = 1;
-    P = cell2mat(trajData(Pidx,1));
+    P = trajStrData(Pidx).traj;
     sizeofP = size(P,1);
-    trajData = {[]};
+    trajStrData = [];
     trajCnt = 1;
     for i = 1:size(P,1)
         for j = i:size(P,1)
             newP = P(i:j,:);
-            trajData(trajCnt,1) = mat2cell(newP,size(newP,1),size(newP,2));
+            trajStrData(trajCnt).traj = newP;
             trajCnt = trajCnt + 1;
         end
     end
@@ -57,7 +58,7 @@ for iProc = 1:size(dataList,2)
     
     
 %     % save result set
-%     save(['MatlabData/' CCTType dataName '.mat'],'trajSimpData','trajOrigData','trajData','queryTraj','clusterTrajNode','clusterNode'); 
+%     save(['MatlabData/' CCTType dataName '.mat'],'trajSimpData','trajOrigData','trajStrData','queryTraj','clusterTrajNode','clusterNode'); 
     
     % get tree info
     GetAvgTreeHeight;
@@ -69,7 +70,7 @@ for iProc = 1:size(dataList,2)
     
 %     resultList = [resultList ; avgVertBefore avgVert numCFD numDP overlapMean ...
 %         overlapStd ceil(avgNodeHeight) ...
-%         std(totNodeList) maxNodeCnt ceil(log2(size(trajData,1))) ...
+%         std(totNodeList) maxNodeCnt ceil(log2(size(trajStrData,2))) ...
 %         reductFacMean reductFacStd];
 
 end

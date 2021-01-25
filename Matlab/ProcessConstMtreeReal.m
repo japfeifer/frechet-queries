@@ -26,7 +26,7 @@ dataList = ["TruckData" "SchoolBusData" "PetCatsData" ...
     "PenTipData"];
 
 for iProc = 1:size(dataList,2)   
-    trajSimpData = []; trajOrigData = []; trajData = []; queryTraj = []; clusterTrajNode = []; clusterNode = [];
+    trajSimpData = []; trajOrigData = []; queryTraj = []; clusterTrajNode = []; clusterNode = [];
     dataName = char(dataList(iProc));
     disp(['--------------------']);
     disp(['M-tree Construction']);
@@ -34,12 +34,13 @@ for iProc = 1:size(dataList,2)
     InitDatasetVars(dataName);
     
     load(['MatlabData/CCT1' dataName '.mat']);  % load the CCT1 - use as base to construct M-tree
+    CreateTrajStr;
     
     % construct M-tree
     ConstructMtree;
     
     % save result set
-    save(['MatlabData/Mtree' dataName '.mat'],'trajSimpData','trajOrigData','trajData','queryTraj','clusterTrajNode','clusterNode','mTree','mTreeRootId','mTreeNodeCapacity','mTreePtrList','mTreeMaxCol');
+    save(['MatlabData/Mtree' dataName '.mat'],'trajSimpData','trajOrigData','trajStrData','queryTraj','clusterTrajNode','clusterNode','mTree','mTreeRootId','mTreeNodeCapacity','mTreePtrList','mTreeMaxCol');
 
     resultList = [resultList ; numCFD numDP];
 

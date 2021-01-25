@@ -1,7 +1,6 @@
 
 function newTrajID = InsertCCT(i,newTrajID,insType,doQPreproc,errFlg,err)
 
-%     global queryTraj trajData
     global trajStrData queryStrData
     
     global numInsCFD numInsDP clusterNode 
@@ -16,24 +15,23 @@ function newTrajID = InsertCCT(i,newTrajID,insType,doQPreproc,errFlg,err)
         doQPreproc = 1;
         errFlg = 0;
         err = 0;
+        doIns = 1;
     case 4
         errFlg = 0;
         err = 0;
+        doIns = 1;
     end
 
     if doQPreproc == 1
         PreprocessQuery(i); % compute the "query" BB, ST
     end
 
-%     Q = cell2mat(queryTraj(i,1)); % insert traj
     Q = queryStrData(i).traj;
 
     if szNode > 0
         t2 = tic;
         if insType == 1 || errFlg == 1 % get exact NN
             NN(i,1,0);
-%             numInsCFD = numInsCFD + cell2mat(queryTraj(i,10));
-%             numInsDP = numInsDP + cell2mat(queryTraj(i,11));
             numInsCFD = numInsCFD + queryStrData(i).decidecfdcnt;
             numInsDP = numInsDP + queryStrData(i).decidedpcnt;
         elseif insType == 2 % get implicit NN
@@ -44,9 +42,7 @@ function newTrajID = InsertCCT(i,newTrajID,insType,doQPreproc,errFlg,err)
         time2 =  toc(t2);
 
         % set some variables
-%         Pid = cell2mat(queryTraj(i,12)); % NN traj id - will become the parent of traj Q
         Pid = queryStrData(i).decidetrajids;
-%         P = cell2mat(trajData(Pid,1)); % NN traj
         P = trajStrData(Pid).traj;
         nnNodeID = clusterTrajNode(Pid,1); % NN traj node id
 
@@ -101,7 +97,6 @@ function newTrajID = InsertCCT(i,newTrajID,insType,doQPreproc,errFlg,err)
 
                 % get up bnd from query (insert traj) to the centre traj
                 centerTrajID = clusterNode(parentNodeID,6);
-    %             centreTraj = cell2mat(trajData(centerTrajID,1)); % get center traj 
                 centreTraj = trajStrData(centerTrajID).traj;
                 upBnd = GetBestUpperBound(centreTraj,Q,1,centerTrajID,i);
                 parentRad = clusterNode(parentNodeID,4);

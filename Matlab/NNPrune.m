@@ -2,7 +2,7 @@
 
 function NNPrune(cNodeID,Q,Qid,lowBnd,eAdd)
 
-    global clusterNode S1 % trajData
+    global clusterNode S1
     global Bk Ak stopCheckNodes distCalcCnt nodeCheckCnt
     global linLBcnt linUBcnt conLBcnt
     global timeConstLB timeLinLB timeLinUB
@@ -28,7 +28,6 @@ function NNPrune(cNodeID,Q,Qid,lowBnd,eAdd)
                 t5 = tic;
                 % compute upper bound
                 Cid = clusterNode(cNodeID,6);
-%                 cTraj = cell2mat(trajData(Cid,1));
                 cTraj = trajStrData(Cid).traj;
                 tStartLinUB = tic;
                 upBnd = GetBestUpperBound(cTraj,Q,1,Cid,Qid);
@@ -86,7 +85,6 @@ function NNPrune(cNodeID,Q,Qid,lowBnd,eAdd)
             if Cid == clusterNode(cNodeID,6)
                 lowBnd1 = lowBnd;
             else
-%                 cTraj = cell2mat(trajData(Cid,1)); % get center traj
                 cTraj = trajStrData(Cid).traj; % get center traj 
                 childCrad = clusterNode(child1NodeID,4);
                 tStartConstLB = tic;
@@ -103,7 +101,6 @@ function NNPrune(cNodeID,Q,Qid,lowBnd,eAdd)
             if Cid == clusterNode(cNodeID,6) 
                 lowBnd2 = lowBnd;
             else
-%                 cTraj = cell2mat(trajData(Cid,1)); % get center traj 
                 cTraj = trajStrData(Cid).traj; % get center traj
                 childCrad = clusterNode(child2NodeID,4);
                 tStartConstLB = tic;

@@ -23,6 +23,7 @@ for iProc = 1:size(dataList,2)
     disp(['--------------------']);
     disp([CCTType dataName]);
     load(['MatlabData/' CCTType dataName '.mat']);
+    CreateTrajStr;
     
     % get tree info
     GetAvgTreeHeight;
@@ -30,7 +31,7 @@ for iProc = 1:size(dataList,2)
     [overlapMean, overlapStd] = GetOverlap();
         
     resultList = [resultList; overlapMean overlapStd ceil(avgNodeHeight) ...
-        std(totNodeList) maxNodeCnt ceil(log2(size(trajData,1))) ...
+        std(totNodeList) maxNodeCnt ceil(log2(size(trajStrData,2))) ...
         reductFacMean reductFacStd];
 end
 

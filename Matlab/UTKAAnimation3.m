@@ -6,11 +6,11 @@ CorrectID = queryResults(queryResultID,3);
 
 % get cont frechet dist
 Q = cell2mat(queryTraj(queryResultID,1));
-P = cell2mat(trajData(cell2mat(queryTraj(queryResultID,12)),1));
+P = trajStrData(cell2mat(queryTraj(queryResultID,12))).traj;
 dist1 = ContFrechet(P,Q); % query to NN Result distance
 
 queryWordID = queryResults(queryResultID,4); % Correct Result word ID
-P = cell2mat(trajData(find(wordIDs==queryWordID,1),1));
+P = trajStrData(find(wordIDs==queryWordID,1)).traj;
 dist2 = ContFrechet(P,Q); % query to Correct Result distance
 
 % get sequences

@@ -1,6 +1,6 @@
 
-% P = cell2mat(queryTraj(1,1));
-P = cell2mat(trajData(10,1));
+% P = queryStrData(1).traj;
+P = trajStrData(10).traj;
 
 
 disp(['---------------------']);

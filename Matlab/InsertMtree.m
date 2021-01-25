@@ -4,7 +4,7 @@
 
 function InsertMtree(mTreeNodeId,insTrajId,distToParent)
 
-    global mTree mTreePtrList mTreeRootId mTreeNodeCapacity numCFD trajData mTreeMaxCol
+    global mTree mTreePtrList mTreeRootId mTreeNodeCapacity numCFD trajStrData mTreeMaxCol
     
     if mTreeNodeId == 0  % the M-tree is empty
         mTree(1,1:mTreeMaxCol) = zeros(1,mTreeMaxCol);
@@ -20,7 +20,7 @@ function InsertMtree(mTreeNodeId,insTrajId,distToParent)
             SplitMtree(mTreeNodeId,[insTrajId 0 0 distToParent]);
         end
     else  % the node is a routing object (not a leaf), so determine which node entry to descend to
-        P = cell2mat(trajData(insTrajId,1));  % the insert traj curve
+        P = trajStrData(insTrajId).traj;  % the insert traj curve
         bestTrajId = 0;
         bestEntryPos = 0;
         bestType = 0;  % 0 = outside radius, 1 = inside radius
@@ -29,7 +29,7 @@ function InsertMtree(mTreeNodeId,insTrajId,distToParent)
         for i = 1:mTree(mTreeNodeId,2)  % for each node entry, determine the "best" entry to descend to
             nodeEntryPos = (i * 4) - 1;  % get the index position of the node entry
             nodeEntryTrajId = mTree(mTreeNodeId,nodeEntryPos);  % get the traj id for the node entry
-            Q = cell2mat(trajData(nodeEntryTrajId,1));  % the node entry traj curve
+            Q = trajStrData(nodeEntryTrajId).traj;  % the node entry traj curve
             distCont = ContFrechet(P,Q);  % compute the continuous frechet distance
             numCFD = numCFD + 1;
 

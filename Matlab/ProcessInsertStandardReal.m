@@ -26,20 +26,20 @@ for iProc = 1:size(dataList,2)
     for jProc = 1:size(insertPct,2) 
         
         load(['MatlabData/' CCTType dataName '.mat']);
+        CreateTrajStr;
         eAdd = 0; eMult = 0;
-        numInsertTraj = ceil(size(trajData,1) * insertPct(jProc));
+        numInsertTraj = ceil(size(trajStrData,2) * insertPct(jProc));
         saveFileName = ['MatlabData/' CCTType dataName 'InsertStandard' num2str(numInsertTraj) '.mat'];
         disp(['--------------------']);
         disp(saveFileName);
         
         rng('default'); % reset the random seed so that experiments are reproducable
         
-        % uniformly Randomly shuffle the traj in trajData
-        newOrder = randperm(numel(trajData(:,1)));
-        trajData = trajData(newOrder,:);
-
-        insertTrajData = trajData(1:numInsertTraj,:);
-        trajData(1:numInsertTraj,:) = [];
+        % uniformly Randomly shuffle the traj in trajStrData
+        newOrder = randperm(size(trajStrData,2));
+        trajStrData = trajStrData(newOrder);
+        insertTrajData = trajStrData(1:numInsertTraj);
+        trajStrData(1:numInsertTraj) = [];
 
         % build Gonzalez lite CCT
         ConstructCCTGonzLite;
@@ -49,7 +49,7 @@ for iProc = 1:size(dataList,2)
         % insert traj into CCT
         RandomSampleInsert(numInsertTraj,3); % perform Standard searches
         
-        save(saveFileName,'trajSimpData','trajOrigData','trajData','queryTraj','clusterTrajNode','clusterNode'); % save the new CCT
+%         save(saveFileName,'trajSimpData','trajOrigData','trajStrData','queryTraj','clusterTrajNode','clusterNode'); % save the new CCT
         
         eAdd = 0; eMult = 0;
         NNS1;
@@ -62,7 +62,7 @@ for iProc = 1:size(dataList,2)
 
         resultList = [resultList; numInsertTraj numConstrCFD numConstrDP numInsCFD ...
             numInsDP overlapMean overlapStd ceil(avgNodeHeight) ...
-            std(totNodeList) maxNodeCnt ceil(log2(size(trajData,1))) ...
+            std(totNodeList) maxNodeCnt ceil(log2(size(trajStrData,2))) ...
             reductFacMean reductFacStd dAvg dStd S1Avg S1Std S2Avg S2Std];
         
     end

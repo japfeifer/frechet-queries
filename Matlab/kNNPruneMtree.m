@@ -2,7 +2,7 @@
 
 function kNNPruneMtree(cNodeID,Q,QDistToParent,kNum)
 
-    global S1 trajData mTree
+    global S1 trajStrData mTree
     global Bk nodeCheckCnt numCFD numDP
 
     nodeCheckCnt = nodeCheckCnt + 1;  % we have touched a node so inc node check counter
@@ -13,7 +13,7 @@ function kNNPruneMtree(cNodeID,Q,QDistToParent,kNum)
             E = mTree(cNodeID,curPos:curPos+3);  % get the element
             if abs(QDistToParent - E(4)) <= Bk  % see if can exclude by using dist to parent entry
                 % can not exclude, so compute cont Frechet dist
-                P = cell2mat(trajData(E(1),1));  % the node entry traj curve
+                P = trajStrData(E(1)).traj;  % the node entry traj curve
                 decProRes = FrechetDecide(P,Q,Bk,1);
                 numDP = numDP + 1;
                 if decProRes == true  % we have a new kNN candidate
@@ -33,7 +33,7 @@ function kNNPruneMtree(cNodeID,Q,QDistToParent,kNum)
             E = mTree(cNodeID,curPos:curPos+3);  % get the element
             if abs(QDistToParent - E(4)) <= Bk + E(3)  % see if can exclude by using dist to parent entry
                 % can not exclude, so compute cont Frechet dist
-                P = cell2mat(trajData(E(1),1));  % the node entry traj curve
+                P = trajStrData(E(1)).traj;  % the node entry traj curve
                 dist1 = ContFrechet(P,Q);  % compute the continuous frechet distance
                 numCFD = numCFD + 1;
                 N(end+1,:) = [E dist1 max((dist1-E(3)),0) (dist1 + E(3)) ];

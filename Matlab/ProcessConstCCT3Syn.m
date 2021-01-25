@@ -21,18 +21,19 @@ dataList = ["SyntheticData1" "SyntheticData2" "SyntheticData3" ...
     "SyntheticData22" "SyntheticData23"];
 
 for iProc = 1:size(dataList,2)   
-    trajSimpData = []; trajOrigData = []; trajData = []; queryTraj = []; clusterTrajNode = []; clusterNode = [];
+    trajSimpData = []; trajOrigData = []; queryTraj = []; clusterTrajNode = []; clusterNode = [];
     dataName = char(dataList(iProc));
     disp(['--------------------']);
     disp([CCTType dataName]);
     
     load(['MatlabData/CCT1' dataName '.mat']);  % load the CCT1 - use as base to construct CCT3
+    CreateTrajStr;
     
     % construct CCT
     ConstructCCTGonzComplete();
     
 %     % save result set
-%     save(['MatlabData/' CCTType dataName '.mat'],'trajSimpData','trajOrigData','trajData','queryTraj','clusterTrajNode','clusterNode'); 
+%     save(['MatlabData/' CCTType dataName '.mat'],'trajSimpData','trajOrigData','trajStrData','queryTraj','clusterTrajNode','clusterNode'); 
 
     % get tree info
     GetAvgTreeHeight;
@@ -41,7 +42,7 @@ for iProc = 1:size(dataList,2)
     
     resultList = [resultList ; numCFD numDP overlapMean ...
         overlapStd ceil(avgNodeHeight) ...
-        std(totNodeList) maxNodeCnt ceil(log2(size(trajData,1))) ...
+        std(totNodeList) maxNodeCnt ceil(log2(size(trajStrData,1))) ...
         reductFacMean reductFacStd];
 
 end
