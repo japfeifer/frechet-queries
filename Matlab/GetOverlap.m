@@ -11,4 +11,6 @@ function [overlapMean, overlapStd] = GetOverlap()
     GetDendrogramOverlap(1,1);
     overlapMean = sum(dendroOverlapList.*overlapWeight)/sum(overlapWeight);
     overlapStd = std(dendroOverlapList,overlapWeight);
+    disp(['Traj overlap (overlapMean): ',num2str(overlapMean)]);
+    disp(['Traj overlap std (overlapStd): ',num2str(overlapStd)]);
 end

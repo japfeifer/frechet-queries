@@ -23,16 +23,24 @@ function trajTbl = GetPairwiseSubTraj(allSet,sChain,eChain)
         iEnd = find(allSet==sChain);
         jStart = find(allSet==eChain);
     end
+    
+    % prepopulate with zeros - faster
+    sz = sum(1:iEnd);
+    allSetSz(sz,1:5) = 0;
  
-    idx = 1;
+    idx = 0;
     for i = 1:iEnd
         if sChain == 0
             jStart = i+1;
         end
         for j = jStart:allSetSz
-            trajTbl(idx,1:5) = [allSet(i) allSet(j) 0 0 0];
             idx = idx + 1;
+            trajTbl(idx,1:5) = [allSet(i) allSet(j) 0 0 0];
         end
+    end
+    
+    if idx < sz % truncate part of trajTbl
+        trajTbl(idx+1:sz,:) = [];
     end
 
 end

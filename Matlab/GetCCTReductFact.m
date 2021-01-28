@@ -22,3 +22,5 @@ end
 
 reductFacMean = sum(reductFacList.*weight)/sum(weight);
 reductFacStd = std(reductFacList,weight);
+disp(['Compactness (reductFacMean): ',num2str(reductFacMean)]);
+disp(['Compactness stddev (reductFacStd): ',num2str(reductFacStd)]);

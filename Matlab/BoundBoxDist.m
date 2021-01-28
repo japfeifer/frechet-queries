@@ -15,27 +15,39 @@ function dist = BoundBoxDist(P,Q,deg,cType,id1,id2)
     if cType == 0 % compute P & Q bounding boxes
         PBB = ComputeBB(P,deg);
         QBB = ComputeBB(Q,deg);
-    elseif cType == 1 || cType == 2 % the bounding box was pre-computed
+    elseif cType == 1 || cType == 2 || cType == 3 % the bounding box was pre-computed
         if deg == 0
-            PBB = trajStrData(id1).bb1;
             if cType == 1
+                PBB = trajStrData(id1).bb1;
                 QBB = queryStrData(id2).bb1;
-            else
+            elseif cType == 2
+                PBB = trajStrData(id1).bb1;
                 QBB = trajStrData(id2).bb1;
+            else
+                PBB = ComputeBB(P,deg);
+                QBB = queryStrData(id1).bb1;
             end
         elseif deg == 22.5
-            PBB = trajStrData(id1).bb2;
             if cType == 1
+                PBB = trajStrData(id1).bb2;
                 QBB = queryStrData(id2).bb2;
-            else
+            elseif cType == 2
+                PBB = trajStrData(id1).bb2;
                 QBB = trajStrData(id2).bb2;
+            else
+                PBB = ComputeBB(P,deg);
+                QBB = queryStrData(id1).bb2;
             end
         elseif deg == 45
-            PBB = trajStrData(id1).bb3;
             if cType == 1
+                PBB = trajStrData(id1).bb3;
                 QBB = queryStrData(id2).bb3;
-            else
+            elseif cType == 2
+                PBB = trajStrData(id1).bb3;
                 QBB = trajStrData(id2).bb3;
+            else
+                PBB = ComputeBB(P,deg);
+                QBB = queryStrData(id1).bb3;
             end
         end
     end

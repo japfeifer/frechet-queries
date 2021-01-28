@@ -6,7 +6,7 @@
 
 function RNN(Qid,typeQ,tau,eVal,stage,doCnt)
 
-    global clusterNode S1 nodeCheckCnt trajStrData queryTraj
+    global clusterNode S1 nodeCheckCnt trajStrData queryStrData
     global distCalcCnt
     
     switch nargin
@@ -26,7 +26,7 @@ function RNN(Qid,typeQ,tau,eVal,stage,doCnt)
     eAddImplicit = 0;
     eMultImplicit = 0;
     
-    Q = cell2mat(queryTraj(Qid,1)); % query vertices
+    Q = queryStrData(Qid).traj; % query vertices
 
     % Prune Stage - compute S1
     
@@ -43,17 +43,17 @@ function RNN(Qid,typeQ,tau,eVal,stage,doCnt)
     end
 
     % save results from Prune Stage
-    queryTraj(Qid,4) = mat2cell(nodeCheckCnt,size(nodeCheckCnt,1),size(nodeCheckCnt,2));
-    queryTraj(Qid,6) = mat2cell(distCalcCnt,size(distCalcCnt,1),size(distCalcCnt,2));
-    queryTraj(Qid,8) = mat2cell(S1,size(S1,1),size(S1,2)); % S1 list (node id)
-    queryTraj(Qid,9) = num2cell(size(S1,1)); % |S1|
+    queryStrData(Qid).prunenodecnt = nodeCheckCnt;
+    queryStrData(Qid).prunedistcnt = distCalcCnt;
+    queryStrData(Qid).prunes1 = S1;
+    queryStrData(Qid).prunes1sz = size(S1,1);
     
     if stage >= 2
         % Reduce Stage - compute S2 (and maybe result set)
 
         % save results from Reduce Stage
-        queryTraj(Qid,3) = mat2cell(S1,size(S1,1),size(S1,2));
-        queryTraj(Qid,5) = num2cell(size(S1,1));
+        queryStrData(Qid).reduces1 = S1;
+        queryStrData(Qid).reduces1sz = size(S1,1);
 
         % get pruned node trajectories
         for i=1:size(S1,1)
@@ -61,7 +61,7 @@ function RNN(Qid,typeQ,tau,eVal,stage,doCnt)
         end
 
         % save results from Reduce Stage
-        queryTraj(Qid,7) = mat2cell(S1,size(S1,1),size(S1,2));
+        queryStrData(Qid).reduces1trajid = S1;
     end
     
     if stage >= 3
@@ -100,13 +100,13 @@ function RNN(Qid,typeQ,tau,eVal,stage,doCnt)
         end
 
         % save results from decide stage
-        queryTraj(Qid,10) = num2cell(numCFD);
-        queryTraj(Qid,11) = num2cell(numDP);
-        queryTraj(Qid,12) = mat2cell(rangeTrajList,size(rangeTrajList,1),size(rangeTrajList,2));
-        queryTraj(Qid,13) = num2cell(size(rangeTrajList,1));
+        queryStrData(Qid).decidecfdcnt = numCFD;
+        queryStrData(Qid).decidedpcnt = numDP;
+        queryStrData(Qid).decidetrajids = rangeTrajList;
+        queryStrData(Qid).decidetrajcnt = size(rangeTrajList,1);
         if typeQ == 3
-            queryTraj(Qid,14) = num2cell(eAddImplicit);
-            queryTraj(Qid,15) = num2cell(eMultImplicit);
+            queryStrData(Qid).decideeadd = eAddImplicit;
+            queryStrData(Qid).decideemult = eMultImplicit;
         end
     end
 

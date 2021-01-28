@@ -3,6 +3,7 @@
 % if cType = 0, then don't use ids
 % if cType = 1, then id1 = traj id and id2 = query id
 % if cType = 2, then id1 = traj id and id2 = traj id
+% if cType = 3, then id1 = query id
 
 function lowBound = GetBestConstLB(P,Q,epsilon,cType,id1,id2,excludeSSE)
 
@@ -92,6 +93,10 @@ function lowBound = GetBestConstLB(P,Q,epsilon,cType,id1,id2,excludeSSE)
             elseif cType == 2
                 distP = trajStrData(id1).st;
                 distQ = trajStrData(id2).st;
+            elseif cType == 3
+                simpP = [P(1,:); P(end,:)]; % P'
+                distP = ContFrechet(P,simpP,2,0);
+                distQ = trajStrData(id1).st;
             end
             currBnd = abs(distP - distQ)/2;
             if currBnd > lowBound

@@ -3,7 +3,7 @@
 tic;
 
 h = waitbar(0, 'RNN Search');
-numQ = size(queryTraj,1);
+numQ = size(queryStrData,1);
 
 for i = 1:numQ  % do RNN search for each query traj
     

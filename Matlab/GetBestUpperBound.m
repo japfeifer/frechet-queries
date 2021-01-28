@@ -56,6 +56,15 @@ function upBound = GetBestUpperBound(P,Q,cType,id1,id2,threshBound,doCnt)
                 QBB45 = trajStrData(id2).bb3;
             end
         end
+    elseif cType == 3
+        PBB = ComputeBB(P,0);
+        QBB = queryStrData(id1).bb1;
+        if dimSize <=3
+            PBB225 = ComputeBB(P,22.5);
+            PBB45 = ComputeBB(P,45);
+            QBB225 = queryStrData(id1).bb2;
+            QBB45 = queryStrData(id1).bb3;
+        end
     end
     
     if dimSize > 2 % do bounding box opposite corner distance

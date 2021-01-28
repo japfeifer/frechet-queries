@@ -18,11 +18,12 @@
 % smallestLB - smallest LB dist in trajTbl
 % smallestUB - smallest UB dist in trajTbl
 
-function [trajTbl,smallestLB,smallestUB] = SubNNPruneReduceDecide(Q,level,trajTbl)
+function [trajTbl,smallestLB,smallestUB,cntLB,cntUB,cntFDP,cntCFD] = SubNNPruneReduceDecide(Qid,Q,level,trajTbl,smallestUB)
 
     global inpTrajVert inpTrajErr inP
     
     err = inpTrajErr(level); % current level error
+    cntLB = 0; cntUB = 0; cntFDP = 0; cntCFD = 0;
     
     % get each sub-traj (vertices and coordinates) in trajTbl and store in subTrajStr
     subTrajStr = [];
@@ -33,23 +34,30 @@ function [trajTbl,smallestLB,smallestUB] = SubNNPruneReduceDecide(Q,level,trajTb
     
     % Prune/Reduce/Decide - three loops on trajTbl
     
-    smallestUB = Inf;
+%     smallestUB = Inf;
+    
+    trajTbl(:,3) = 0;
+    trajTbl(:,4) = Inf;
+    smallestUBidx = 0;
     
     % loop 1: compute using constant or linear LB/UB bounds
     for i = 1:size(trajTbl,1)
         P = subTrajStr(i).traj;
-        trajTbl(i,3) = max(GetBestConstLB(P,Q,Inf,0,0,0,1) - err, 0);
+        trajTbl(i,3) = max(GetBestConstLB(P,Q,Inf,3,Qid,0,1) - err, 0);  % get the LB
+        cntLB = cntLB + 1;
         if trajTbl(i,3) > smallestUB % discard traj
             trajTbl(i,5) = 1;
             trajTbl(i,4) = trajTbl(i,3); % just set UB to LB
         else
-            trajTbl(i,4) = GetBestUpperBound(P,Q,0,0,0,trajTbl(i,3),0) + err;
+            trajTbl(i,4) = GetBestUpperBound(P,Q,3,Qid,0,trajTbl(i,3),0) + err; % get the UB
+            cntUB = cntUB + 1;
             if trajTbl(i,4) < smallestUB
                 smallestUB = trajTbl(i,4);
+                smallestUBidx = i;
             end
-            if GetBestLinearLBDP(P,Q,smallestUB,0,0,0) == true % discard traj
-                trajTbl(i,5) = 1;
-            end
+%             if GetBestLinearLBDP(P,Q,smallestUB,0,0,0) == true % discard traj (this code slows down the query, so it is commented out)
+%                 trajTbl(i,5) = 1;
+%             end
         end
     end
     
@@ -60,14 +68,22 @@ function [trajTbl,smallestLB,smallestUB] = SubNNPruneReduceDecide(Q,level,trajTb
                 trajTbl(i,5) = 1;
             else
                 P = subTrajStr(i).traj;
-                if FrechetDecide(P,Q,smallestUB,1) == false % compute Frechet decision procedure, discard traj if = false
+                cntFDP = cntFDP + 1;
+                if FrechetDecide(P,Q,smallestUB+0.00000001) == false % compute Frechet decision procedure, discard traj if = false
                     trajTbl(i,5) = 1;
-                else
-                    cfDist = ContFrechet(P,Q); % compute continuous Frechet distance
+                else     
+                    cntFDP = cntFDP + 1;
+                    if FrechetDecide(P,Q,smallestUB-0.00000001) == false % smallestUB is the cont frechet dist
+                        cfDist = smallestUB;
+                    else
+                        cfDist = ContFrechet(P,Q); % compute continuous Frechet distance
+                        cntCFD = cntCFD + 1;
+                    end
                     trajTbl(i,3) = max(cfDist - err, 0); % update LB/UB
                     trajTbl(i,4) = cfDist + err;
                     if trajTbl(i,4) < smallestUB
                         smallestUB = trajTbl(i,4);
+                        smallestUBidx = i;
                     end
                     if trajTbl(i,3) > smallestUB % discard traj
                         trajTbl(i,5) = 1;
@@ -82,11 +98,21 @@ function [trajTbl,smallestLB,smallestUB] = SubNNPruneReduceDecide(Q,level,trajTb
         if trajTbl(i,5) == 0
             if trajTbl(i,3) > smallestUB % discard traj
                 trajTbl(i,5) = 1; 
+            elseif trajTbl(i,3) == trajTbl(i,4) && trajTbl(i,3) == smallestUB && smallestUBidx > 0
+                if i ~= smallestUBidx
+                    if trajTbl(i,1) <= trajTbl(smallestUBidx,1) && trajTbl(i,2) >= trajTbl(smallestUBidx,2) % sub-traj i vertices are superset
+                        trajTbl(i,5) = 1; % mark superset as deleted
+                    end
+                    if trajTbl(i,1) >= trajTbl(smallestUBidx,1) && trajTbl(i,2) <= trajTbl(smallestUBidx,2) % sub-traj i vertices are subset
+                        trajTbl(smallestUBidx,5) = 1; % mark superset as deleted
+                        smallestUBidx = i; % make this one the new smallest UB index
+                    end
+                end
             end
         end
     end   
     
-    % set smallest LB
-    smallestLB = min(trajTbl(:,3));
+    % set smallest LB, only check non-discarded rows
+    smallestLB = min(trajTbl(trajTbl(:,5)==0,3));
 
 end

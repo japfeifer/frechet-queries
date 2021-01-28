@@ -33,7 +33,6 @@ function NNPrune(cNodeID,Q,Qid,lowBnd,eAdd)
                 upBnd = GetBestUpperBound(cTraj,Q,1,Cid,Qid);
                 timeLinUB = timeLinUB + toc(tStartLinUB);
                 linUBcnt = linUBcnt + 1;
-                
                 time5Sum = time5Sum + toc(t5);
 
                 % see if we have found a close enough node
