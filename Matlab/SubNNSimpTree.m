@@ -169,8 +169,8 @@ function SubNNSimpTree(Qid,level,sIdx,eIdx,graphFlg)
     end
 
     % smallest NN traj result is subStr(1).sChain to subStr(1).eChain (the intersection of traj results)
-    queryStrData(Qid).subschain = subStr(1).sChain;
-    queryStrData(Qid).subechain = subStr(1).eChain;
+    queryStrData(Qid).subschain = subStr(1).notDiscSet(1);
+    queryStrData(Qid).subechain = subStr(1).notDiscSet(end);
     queryStrData(Qid).subcntlb = cntLBtot;
     queryStrData(Qid).subcntub = cntUBtot;
     queryStrData(Qid).subcntfdp = cntFDPtot;

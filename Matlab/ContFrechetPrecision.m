@@ -12,7 +12,6 @@ function [frechetDist] = ContFrechetPrecision(P,Q,decPrec)
     if size(P,2) == 1 % use Bringmann code for 2D traj
         frechetDist = FrechetDistBringmann(P,Q);
     else
-    
         % get upper/lower bounds
         minBnd = GetBestConstLB(P,Q,Inf,0,0,0,1);
         maxBnd = GetBestUpperBound(P,Q,0,0,0,minBnd);
@@ -20,10 +19,8 @@ function [frechetDist] = ContFrechetPrecision(P,Q,decPrec)
             frechetDist = maxBnd;
             return
         end
-
         P = LinearSimp(P,0);
         Q = LinearSimp(Q,0);
-
         while maxBnd - minBnd > decPrec
             currLen = (minBnd + maxBnd) / 2;
             if FrechetDecide(P,Q,currLen,0,0,1) == 1
@@ -31,9 +28,7 @@ function [frechetDist] = ContFrechetPrecision(P,Q,decPrec)
             else
                 minBnd = currLen;
             end
-
         end
-
         frechetDist = (minBnd + maxBnd) / 2;
     end
 

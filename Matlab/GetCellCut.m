@@ -71,9 +71,15 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP,nextDropFlg] = GetCellCu
                        dir = 1;
                    else % part of left side of cell is blocked, we must go up
                        [garbage,currCellCutE,dir,nextEdge,nextSP,nextDropFlg] = GetCellCut(currCellP,[sp 0],segP,segQ,len,'B',prevDropFlg,floorIdx,floorStack);
-                       if currCellCutE(2) <= currCellCutS(2) && currCellCutE(2) ~= 1 % still have monotone path
+                       % seems to be a bug by with code below...
+                       % Instead, just use values from above call to GetCellCut
+%                        if currCellCutE(2) <= currCellCutS(2) && currCellCutE(2) ~= 1 % still have monotone path
+%                            dir = 1;
+%                            nextEdge = 'R'; 
+%                            nextSP = [1 currCellCutE(2)];
+%                        end
+                       if nextEdge == 'R' % still have a monotone path since we were "falling"
                            dir = 1;
-                           nextEdge = 'R';
                            nextSP = [1 currCellCutE(2)];
                        end
                    end
@@ -150,7 +156,22 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP,nextDropFlg] = GetCellCu
            nextEdge = 'B';
            return
         end
-       
+
+        % check if there is free-space on right edge - cell type K
+        [sp,ep] = SegmentBallIntersect(segP(1,:),segP(2,:),segQ(2,:),len,1); % get right edge free space
+        if isempty(sp) == false
+           if (isempty(ep) == true)
+               currCellCutE = [1 sp];
+               nextSP = [0 sp];
+           else
+               currCellCutE = [1 ep];
+               nextSP = [0 ep];
+           end
+           dir = 0;
+           nextEdge = 'L';
+           return
+        end
+        
         error('Unknown cell cut scenario for startEdge = T');
         
     elseif startEdge == 'R' % right edge

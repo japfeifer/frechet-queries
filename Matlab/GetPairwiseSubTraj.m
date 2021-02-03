@@ -26,7 +26,7 @@ function trajTbl = GetPairwiseSubTraj(allSet,sChain,eChain)
     
     % prepopulate with zeros - faster
     sz = sum(1:iEnd);
-    allSetSz(sz,1:5) = 0;
+    trajTbl(sz,1:5) = 0;
  
     idx = 0;
     for i = 1:iEnd
