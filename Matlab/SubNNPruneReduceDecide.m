@@ -22,7 +22,7 @@ function [trajTbl,smallestLB,smallestUB,cntLB,cntUB,cntFDP,cntCFD] = SubNNPruneR
 
     global inpTrajVert inpTrajErr inP
     
-    err = inpTrajErr(level); % current level error
+    err = 2 * inpTrajErr(level); % current level error
     cntLB = 0; cntUB = 0; cntFDP = 0; cntCFD = 0;
     
     % get each sub-traj (vertices and coordinates) in trajTbl and store in subTrajStr

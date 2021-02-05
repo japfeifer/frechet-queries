@@ -146,7 +146,7 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideSubTraj(P,Q,len,sCellP,s
                     boundCutPath(boundCutIdx,:) = [currCellQ currCellP newCellCutS newCellCutE];
                     boundCutIdx = boundCutIdx + 1;
                     currCellStartPoint = nextCellStartPoint;
-                    if currCellQ == 1 % made it to the left edge of freespace diagram, a monotone path has been found
+                    if currCellQ == 1 && newCellCutE(1) == 0 % made it to the left edge of freespace diagram, a monotone path has been found
                         ans = 1; % there is a monotone path
                         if boundCutIdx <= size(boundCutPath,1)
                             boundCutPath(boundCutIdx:size(boundCutPath,1),:) = [];

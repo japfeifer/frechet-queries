@@ -71,4 +71,4 @@ GetAvgTreeHeight;
 GetCCTReductFact;
 [overlapMean, overlapStd] = GetOverlap();
 
-% save(['MatlabData/TestSimpCCT2.mat'],'trajStrData','clusterTrajNode','clusterNode','simpLevelCCT','inP','inpTrajErr','inpTrajPtr','inpTrajSz','inpTrajVert');
+% save(['MatlabData/TestSimpCCT3.mat'],'trajStrData','clusterTrajNode','clusterNode','simpLevelCCT','inP','inpTrajErr','inpTrajPtr','inpTrajSz','inpTrajVert','-v7.3');

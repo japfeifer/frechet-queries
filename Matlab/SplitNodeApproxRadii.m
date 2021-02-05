@@ -30,9 +30,9 @@ function SplitNodeApproxRadii(cNodeID,tDistList)
     nDistCnt = 1;
     pDistCnt = 1;
     prevCenterTrajID = clusterNode(cNodeID,6);
-    pTraj = trajStrData(prevCenterTrajID); % prev center traj
+    pTraj = trajStrData(prevCenterTrajID).traj; % prev center traj
     newCenterTrajID = clusterNode(cNodeID,7);
-    nTraj = trajStrData(newCenterTrajID); % new center traj
+    nTraj = trajStrData(newCenterTrajID).traj; % new center traj
 
     % determine what center each traj in the cluster is closest to
     for k = 1:sztDistList 

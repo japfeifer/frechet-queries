@@ -115,7 +115,7 @@ function [currCellCutS,currCellCutE,dir,nextEdge,nextSP,nextDropFlg] = GetCellCu
                    dir = 1;
                else % part of left side of cell is blocked, we must go up
                    [garbage,currCellCutE,dir,nextEdge,nextSP,nextDropFlg] = GetCellCut(currCellP,[sp 0],segP,segQ,len,'B',prevDropFlg,floorIdx,floorStack);
-                   if currCellCutE(2) <= currCellCutS(2) && currCellCutE(2) ~= 1 % still have monotone path
+                   if currCellCutE(2) <= currCellCutS(2) && currCellCutE(2) ~= 1 && nextEdge ~= 'L' % still have monotone path
                        dir = 1;
                        nextEdge = 'R';
                        nextSP = [1 currCellCutE(2)];

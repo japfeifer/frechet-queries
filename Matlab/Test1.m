@@ -1,14 +1,12 @@
-Qid = 6;
-level = 10;
-err = inpTrajErr(level);
-
-vertList = [inpTrajVert(1:inpTrajSz(level),level)]';
-
+Qid = 10;
 Q = queryStrData(Qid).traj;
-P = inP(vertList,:);
 
-[frechetDist,totCellCheck,totDPCalls,totSPCalls,sP,eP] = ContFrechetSubTraj2(P,Q,err);
+disp(['---------------']);
+d1 = ContFrechet(inP(queryStrData(Qid).subschain:queryStrData(Qid).subechain , :), Q);
+disp(['d1: ',num2str(d1)]);
 
-decide = FrechetDecide(P,Q,frechetDist,0,1,0,0);
+d2 = ContFrechet(inP(queryStrData(Qid).subsvert:queryStrData(Qid).subevert , :), Q);
+disp(['d2: ',num2str(d2)]);
 
-% SubNNSimpTree(2,1,1,2,1);
+d3 = ContFrechet(inP(1:167 , :), Q);
+disp(['d3: ',num2str(d3)]);
