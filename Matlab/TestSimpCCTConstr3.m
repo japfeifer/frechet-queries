@@ -1,3 +1,6 @@
+% Construct Simp Tree and CCT with a large Taxi dataset input traj (combine several traj together)
+% Only use Driemel simplification (not Agarwal)
+
 InitGlobalVars;
 
 dataName = 'TaxiData';
@@ -16,13 +19,19 @@ for i = 1:size(trajStrData,2)
         break 
     end
 end
+inP = DriemelSimp(inP,0);  % remove any "duplicate" vertices
+
+% tic
+% ConstTrajSimpTree(inP,2.6,14); % construct the simplification tree
+% t = toc;
+% disp(['Simplification tree construction time (s): ',num2str(t)]);
 
 tic
-ConstTrajSimpTree(inP,2.6,14); % construct the simplification tree
+ConstTrajSimpTree2(inP); % construct the simplification tree with "balanced" levels
 t = toc;
 disp(['Simplification tree construction time (s): ',num2str(t)]);
 
-simpLevelCCT = 8; % the level of the simplification tree to store in CCT
+simpLevelCCT = 9; % the level of the simplification tree to store in CCT
 simpPVertIdx = [inpTrajVert(1:inpTrajSz(simpLevelCCT),simpLevelCCT)]';
 szPSimp = inpTrajSz(simpLevelCCT);
 
@@ -60,15 +69,21 @@ TrajDataPreprocessing;
 t = toc;
 disp(['Pre-process traj bounds time (s): ',num2str(t)]);
 
-% Construct Relaxed CCT
+% % Construct Relaxed CCT
+% tic
+% ConstructCCTGonzLite;
+% t = toc;
+% disp(['Construct Relaxed CCT time (s): ',num2str(t)]);
+
+% Construct Aprox Radii CCT
 tic
-ConstructCCTGonzLite;
+ConstructCCTApproxRadii;
 t = toc;
-disp(['Construct Relaxed CCT time (s): ',num2str(t)]);
+disp(['Construct Approx Radii CCT time (s): ',num2str(t)]);
 
 % get tree info
 GetAvgTreeHeight;
 GetCCTReductFact;
 [overlapMean, overlapStd] = GetOverlap();
 
-% save(['MatlabData/TestSimpCCT3.mat'],'trajStrData','clusterTrajNode','clusterNode','simpLevelCCT','inP','inpTrajErr','inpTrajPtr','inpTrajSz','inpTrajVert','-v7.3');
+% save(['MatlabData/TestSimpCCT3.mat'],'trajStrData','clusterTrajNode','clusterNode','simpLevelCCT','inP','inpTrajErr','inpTrajErrF','inpTrajPtr','inpTrajSz','inpTrajVert','-v7.3');

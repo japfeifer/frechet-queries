@@ -1,3 +1,6 @@
+% Construct Simp Tree and CCT with a Truck dataset input traj
+% Also use Agarwal simplification
+
 InitGlobalVars;
 
 CCTType = 'CCT1';
@@ -10,8 +13,13 @@ doDFD = false;
 inP = cell2mat(trajOrigData(34,1)); % input traj P
 inP = DriemelSimp(inP,0); % get rid of duplicate vertices
 
+% tic
+% ConstTrajSimpTree(inP,1.7,10); % construct the simplification tree
+% t = toc;
+% disp(['Simplification tree construction time (s): ',num2str(t)]);
+
 tic
-ConstTrajSimpTree(inP,1.7,10); % construct the simplification tree
+ConstTrajSimpTree2(inP); % construct the simplification tree with "balanced" levels
 t = toc;
 disp(['Simplification tree construction time (s): ',num2str(t)]);
 
@@ -66,4 +74,4 @@ GetAvgTreeHeight;
 GetCCTReductFact;
 [overlapMean, overlapStd] = GetOverlap();
 
-% save(['MatlabData/TestSimpCCT2.mat'],'trajStrData','clusterTrajNode','clusterNode','simpLevelCCT','inP','inpTrajErr','inpTrajPtr','inpTrajSz','inpTrajVert');
+% save(['MatlabData/TestSimpCCT2.mat'],'trajStrData','clusterTrajNode','clusterNode','simpLevelCCT','inP','inpTrajErr','inpTrajErrF','inpTrajPtr','inpTrajSz','inpTrajVert');

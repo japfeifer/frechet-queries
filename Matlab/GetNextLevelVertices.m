@@ -22,7 +22,7 @@ function [allSetOut,sChainOut,eChainOut] = GetNextLevelVertices(level,allSet,sCh
     
     allSetOut = [inpTrajPtr(allSet(1),level) : inpTrajPtr(allSet(end),level)]; % next level sub-traj vertex indices
 
-    if  eChain - sChain <= 2 % if start/end chain is 2 segments or less, set next level start/end chain to 0, i.e. no chain
+    if  eChain - sChain <= 2 % if start/end chain is 1 segment or less, set next level start/end chain to 0, i.e. no chain
         sChainOut = 0;
         eChainOut = 0;
     else % we can retain part of the chain

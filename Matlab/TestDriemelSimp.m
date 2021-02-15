@@ -108,7 +108,7 @@ disp(['n: ',num2str(n),' nSimp: ',num2str(nSimp),' maxSimpLen: ',num2str(maxSimp
 
 for i = 1:numIter
     currErr = minVal + (maxVal - minVal)*rand; % uniformly distributed random real in the interval [minVal,minVal]
-    currPSimp = LinearSimp(P,currErr); % call Driemel linear-time simplification algorithm
+    currPSimp = BallSimp(P,currErr); % call Driemel linear-time simplification algorithm
     szCurrPSimp = size(currPSimp,1); % |P'|
     if i == 1
         currBestErr = currErr;

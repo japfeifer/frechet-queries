@@ -6,7 +6,7 @@ clear all;
 % save(['MatlabData/StockData.mat'],'stockData');
 
 stockData = []; % cols: open, high, low, close, adj close, volume
-szWindow = 40; % number of days of historical info for each training/testing observation
+szWindow = 15; % number of days of historical info for each training/testing observation
 
 load(['MatlabData/StockData.mat']);
 
@@ -85,7 +85,7 @@ disp(['Test Seq incorrect: ',num2str(size(classifierRes,1) - sum(classifierRes(:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Convolutional Neural Network Experiment (no validation data used in training)
+% % Convolutional Neural Network Experiment (no validation data used in training)
 % rngSeed = 1;
 % rng(rngSeed); % reset random seed so experiments are reproducable
 % 
