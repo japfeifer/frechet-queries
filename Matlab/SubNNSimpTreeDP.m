@@ -56,13 +56,13 @@ function SubNNSimpTreeDP(Qid,level,sVertList,eVertList)
         end
     end
 
-    queryStrData(Qid).subsvert = sVertList(1,1);
-    queryStrData(Qid).subsseginterior = sP(1,2);
-    queryStrData(Qid).subevert = eVertList(1,1);
-    queryStrData(Qid).subeseginterior = eP(1,2);
-    queryStrData(Qid).subfredist = frechetDist;
-    queryStrData(Qid).subcntcellcheck = sumCellCheck;
-    queryStrData(Qid).subcntdpcalls = sumDPCalls;
-    queryStrData(Qid).subcntspvert = sumSPVert;
+    queryStrData(Qid).sub2svert = sVertList(1,1);
+    queryStrData(Qid).sub2sseginterior = sP(1,2);
+    queryStrData(Qid).sub2evert = eVertList(1,1);
+    queryStrData(Qid).sub2eseginterior = eP(1,2);
+    queryStrData(Qid).sub2fredist = frechetDist;
+    queryStrData(Qid).sub2cntcellcheck = sumCellCheck;
+    queryStrData(Qid).sub2cntdpcalls = sumDPCalls;
+    queryStrData(Qid).sub2cntspvert = sumSPVert;
 
 end

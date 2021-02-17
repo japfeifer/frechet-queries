@@ -42,7 +42,7 @@ function SubNNSimpTree2(Qid,level,sIdx,eIdx,typeQ,eVal,bestDistUB,graphFlg)
         
     timeSearch = 0; timePrune = 0;
     cntLB = 0; cntUB = 0; cntFDP = 0; cntCFD = 0;
-    foundResFlg = 0;
+    foundResFlg = 0; smallestLB = 0;
     
     subStr = [];  % structure to store candidate sub-traj set
     
@@ -66,9 +66,28 @@ function SubNNSimpTree2(Qid,level,sIdx,eIdx,typeQ,eVal,bestDistUB,graphFlg)
     
     for i = level+1:maxLevel % traverse the simplification tree one level at a time, start at level + 1
         
-        % generate this level pairwise subStr set
+        % determine number of pairwise traj so that memory can be pre-allocated (faster)
         prevSubStr = subStr;
         subStr = [];
+        numTraj = 0;
+        for j = 1:size(prevSubStr,1)
+            sidx = max(prevSubStr(j,1) - 1,1);
+            eidx = min(prevSubStr(j,2) + 1,inpTrajSz(i-1));
+            sidx = inpTrajPtr(sidx,i-1);
+            eidx = inpTrajPtr(eidx,i-1);
+            if prevSubStr(j,3) >= 3 % there are chain vertices
+                schainidx = prevSubStr(j,1) + 1;
+                echainidx = prevSubStr(j,2) - 1;
+                schainidx = inpTrajPtr(schainidx,i-1);
+                echainidx = inpTrajPtr(echainidx,i-1);
+                numTraj = numTraj + ((schainidx-sidx+1) * (eidx-echainidx+1));
+            else
+                numTraj = numTraj + sum(1:eidx-sidx+1);
+            end
+        end
+        subStr(1:numTraj,1:7) = 0;
+        
+        % generate this level pairwise subStr set
         cnt = 1;
         for j = 1:size(prevSubStr,1)
             sidx = max(prevSubStr(j,1) - 1,1);
@@ -97,6 +116,7 @@ function SubNNSimpTree2(Qid,level,sIdx,eIdx,typeQ,eVal,bestDistUB,graphFlg)
                 end
             end
         end
+        subStr = subStr(1:cnt-1,:); % we may have pre-allocated too much space so trim it
         subStr = unique(subStr,'rows'); % remove any duplicate sub-trajectories
 
         tPrune = tic;
@@ -142,31 +162,49 @@ function SubNNSimpTree2(Qid,level,sIdx,eIdx,typeQ,eVal,bestDistUB,graphFlg)
 
         % compute LB/UB and "too far flag"
         bestDistUBidx = 0;
-        for j = 1:size(subStr,1)
-            P = subTrajStr(j).traj;
-            subStr(j,4) = max(GetBestConstLB(P,Q,Inf,3,Qid,0,1) - subTrajStr(j).errLB, 0);  % get the LB
-            subStr(j,4) = round(subStr(j,4),10)+0.00000000009;
-            subStr(j,4) = fix(subStr(j,4) * 10^10)/10^10;
-            cntLB = cntLB + 1;
-            if subStr(j,4) > bestDistUB % discard traj
-                subStr(j,6) = 1; % too far flg = 1
-                subStr(j,5) = subStr(j,4); % just set UB to LB
-            else
-                cntFDP = cntFDP + 1;
-                if FrechetDecide(P,Q,bestDistUB+0.0000001+subTrajStr(j).errUB) == false % compute Frechet decision procedure, discard traj if = false
+        if i ~= maxLevel
+            for j = 1:size(subStr,1)
+                P = subTrajStr(j).traj;
+                subStr(j,4) = max(GetBestConstLB(P,Q,Inf,3,Qid,0,1) - subTrajStr(j).errLB, 0);  % get the LB
+                subStr(j,4) = round(subStr(j,4),10)+0.00000000009;
+                subStr(j,4) = fix(subStr(j,4) * 10^10)/10^10;
+                cntLB = cntLB + 1;
+                if subStr(j,4) > bestDistUB % discard traj
                     subStr(j,6) = 1; % too far flg = 1
-                    subStr(j,5) = bestDistUB+0.0000001+subTrajStr(j).errUB; 
+                    subStr(j,5) = subStr(j,4); % just set UB to LB
                 else
-                    subStr(j,5) = GetBestUpperBound(P,Q,3,Qid,0,subStr(j,4),0) + subTrajStr(j).errUB; % get the UB
-                    subStr(j,5) = round(subStr(j,5),10)+0.00000000009;
-                    subStr(j,5) = fix(subStr(j,5) * 10^10)/10^10;
-                    cntUB = cntUB + 1;
-                    if subStr(j,5) < bestDistUB
-                        bestDistUB = subStr(j,5);
-                        bestDistUBidx = j;
-                    end
-                end           
+                    cntFDP = cntFDP + 1;
+                    if FrechetDecide(P,Q,bestDistUB+0.0000001+subTrajStr(j).errUB) == false % compute Frechet decision procedure, discard traj if = false
+                        subStr(j,6) = 1; % too far flg = 1
+                        subStr(j,5) = bestDistUB+0.0000001+subTrajStr(j).errUB; 
+                    else
+                        subStr(j,5) = GetBestUpperBound(P,Q,3,Qid,0,subStr(j,4),0) + subTrajStr(j).errUB; % get the UB
+                        subStr(j,5) = round(subStr(j,5),10)+0.00000000009;
+                        subStr(j,5) = fix(subStr(j,5) * 10^10)/10^10;
+                        cntUB = cntUB + 1;
+                        if subStr(j,5) < bestDistUB
+                            bestDistUB = subStr(j,5);
+                            bestDistUBidx = j;
+                        end
+                        if eVal > 0 % there is a query additive or multiplicative error
+                            if typeQ == 1 % additive error
+                                eAdd = eVal;
+                            else
+                                eAdd = eVal * smallestLB;
+                            end
+                            if subStr(j,5) <= eAdd % we found a candidate within the error bound
+                                foundResFlg = 1;
+                                candTrajSet = j;
+                                break
+                            end
+                        end
+                    end           
+                end
             end
+        end
+        
+        if eVal > 0 && foundResFlg == 1
+            break
         end
         
         % compute the Frechet dist for the sub-traj with the best UB
@@ -183,7 +221,7 @@ function SubNNSimpTree2(Qid,level,sIdx,eIdx,typeQ,eVal,bestDistUB,graphFlg)
             end
         end
 
-        % compute dist using cont Frechet dist
+        % compute dist using cont Frechet dist and DP
         if i == maxLevel  % only compute these at leaf level
             for j = 1:size(subStr,1)
                 if subStr(j,6) == 0 % only look at sub-traj that are not too far
@@ -196,7 +234,7 @@ function SubNNSimpTree2(Qid,level,sIdx,eIdx,typeQ,eVal,bestDistUB,graphFlg)
                             subStr(j,6) = 1; % too far flg = 1
                             subStr(j,5) = bestDistUB+0.0000001+subTrajStr(j).errUB; 
                         else
-%                             cfDist = ContFrechet(P,Q)-0.0000001; % compute continuous Frechet distance
+                            % cfDist = ContFrechet(P,Q)-0.0000001; % compute continuous Frechet distance
                             cfDist = ContFrechet(P,Q); % compute continuous Frechet distance
                             cfDist = round(cfDist,10)+0.00000000009;
                             cfDist = fix(cfDist * 10^10)/10^10;
@@ -210,13 +248,29 @@ function SubNNSimpTree2(Qid,level,sIdx,eIdx,typeQ,eVal,bestDistUB,graphFlg)
                             if subStr(j,4) > bestDistUB % discard traj
                                 subStr(j,6) = 1; % too far flg = 1
                             end
+                            if eVal > 0 % there is a query additive or multiplicative error
+                                if typeQ == 1 % additive error
+                                    eAdd = eVal;
+                                else
+                                    eAdd = eVal * smallestLB;
+                                end
+                                if subStr(j,5) <= eAdd % we found a candidate within the error bound
+                                    foundResFlg = 1;
+                                    candTrajSet = j;
+                                    break
+                                end
+                            end
                         end
                     end
                 end
             end
-        end        
+        end
         
-        % there may be some sub-traj that can be marked as too far
+        if eVal > 0 && foundResFlg == 1
+            break
+        end
+        
+        % there still may be some sub-traj that can be marked as too far
         for j = 1:size(subStr,1)
             if subStr(j,6) == 0 % only look at sub-traj that are not too far
                 if subStr(j,4) > bestDistUB % discard traj
@@ -233,30 +287,29 @@ function SubNNSimpTree2(Qid,level,sIdx,eIdx,typeQ,eVal,bestDistUB,graphFlg)
         
         % delete sub-traj that are too far
         subStr = subStr(subStr(:,6)==0,:);
-        
-        
-        
-        
-        % compute smallest LB (needed for queries with additive/multiplicative errors)
-        
-        
-        
-        % if at the root, choose smallest UB (if 2 or more with same smallest UB then choose
-        % sub-traj with fewest vertices
 
- 
+        % compute smallest LB (needed for queries with additive/multiplicative errors)
+        if eVal > 0
+            smallestLB = min(subStr(:,4));
+        end
+
+        % more than one final result with same smallest distance
+        if i == maxLevel && size(subStr,1) > 1 
+            subStr = sortrows(subStr,3,'ascend'); % smallest size sub-traj first
+        end
 
     end
     
     timeSearch = toc(tSearch);
 
-    if foundResFlg == 1 % found a result early due to query additive/multiplicative error
-        queryStrData(Qid).subsvert = subStr(1,1); % start vertex
-        queryStrData(Qid).subevert = subStr(1,2); % end vertex
-    else
-        queryStrData(Qid).subsvert = subStr(1,1); % start vertex
-        queryStrData(Qid).subevert = subStr(1,2); % end vertex
+    if foundResFlg == 0
+        candTrajSet = 1;
     end
+
+    queryStrData(Qid).subsvert = subStr(candTrajSet,1); % start vertex
+    queryStrData(Qid).subevert = subStr(candTrajSet,2); % end vertex
+    queryStrData(Qid).sublb = subStr(candTrajSet,4); % LB dist
+    queryStrData(Qid).subub = subStr(candTrajSet,5); % UB dist
     queryStrData(Qid).subcntlb = cntLB;
     queryStrData(Qid).subcntub = cntUB;
     queryStrData(Qid).subcntfdp = cntFDP;

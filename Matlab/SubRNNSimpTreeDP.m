@@ -53,19 +53,19 @@ function SubRNNSimpTreeDP(Qid,alpha,level,sVertList,eVertList)
     end
 
     if size(sVertList,1) > 0
-        queryStrData(Qid).subsvert = sVertList(:,1);
-        queryStrData(Qid).subsseginterior = sP(:,2);
-        queryStrData(Qid).subevert = eVertList(:,1);
-        queryStrData(Qid).subeseginterior = eP(:,2);
+        queryStrData(Qid).sub2svert = sVertList(:,1);
+        queryStrData(Qid).sub2sseginterior = sP(:,2);
+        queryStrData(Qid).sub2evert = eVertList(:,1);
+        queryStrData(Qid).sub2eseginterior = eP(:,2);
     else
-        queryStrData(Qid).subsvert = [];
-        queryStrData(Qid).subsseginterior = [];
-        queryStrData(Qid).subevert = [];
-        queryStrData(Qid).subeseginterior = [];        
+        queryStrData(Qid).sub2svert = [];
+        queryStrData(Qid).sub2sseginterior = [];
+        queryStrData(Qid).sub2evert = [];
+        queryStrData(Qid).sub2eseginterior = [];        
     end
-    queryStrData(Qid).subfredist = alpha;
-    queryStrData(Qid).subcntcellcheck = sumCellCheck;
-    queryStrData(Qid).subcntdpcalls = sumDPCalls;
-    queryStrData(Qid).subcntspvert = sumSPVert;
+    queryStrData(Qid).sub2fredist = alpha;
+    queryStrData(Qid).sub2cntcellcheck = sumCellCheck;
+    queryStrData(Qid).sub2cntdpcalls = sumDPCalls;
+    queryStrData(Qid).sub2cntspvert = sumSPVert;
 
 end

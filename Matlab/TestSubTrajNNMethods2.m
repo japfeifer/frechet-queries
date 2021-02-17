@@ -52,9 +52,9 @@ for i = 1:size(testMethods,2) % sub-traj methods
             QidR = numQueries + 1;
             queryStrData(QidR).traj = trajStrData(trajNNidx).traj;
             PreprocessQuery(QidR);
-            RNN(QidR,2,inpTrajErr(simpLevelCCT),eMult);
-            trajRNNidx = queryStrData(QidR).decidetrajids(1,1);
-            SubNNSimpTree2(j,simpLevelCCT,trajStrData(trajNNidx).simptrsidx,trajStrData(trajNNidx).simptreidx,1,0,Inf,0);
+            RNN(QidR,2,inpTrajErr(simpLevelCCT),0);
+            [sIdx,eIdx] = GetVertAlignInclMin(QidR);
+            SubNNSimpTree2(j,simpLevelCCT,sIdx,eIdx,1,0,Inf,0);
         elseif currMeth == 4
             txt = 'Sub-traj DP independent call avg ms per query: ';
             Q = queryStrData(j).traj;

@@ -2,9 +2,9 @@
 
 InitGlobalVars;
 
-testMethods = [3];
-reachType = 2; % 1 = small reach, 2 = large reach
-numQueries = 100;
+testMethods = [2 4];
+reachType = 1; % 1 = small reach, 2 = large reach
+numQueries = 10;
 
 rngSeed = 1;
 rng(rngSeed); % reset random seed so experiments are reproducable
@@ -71,9 +71,9 @@ for i = 1:size(testMethods,2) % sub-traj methods
             QidR = numQueries + 1;
             queryStrData(QidR).traj = trajStrData(trajNNidx).traj;
             PreprocessQuery(QidR);
-            RNN(QidR,2,inpTrajErr(simpLevelCCT),eMult);
-            trajRNNidx = queryStrData(QidR).decidetrajids(1,1);
-            SubNNSimpTree2(j,simpLevelCCT,trajStrData(trajNNidx).simptrsidx,trajStrData(trajNNidx).simptreidx,1,0,Inf,0);
+            RNN(QidR,2,inpTrajErr(simpLevelCCT),0);
+            [sIdx,eIdx] = GetVertAlignInclMin(QidR);
+            SubNNSimpTree2(j,simpLevelCCT,sIdx,eIdx,1,0,Inf,0);
         elseif currMeth == 5
             txt = 'Sub-traj DP independent call avg ms per query: ';
             Q = queryStrData(j).traj;
