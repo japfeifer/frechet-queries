@@ -1,25 +1,25 @@
 % create data
-Qid = 1;
+Qid = 4;
 Q = queryStrData(Qid).traj;
-P = trajStrData(queryStrData(Qid).decidetrajids).traj;
-
-% [cm, cSq] = DiscreteFrechetDist(P,Q);
-cm = ContFrechet(P,Q);
-sP = size(P,1);
 sQ = size(Q,1);
+
 % plot result
 figure;
-plot(P(:,1),P(:,2),'o-k','linewidth',1,'markerfacecolor','k');
 hold on;
+
+for j = 1:size(queryStrData(Qid).decidetrajids)
+    P = trajStrData(queryStrData(Qid).decidetrajids(j,1)).traj;
+    sP = size(P,1);
+    plot(P(:,1),P(:,2),'o-k','linewidth',1,'markerfacecolor','k');
+    plot([P(1,1) P(1,1)],[P(1,2) P(1,2)],'ko','MarkerSize',15);
+    plot([P(sP,1) P(sP,1)],[P(sP,2) P(sP,2)],'kx','MarkerSize',15);
+end
+
 plot(Q(:,1),Q(:,2),'o-b','linewidth',1,'markerfacecolor','b');
-
-plot([P(1,1) P(1,1)],[P(1,2) P(1,2)],'ko','MarkerSize',15);
-plot([P(sP,1) P(sP,1)],[P(sP,2) P(sP,2)],'kx','MarkerSize',15);
-
 plot([Q(1,1) Q(1,1)],[Q(1,2) Q(1,2)],'bo','MarkerSize',15);
 plot([Q(sQ,1) Q(sQ,1)],[Q(sQ,2) Q(sQ,2)],'bx','MarkerSize',15);
 
-title(['Cont Frechet Dist: ',num2str(queryStrData(Qid).sub3ub),'   |P| (black): ',num2str(sP),'   |Q| (blue): ',num2str(sQ)]);
+title(['number P (black): ',num2str(j),',  |Q| (blue): ',num2str(sQ),'   Range Dist: ',num2str(queryStrData(Qid).sub3rangedist)]);
 % legend('Q','P','location','best');
 % line([2 cm+2],[0.5 0.5],'color','m','linewidth',2);
 % text(2,0.4,'dFD length');

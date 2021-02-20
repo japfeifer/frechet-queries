@@ -1,4 +1,4 @@
-function [totCellCheck,totDPCalls,totSPVert,sP,eP] = SubRNNSimpTreeLevelDP(Q,alpha,level,sVertList,eVertList)
+function [totCellCheck,totDPCalls,totSPVert,sP,eP] = SubRNNSimpTreeLevelDP(Q,tau,level,sVertList,eVertList)
 
     global inpTrajVert inpTrajErr inP
     
@@ -10,7 +10,7 @@ function [totCellCheck,totDPCalls,totSPVert,sP,eP] = SubRNNSimpTreeLevelDP(Q,alp
     totDPCalls = 0;
     totSPVert = 0;
 
-    errDist = alpha + (2*inpTrajErr(level));
+    errDist = tau + (2*inpTrajErr(level));
 
     % determine new list of candidate sub-traj
     sP = []; eP = []; numRes = 1;

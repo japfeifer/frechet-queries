@@ -14,9 +14,11 @@
 % Outputs:
 % queryStrData - various results stored here
 
-function SubRNNSimpTreeDP(Qid,alpha,level,sVertList,eVertList)
+function SubRNNSimpTreeDP(Qid,tau,level,sVertList,eVertList)
 
-    global queryStrData inpTrajSz inpTrajPtr
+    global queryStrData inpTrajSz inpTrajPtr inP
+    
+    tSearch = tic;
     
     sumCellCheck = 0;
     sumDPCalls = 0;
@@ -34,7 +36,7 @@ function SubRNNSimpTreeDP(Qid,alpha,level,sVertList,eVertList)
         end
         
         % get this level new list of start and end vertex points on input curve P
-        [totCellCheck,totDPCalls,totSPVert,sP,eP] = SubRNNSimpTreeLevelDP(Q,alpha,i,sVertList,eVertList);
+        [totCellCheck,totDPCalls,totSPVert,sP,eP] = SubRNNSimpTreeLevelDP(Q,tau,i,sVertList,eVertList);
         sumCellCheck = sumCellCheck + totCellCheck;
         sumDPCalls = sumDPCalls + totDPCalls;
         sumSPVert = sumSPVert + totSPVert;
@@ -51,11 +53,15 @@ function SubRNNSimpTreeDP(Qid,alpha,level,sVertList,eVertList)
             break % we are done range search - no sub-traj were found within this range
         end
     end
+    
+    timeSearch = toc(tSearch);
+    
+    numWorst = size(inP,1) * size(Q,1);
 
     if size(sVertList,1) > 0
-        queryStrData(Qid).sub2svert = sVertList(:,1);
+        queryStrData(Qid).sub2svert = sP(:,1);
         queryStrData(Qid).sub2sseginterior = sP(:,2);
-        queryStrData(Qid).sub2evert = eVertList(:,1);
+        queryStrData(Qid).sub2evert = eP(:,1);
         queryStrData(Qid).sub2eseginterior = eP(:,2);
     else
         queryStrData(Qid).sub2svert = [];
@@ -63,9 +69,14 @@ function SubRNNSimpTreeDP(Qid,alpha,level,sVertList,eVertList)
         queryStrData(Qid).sub2evert = [];
         queryStrData(Qid).sub2eseginterior = [];        
     end
-    queryStrData(Qid).sub2fredist = alpha;
+
+    queryStrData(Qid).sub2cntworst = numWorst;
+    queryStrData(Qid).sub2lb = 0;
+    queryStrData(Qid).sub2ub = tau;
     queryStrData(Qid).sub2cntcellcheck = sumCellCheck;
     queryStrData(Qid).sub2cntdpcalls = sumDPCalls;
     queryStrData(Qid).sub2cntspvert = sumSPVert;
+    queryStrData(Qid).sub2searchtime = timeSearch;
+    queryStrData(Qid).sub2rangedist = tau;
 
 end

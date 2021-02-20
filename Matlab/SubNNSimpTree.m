@@ -66,9 +66,30 @@ function SubNNSimpTree(Qid,level,sIdx,eIdx,typeQ,eVal,bestDistUB,graphFlg)
     
     for i = level+1:maxLevel % traverse the simplification tree one level at a time, start at level + 1
         
-        % determine number of pairwise traj so that memory can be pre-allocated (faster)
         prevSubStr = subStr;
         subStr = [];
+        
+        % get the worst-case number of sub-traj checks
+        if i == level+1
+            numWorst = 0;
+            for j = 1:size(prevSubStr,1)
+                sidx = max(prevSubStr(j,1) - 1,1);
+                eidx = min(prevSubStr(j,2) + 1,inpTrajSz(i-1));
+                svert = inpTrajVert(sidx,i-1);
+                evert = inpTrajVert(eidx,i-1);
+                if prevSubStr(j,3) >= 3 % there are chain vertices
+                    schainidx = prevSubStr(j,1) + 1;
+                    echainidx = prevSubStr(j,2) - 1;
+                    schainvert = inpTrajVert(schainidx,i-1);
+                    echainvert = inpTrajVert(echainidx,i-1);
+                    numWorst = numWorst + ((schainvert-svert+1) * (evert-echainidx+1));
+                else
+                    numWorst = numWorst + sum(1:evert-svert+1);
+                end
+            end
+        end
+        
+        % determine number of pairwise traj so that memory can be pre-allocated (faster)
         numTraj = 0;
         for j = 1:size(prevSubStr,1)
             sidx = max(prevSubStr(j,1) - 1,1);
@@ -310,6 +331,7 @@ function SubNNSimpTree(Qid,level,sIdx,eIdx,typeQ,eVal,bestDistUB,graphFlg)
     queryStrData(Qid).subevert = subStr(candTrajSet,2); % end vertex
     queryStrData(Qid).sublb = subStr(candTrajSet,4); % LB dist
     queryStrData(Qid).subub = subStr(candTrajSet,5); % UB dist
+    queryStrData(Qid).subcntworst = numWorst;
     queryStrData(Qid).subcntlb = cntLB;
     queryStrData(Qid).subcntub = cntUB;
     queryStrData(Qid).subcntfdp = cntFDP;

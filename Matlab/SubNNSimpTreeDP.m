@@ -13,7 +13,7 @@
 
 function SubNNSimpTreeDP(Qid,level,sVertList,eVertList)
 
-    global queryStrData inpTrajSz inpTrajPtr
+    global queryStrData inpTrajSz inpTrajPtr inP
     
     tSearch = tic;
     
@@ -56,6 +56,8 @@ function SubNNSimpTreeDP(Qid,level,sVertList,eVertList)
     end
     
     timeSearch = toc(tSearch);
+    
+    numWorst = size(inP,1) * size(Q,1) * 30;
 
     queryStrData(Qid).sub2svert = sP(1,1);
     queryStrData(Qid).sub2sseginterior = sP(1,2);
@@ -63,6 +65,8 @@ function SubNNSimpTreeDP(Qid,level,sVertList,eVertList)
     queryStrData(Qid).sub2eseginterior = eP(1,2);
     queryStrData(Qid).sub2lb = lowBnd;
     queryStrData(Qid).sub2ub = upBnd;
+    
+    queryStrData(Qid).sub2cntworst = numWorst;
     queryStrData(Qid).sub2cntcellcheck = sumCellCheck;
     queryStrData(Qid).sub2cntdpcalls = sumDPCalls;
     queryStrData(Qid).sub2cntspvert = sumSPVert;

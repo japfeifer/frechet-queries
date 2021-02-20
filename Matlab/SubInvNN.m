@@ -12,6 +12,10 @@ function SubInvNN(Qid,typeQ,eVal,stage)
     global sCellCheck sDPCalls sSPVert
 
     switch nargin
+    case 1
+        typeQ = 1;
+        eVal = 0;
+        stage = 3;
     case 3
         stage = 3;
     end
@@ -177,6 +181,12 @@ function SubInvNN(Qid,typeQ,eVal,stage)
         end
         
         timeSearch = toc(tSearch);
+        
+        numWorst = 0;
+        for i = 1:size(trajStrData,2)
+            P = trajStrData(i).traj;
+            numWorst = numWorst + (size(P,1) * size(Q,1) * 30);
+        end
 
         % save results from decide stage
         queryStrData(Qid).decidecfdcnt = 0;
@@ -197,6 +207,8 @@ function SubInvNN(Qid,typeQ,eVal,stage)
         queryStrData(Qid).sub3eseginterior = eP(1,2);
         queryStrData(Qid).sub3lb = lowBnd;
         queryStrData(Qid).sub3ub = upBnd;
+        
+        queryStrData(Qid).sub3cntworst = numWorst;
         queryStrData(Qid).sub3cntcellcheck = sCellCheck;
         queryStrData(Qid).sub3cntdpcalls = sDPCalls;
         queryStrData(Qid).sub3cntspvert = sSPVert;

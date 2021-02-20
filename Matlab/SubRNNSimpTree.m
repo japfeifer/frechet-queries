@@ -252,10 +252,10 @@ function SubRNNSimpTree(Qid,tau,level,sIdx,eIdx,typeQ,eVal,graphFlg)
 
     resRNN = [];
     if size(subStrRes,1) == 0
-        queryStrData(Qid).sub1svert = 0; % start vertex
-        queryStrData(Qid).sub1evert = 0; % end vertex
-        queryStrData(Qid).sub1lb = 0; % LB dist
-        queryStrData(Qid).sub1ub = tau; % UB dist
+        queryStrData(Qid).subsvert = 0; % start vertex
+        queryStrData(Qid).subevert = 0; % end vertex
+        queryStrData(Qid).sublb = 0; % LB dist
+        queryStrData(Qid).subub = tau; % UB dist
     else
         % process subStrRes
         subStrRes = sortrows(subStrRes,[8,9]); % sort by start vertex, end vertex
@@ -274,17 +274,18 @@ function SubRNNSimpTree(Qid,tau,level,sIdx,eIdx,typeQ,eVal,graphFlg)
                 end
             end
         end
-        queryStrData(Qid).sub1svert = resRNN(:,1); % start vertex
-        queryStrData(Qid).sub1evert = resRNN(:,2); % end vertex
-        queryStrData(Qid).sub1lb = 0; % LB dist
-        queryStrData(Qid).sub1ub = tau; % UB dist
+        queryStrData(Qid).subsvert = resRNN(:,1); % start vertex
+        queryStrData(Qid).subevert = resRNN(:,2); % end vertex
+        queryStrData(Qid).sublb = 0; % LB dist
+        queryStrData(Qid).subub = tau; % UB dist
     end
-    queryStrData(Qid).sub1cntworst = numWorst;
-    queryStrData(Qid).sub1cntlb = cntLB;
-    queryStrData(Qid).sub1cntub = cntUB;
-    queryStrData(Qid).sub1cntfdp = cntFDP;
-    queryStrData(Qid).sub1searchtime = timeSearch;
-    queryStrData(Qid).sub1prunetime = timePrune;
+    queryStrData(Qid).subcntworst = numWorst;
+    queryStrData(Qid).subcntlb = cntLB;
+    queryStrData(Qid).subcntub = cntUB;
+    queryStrData(Qid).subcntfdp = cntFDP;
+    queryStrData(Qid).subsearchtime = timeSearch;
+    queryStrData(Qid).subprunetime = timePrune;
+    queryStrData(Qid).subrangedist = tau;
     
     if graphFlg == 1
         GraphSubRNN(Qid,i,3,subStr,tau,resRNN);
