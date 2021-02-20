@@ -1,6 +1,7 @@
 % create data
-P = trajStrData(2444).traj;
-Q = trajStrData(2445).traj;
+P = trajStrData(1).traj;
+Q = queryStrData(2).traj;
+% Q = trajStrData(2445).traj;
 
 
 

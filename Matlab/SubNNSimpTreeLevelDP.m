@@ -1,4 +1,4 @@
-function [frechetDist,totCellCheck,totDPCalls,totSPVert,sP,eP] = SubNNSimpTreeLevelDP(Q,level,sVertList,eVertList,maxLoop,decPrec)
+function [lowBnd,upBnd,totCellCheck,totDPCalls,totSPVert,sP,eP] = SubNNSimpTreeLevelDP(Q,level,sVertList,eVertList,maxLoop,decPrec)
 
     global decimalPrecision inpTrajVert inpTrajErr inP
     
@@ -70,8 +70,9 @@ function [frechetDist,totCellCheck,totDPCalls,totSPVert,sP,eP] = SubNNSimpTreeLe
         end
     end
 
-    frechetDist = maxBnd; % take last distance where ans == 1
-    errDist = frechetDist + (2*inpTrajErr(level));
+    lowBnd = minBnd;
+    upBnd = maxBnd;
+    errDist = upBnd + (2*inpTrajErr(level));
 
     % determine new list of candidate sub-traj
     sP = []; eP = []; numRes = 1;

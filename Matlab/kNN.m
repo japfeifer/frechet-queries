@@ -13,6 +13,8 @@ function kNN(Qid,typeQ,kNum,eVal,stage)
     case 4
         stage = 3;
     end
+    
+    tSearch = tic;
 
     S1 = [];
     kUBList = [];
@@ -222,6 +224,8 @@ function kNN(Qid,typeQ,kNum,eVal,stage)
                 end
             end
         end
+        
+        timeSearch = toc(tSearch);
 
         % save results from decide stage
         queryStrData(Qid).decidecfdcnt = numCFD;
@@ -232,6 +236,7 @@ function kNN(Qid,typeQ,kNum,eVal,stage)
             queryStrData(Qid).decideeadd = eAddImplicit;
             queryStrData(Qid).decideemult = eMultImplicit;
         end
+        queryStrData(Qid).searchtime = timeSearch;
     end
 
 end

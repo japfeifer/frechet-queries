@@ -1,14 +1,15 @@
-% function NN
+% function SubInvNN
 % 
-% Perform NN query on Qid
+% Perform Sub-traj Inverse NN query on Qid
 % typeQ: 1 Additive, 2 Multiplicative, 3 Implicit
 % Three stages: Prune, Reduce, Decide
 
-function NN(Qid,typeQ,eVal,stage)
+function SubInvNN(Qid,typeQ,eVal,stage)
 
-    global clusterNode S1 nodeCheckCnt 
-    global Bk Ak stopCheckNodes distCalcCnt conLBcnt
+    global clusterNode S1 nodeCheckCnt distCalcCnt
+    global Bk Ak stopCheckNodes
     global trajStrData queryStrData
+    global sCellCheck sDPCalls sSPVert
 
     switch nargin
     case 3
@@ -16,6 +17,10 @@ function NN(Qid,typeQ,eVal,stage)
     end
 
     tSearch = tic;
+    
+    sCellCheck = 0;
+    sDPCalls = 0;
+    sSPVert = 0;
     
     S1 = [];
     nodeCheckCnt = 0;
@@ -26,8 +31,6 @@ function NN(Qid,typeQ,eVal,stage)
     
     bestTrajID = 0;
     bestDist = 0;
-    numCFD = 0;
-    numDP = 0;
     eAddImplicit = 0;
     eMultImplicit = 0;
     foundTraj = false;
@@ -35,8 +38,10 @@ function NN(Qid,typeQ,eVal,stage)
     Q = queryStrData(Qid).traj; % query vertices
     centerTrajID = clusterNode(1,6); % root center traj id
     centreTraj = trajStrData(centerTrajID).traj; % get root center traj vertices
-    lowBnd = GetBestConstLB(centreTraj,Q,Inf,1,centerTrajID,Qid); % root center traj LB call
-    conLBcnt = conLBcnt + 1;
+    [lowBnd, upBnd,totCellCheck,totDPCalls,totSPVert] = GetSubDist(Q,centreTraj,Qid,centerTrajID,4);
+    sCellCheck = sCellCheck + totCellCheck;
+    sDPCalls = sDPCalls + totDPCalls;
+    sSPVert = sSPVert + totSPVert;
     distCalcCnt = distCalcCnt + 1;
     
     % Prune Stage - compute S1
@@ -47,7 +52,7 @@ function NN(Qid,typeQ,eVal,stage)
         eAdd = 0;
     end
     
-    NNPrune(1,Q,Qid,lowBnd,eAdd); % traverse the CCT
+    SubInvNNPrune(1,Q,Qid,lowBnd,upBnd,eAdd) % traverse the CCT
 
     if typeQ == 2 % multiplicative error
         eAdd = eVal * Ak;
@@ -75,21 +80,6 @@ function NN(Qid,typeQ,eVal,stage)
             lUB = S1(end,3); % largest UB - we already sorted asc by UB, so just get last item in list
             TF1 = S1(1 : end-1, 2) + eAdd > lUB; % for all but last row, if LB + eAdd > LUB then mark for deletion
             S1([TF1; false],:) = []; % delete rows - always keep last row
-        end
-
-        % Delete traj from S1 if their UB > Bk and LB + eAdd > SUB,
-        % but check with linear LB Traversal Race
-        if size(S1,1) > 1
-            tmpS1 = S1(2:end,:);
-            S1 = S1(1,:);
-            for i=1:size(tmpS1,1)
-                Pid = clusterNode(tmpS1(i,1),6);
-                currTraj = trajStrData(Pid).traj;
-                linearLB = GetBestLinearLBDP(currTraj,Q,Bk - eAdd,1,Pid,Qid);
-                if linearLB == false
-                     S1(end+1,:) = tmpS1(i,:);
-                end
-            end
         end
 
         % save results from Reduce Stage
@@ -127,32 +117,33 @@ function NN(Qid,typeQ,eVal,stage)
                 eMultImplicit = (Bk - sLB) / sLB;
                 foundTraj = true;
             else
-                % check frechet dec proc for the curve with the second Lowest LB
+                % check sub-traj inverse dec proc for the curve with the second Lowest LB
                 candTrajID2List = sortrows(S1,2,'ascend'); % sort asc by LB
                 secondLowestLB = candTrajID2List(2,2);
                 currTraj = trajStrData(candTrajID2List(1,1)).traj;
-
-                linearLB = GetBestLinearLBDP(currTraj,Q,secondLowestLB,1,candTrajID2List(1,1),Qid);
-                if linearLB == false
-                    decProRes = FrechetDecide(currTraj,Q,secondLowestLB,1);
-                    if decProRes == 1
-                        foundTraj = true;
-                        bestTrajID = candTrajID2List(1,1);
-                        bestDist = candTrajID2List(1,2); % just put in the LB
-                    end
+                [decProRes,totCellCheck,totDPCalls,totSPVert] = GetSubDP(Q,currTraj,secondLowestLB);
+                sCellCheck = sCellCheck + totCellCheck;
+                sDPCalls = sDPCalls + totDPCalls;
+                sSPVert = sSPVert + totSPVert;
+                if decProRes == 1
+                    foundTraj = true;
+                    bestTrajID = candTrajID2List(1,1);
+                    bestDist = candTrajID2List(1,2); % just put in the LB
                 end
             end
 
-            % if we haven't found a NN then we have to use more expensive CFD and
-            % frechet decision procedure computations
+            % if we haven't found a NN then we have to use more expensive sub-traj inverse distance and
+            % decision procedure computations
             if foundTraj == false
                 for i = 1:size(S1,1)
                     centerTrajID = S1(i,1);
                     currTraj = trajStrData(centerTrajID).traj; % get center traj 
                     if i == 1
-                        % this is first traj we check, so just get the CFD
-                        bestDist = ContFrechet(Q,currTraj);
-                        numCFD = numCFD + 1;
+                        % this is first traj we check, so just get the sub-traj inverse distance
+                        [garbage,bestDist,totCellCheck,totDPCalls,totSPVert] = GetSubDist(Q,currTraj,Qid,centerTrajID);
+                        sCellCheck = sCellCheck + totCellCheck;
+                        sDPCalls = sDPCalls + totDPCalls;
+                        sSPVert = sSPVert + totSPVert;
                         bestTrajID = centerTrajID;
                         % if the first traj CFD <= eAdd then we are done
                         if bestDist <= eAdd
@@ -162,21 +153,18 @@ function NN(Qid,typeQ,eVal,stage)
                     else % i >= 2
                         % if traj LB  < bestDist then do DP
                         if S1(i,2) < bestDist
-
-                            linearLB = GetBestLinearLBDP(currTraj,Q,bestDist,1,centerTrajID,Qid);
-                            if linearLB == false
-                                % call frechet decision procedure
-                                decProRes = FrechetDecide(currTraj,Q,bestDist,1);
-                                numDP = numDP + 1;
-                                if decProRes == 1 % then curr traj is closer, so get CFD dist
-                                    bestDist = ContFrechet(Q,currTraj);
-                                    numCFD = numCFD + 1;
-                                    bestTrajID = centerTrajID;
-                                    % if the first traj CFD <= eAdd then we are done
-                                    if bestDist <= eAdd
-                                        foundTraj = true;
-                                        break;
-                                    end
+                            % call sub-traj inverse decision procedure
+                            [decProRes,totCellCheck,totDPCalls,totSPVert] = GetSubDP(Q,currTraj,bestDist);
+                            sCellCheck = sCellCheck + totCellCheck;
+                            sDPCalls = sDPCalls + totDPCalls;
+                            sSPVert = sSPVert + totSPVert;
+                            if decProRes == 1 % then curr traj is closer, so get CFD dist
+                                [garbage,bestDist] = GetSubDist(Q,currTraj,Qid,centerTrajID);
+                                bestTrajID = centerTrajID;
+                                % if the first traj CFD <= eAdd then we are done
+                                if bestDist <= eAdd
+                                    foundTraj = true;
+                                    break;
                                 end
                             end
                         end
@@ -191,15 +179,28 @@ function NN(Qid,typeQ,eVal,stage)
         timeSearch = toc(tSearch);
 
         % save results from decide stage
-        queryStrData(Qid).decidecfdcnt = numCFD;
-        queryStrData(Qid).decidedpcnt = numDP;
+        queryStrData(Qid).decidecfdcnt = 0;
+        queryStrData(Qid).decidedpcnt = 0;
         queryStrData(Qid).decidetrajids = bestTrajID;
         queryStrData(Qid).decidetrajcnt = size(bestTrajID,1);
         if typeQ == 3
             queryStrData(Qid).decideeadd = eAddImplicit;
             queryStrData(Qid).decideemult = eMultImplicit;
         end
-        queryStrData(Qid).searchtime = timeSearch;
+        
+        currTraj = trajStrData(bestTrajID).traj; % get center traj 
+        [lowBnd,upBnd,totCellCheck,totDPCalls,totSPVert,sP,eP] = GetSubDist(Q,currTraj,Qid,bestTrajID); % get data for query
+        
+        queryStrData(Qid).sub3svert = sP(1,1);
+        queryStrData(Qid).sub3sseginterior = sP(1,2);
+        queryStrData(Qid).sub3evert = eP(1,1);
+        queryStrData(Qid).sub3eseginterior = eP(1,2);
+        queryStrData(Qid).sub3lb = lowBnd;
+        queryStrData(Qid).sub3ub = upBnd;
+        queryStrData(Qid).sub3cntcellcheck = sCellCheck;
+        queryStrData(Qid).sub3cntdpcalls = sDPCalls;
+        queryStrData(Qid).sub3cntspvert = sSPVert;
+        queryStrData(Qid).sub3searchtime = timeSearch;
     end
 
 end

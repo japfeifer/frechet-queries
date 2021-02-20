@@ -2,9 +2,11 @@
 
 InitGlobalVars;
 
-testMethods = [1 3];
+testMethods = [1 4];
 numQueries = 100;
 maxQsz = 20;
+typeQ = 2;
+eVal = 0.5;
 
 rngSeed = 1;
 rng(rngSeed); % reset random seed so experiments are reproducable
@@ -40,36 +42,39 @@ for i = 1:size(testMethods,2) % sub-traj methods
     tic
     for j = 1:numQueries
         if currMeth == 1 
-            txt = 'CCT (just Ball) avg ms per query: ';
+            txt = 'CCT (just Ball Simp) avg ms per query: ';
             NN(j,2,eMult); 
-        elseif currMeth == 2
-            txt = 'Simp Tree independent call ms per query: ';
-            level = 1; sIdx = 1; eIdx = 2;
-            SubNNSimpTree2(j,level,sIdx,eIdx,1,0,Inf,0);
         elseif currMeth == 3
-            txt = 'Simp Tree use CCT result avg ms per query: ';
+            txt = 'Vertex Aligned independent call ms per query: ';
+            level = 1; sIdx = 1; eIdx = 2;
+            SubNNSimpTree(j,level,sIdx,eIdx,typeQ,eVal,Inf,0);
+        elseif currMeth == 4
+            txt = 'Vertex Aligned use CCT result avg ms per query: ';
             trajNNidx = queryStrData(j).decidetrajids;
             QidR = numQueries + 1;
             queryStrData(QidR).traj = trajStrData(trajNNidx).traj;
             PreprocessQuery(QidR);
             RNN(QidR,2,inpTrajErr(simpLevelCCT),0);
             [sIdx,eIdx] = GetVertAlignInclMin(QidR);
-            SubNNSimpTree2(j,simpLevelCCT,sIdx,eIdx,1,0,Inf,0);
-        elseif currMeth == 4
-            txt = 'Sub-traj DP independent call avg ms per query: ';
-            Q = queryStrData(j).traj;
-            [frechetDist,totCellCheck,totDPCalls,totSPCalls,sP,eP] = SubNNIndependentDP(inP,Q);
+            SubNNSimpTree(j,simpLevelCCT,sIdx,eIdx,typeQ,eVal,Inf,0);
         elseif currMeth == 5
-            txt = 'Sub-traj DP use CCT result avg ms per query: ';
+            txt = 'Segment Interior independent call avg ms per query: ';
+            tSearch = tic;
             Q = queryStrData(j).traj;
-            trajNNidx = queryStrData(j).decidetrajids;
-            sIdx = max(trajStrData(trajNNidx).simptrsidx - 1, 1);
-            eIdx = min(trajStrData(trajNNidx).simptreidx + 1, inpTrajSz(simpLevelCCT));
-            sIdx = inpTrajVert(sIdx,simpLevelCCT);
-            eIdx = inpTrajVert(eIdx,simpLevelCCT);
-            [frechetDist,totCellCheck,totDPCalls,totSPCalls,sP,eP] = SubNNIndependentDP(inP(sIdx:eIdx,:),Q);
+            [lowBnd,upBnd,totCellCheck,totDPCalls,totSPCalls,sP,eP] = GetSubDist(inP,Q);
+            timeSearch = toc(tSearch);
+            queryStrData(j).sub2svert = sP(1,1);
+            queryStrData(j).sub2sseginterior = sP(1,2);
+            queryStrData(j).sub2evert = eP(1,1);
+            queryStrData(j).sub2eseginterior = eP(1,2);
+            queryStrData(j).sub2lb = lowBnd;
+            queryStrData(j).sub2ub = upBnd;
+            queryStrData(j).sub2cntcellcheck = totCellCheck;
+            queryStrData(j).sub2cntdpcalls = totDPCalls;
+            queryStrData(j).sub2cntspvert = totSPCalls;
+            queryStrData(j).sub2searchtime = timeSearch;
         elseif currMeth == 6
-            txt = 'Sub-traj DP use Simp Tree avg ms per query: ';
+            txt = 'Segment Interior use Simp Tree avg ms per query: ';
             level = 1; sIdx = 1; eIdx = 2;
             SubNNSimpTreeDP(j,level,sIdx,eIdx);
         end

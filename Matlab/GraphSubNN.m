@@ -28,39 +28,37 @@ function GraphSubNN(Qid,level,plotType,subStr)
     
     % plot each candidate sub-traj set
     if plotType == 1 || plotType == 2
-        subStrSz = size(subStr,2);
-        for i = 1:subStrSz
-            % graph the allSet - red
-            idxP = [inpTrajVert(subStr(i).allSet(1):subStr(i).allSet(end),level)]';
-            R = inP(idxP,:); % contiguous list of vertex indices in P (a sub-traj of P)
-            sR = size(R,1);
-            plot(R(:,1),R(:,2),'r','linewidth',2,'markerfacecolor','r');
-            
-            % graph the notDiscSet - green
-            if isempty(subStr(i).notDiscSet) == false
-                idxP = [inpTrajVert(subStr(i).notDiscSet(1):subStr(i).notDiscSet(end),level)]';
+        subStrSz = size(subStr,1);
+        for i = 1:subStrSz % graph traj that are too far in red
+            if subStr(i,6) == 1 % sub-traj is too far
+                idxP = [inpTrajVert(subStr(i,1):subStr(i,2),level)]';
                 R = inP(idxP,:); % contiguous list of vertex indices in P (a sub-traj of P)
+                sR = size(R,1);
+                plot(R(:,1),R(:,2),'r','linewidth',2,'markerfacecolor','r');
+            end
+        end
+        for i = 1:subStrSz % graph traj that are not too far in green
+            if subStr(i,6) == 0 % sub-traj is not too far
+                idxP = [inpTrajVert(subStr(i,1):subStr(i,2),level)]';
+                R = inP(idxP,:); % contiguous list of vertex indices in P (a sub-traj of P)
+                sR = size(R,1);
                 plot(R(:,1),R(:,2),'g','linewidth',2,'markerfacecolor','g');
                 cm = ContFrechet(Q,R);
-                sR = size(R,1);
-            else
-                cm = 0;
-                sR = 0;
             end
-            
-            % graph the chain - green
-            if subStr(i).sChain > 0
-                idxP = [inpTrajVert(subStr(i).sChain:subStr(i).eChain,level)]';
-                R = inP(idxP,:); % contiguous list of vertex indices in P (a sub-traj of P)
-                plot(R(:,1),R(:,2),'color',[0.4660 0.6740 0.1880],'linewidth',4,'markerfacecolor','g');
-            end
-            
-            title(['Level:',num2str(level),'  Size inP (black):',num2str(sP),'  Size Q (blue):',num2str(sQ),'  Size Not Discarded R (green):',num2str(sR),'  ConFrechetDist(Q,R): ',num2str(cm),' with error ',num2str(inpTrajErr(level))]);
         end
+%         for i = 1:subStrSz % graph traj that are not too far and have a chain in thick green
+%             if subStr(i,6) == 0 && subStr(i,8) > 0 % sub-traj is not too far and has a chain
+%                 idxP = [inpTrajVert(subStr(i,8):subStr(i,9),level)]';
+%                 R = inP(idxP,:); % contiguous list of vertex indices in P (a sub-traj of P)
+%                 plot(R(:,1),R(:,2),'color',[0.4660 0.6740 0.1880],'linewidth',4,'markerfacecolor','g');
+%             end
+%         end
+        title(['Level:',num2str(level),'  Size inP (black):',num2str(sP),'  Size Q (blue):',num2str(sQ),...
+            '  Size Not Discarded R (green):',num2str(sR),'  ConFrechetDist(Q,R): ',num2str(cm),' with error ',...
+            num2str(inpTrajErr(level))]);
     elseif plotType == 3
-        queryStrData(Qid).subschain;
-        queryStrData(Qid).subechain;
-        R = inP(queryStrData(Qid).subschain:queryStrData(Qid).subechain,:); % contiguous list of vertex indices in P (a sub-traj of P)
+        idxP = [inpTrajVert(subStr(1,1):subStr(1,2),level)]';   % just look a first row in subStr
+        R = inP(idxP,:); % contiguous list of vertex indices in P (a sub-traj of P)
         sR = size(R,1);
         plot(R(:,1),R(:,2),'color',[0.4660 0.6740 0.1880],'linewidth',4,'markerfacecolor','g');
         cm = ContFrechet(Q,R);

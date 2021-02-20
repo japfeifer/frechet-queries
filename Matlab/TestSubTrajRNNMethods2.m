@@ -2,9 +2,11 @@
 
 InitGlobalVars;
 
-testMethods = [1 2];
-numQueries = 10;
+testMethods = [1 3 4 5];
+numQueries = 100;
 maxQsz = 25;
+typeQ = 1;
+eVal = 0;
 
 rngSeed = 1;
 rng(rngSeed); % reset random seed so experiments are reproducable
@@ -40,24 +42,20 @@ for i = 1:size(testMethods,2) % sub-traj methods
     tic
     for j = 1:numQueries
         if currMeth == 1 
-            txt = 'CCT (just Driemel) avg ms per query: ';
+            txt = 'CCT (just Ball Simp) avg ms per query: ';
             RNN(j,2,tau+inpTrajErr(simpLevelCCT),0); 
-        elseif currMeth == 2
-            txt = 'Sub-traj DP use Simp Tree avg ms per query: ';
-            level = 1; sIdx = 1; eIdx = 2;
-            SubRNNSimpTreeDP(j,tau,level,sIdx,eIdx);
         elseif currMeth == 3
-            txt = 'Simp Tree independent call avg ms per query: ';
+            txt = 'Vertex Aligned independent call avg ms per query: ';
             level = 1; sIdx = 1; eIdx = 2;
-            SubRNNSimpTree2(j,tau,level,sIdx,eIdx,typeQ,eVal,0);
+            SubRNNSimpTree(j,tau,level,sIdx,eIdx,typeQ,eVal,0);
         elseif currMeth == 4
-            txt = 'Simp Tree use CCT result avg ms per query: ';
+            txt = 'Vertex Aligned use CCT result avg ms per query: ';
             if size(queryStrData(j).decidetrajids,1) > 0
                 [sIdx,eIdx] = GetVertAlignInclMin(j);
-                SubRNNSimpTree2(j,tau,simpLevelCCT,sIdx,eIdx,typeQ,eVal,0);
+                SubRNNSimpTree(j,tau,simpLevelCCT,sIdx,eIdx,typeQ,eVal,0);
             end
-        elseif currMeth == 6
-            txt = 'Sub-traj DP use Simp Tree avg ms per query: ';
+        elseif currMeth == 5
+            txt = 'Segment Interior use Simp Tree avg ms per query: ';
             level = 1; sIdx = 1; eIdx = 2;
             SubRNNSimpTreeDP(j,tau,level,sIdx,eIdx);
         end

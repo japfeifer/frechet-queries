@@ -1,9 +1,6 @@
 % Function: SubNNSimpTreeDP
 %
 % Perform a sub-trajectory NN on query Qid using the simplification tree.
-% Can be used in conjunction with the CCT, i.e. the CCT search is run first and 
-% the approximate result is returned (has tree level and start/end vertex Idx).
-% Can also be used stand-alone, i.e. just call it from the root (level=1,sVertexList=1,eVertexList=2).
 % 
 % Inputs:
 % Qid - query ID
@@ -17,6 +14,8 @@
 function SubNNSimpTreeDP(Qid,level,sVertList,eVertList)
 
     global queryStrData inpTrajSz inpTrajPtr
+    
+    tSearch = tic;
     
     sumCellCheck = 0;
     sumDPCalls = 0;
@@ -42,7 +41,7 @@ function SubNNSimpTreeDP(Qid,level,sVertList,eVertList)
         
         % get this level new list of start and end vertex points on input curve P
         maxLoopCnt = loopCntList(i);
-        [frechetDist,totCellCheck,totDPCalls,totSPVert,sP,eP] = SubNNSimpTreeLevelDP(Q,i,sVertList,eVertList,maxLoopCnt);
+        [lowBnd,upBnd,totCellCheck,totDPCalls,totSPVert,sP,eP] = SubNNSimpTreeLevelDP(Q,i,sVertList,eVertList,maxLoopCnt);
         sumCellCheck = sumCellCheck + totCellCheck;
         sumDPCalls = sumDPCalls + totDPCalls;
         sumSPVert = sumSPVert + totSPVert;
@@ -55,14 +54,18 @@ function SubNNSimpTreeDP(Qid,level,sVertList,eVertList)
             eVertList(j,1) = eP(j,1) + 1;
         end
     end
+    
+    timeSearch = toc(tSearch);
 
-    queryStrData(Qid).sub2svert = sVertList(1,1);
+    queryStrData(Qid).sub2svert = sP(1,1);
     queryStrData(Qid).sub2sseginterior = sP(1,2);
-    queryStrData(Qid).sub2evert = eVertList(1,1);
+    queryStrData(Qid).sub2evert = eP(1,1);
     queryStrData(Qid).sub2eseginterior = eP(1,2);
-    queryStrData(Qid).sub2fredist = frechetDist;
+    queryStrData(Qid).sub2lb = lowBnd;
+    queryStrData(Qid).sub2ub = upBnd;
     queryStrData(Qid).sub2cntcellcheck = sumCellCheck;
     queryStrData(Qid).sub2cntdpcalls = sumDPCalls;
     queryStrData(Qid).sub2cntspvert = sumSPVert;
+    queryStrData(Qid).sub2searchtime = timeSearch;
 
 end

@@ -33,35 +33,30 @@ function SubNNSimpTree(Qid,level,sIdx,eIdx,typeQ,eVal,bestDistUB,graphFlg)
         graphFlg = 0;
     end
 
-    global queryStrData inpTrajSz 
+    global queryStrData inpTrajSz inpTrajPtr inpTrajVert inpTrajErr inpTrajErrF inP
 
     tSearch = tic;
 
+    typeP = 2; % 1 = non-simp P, 2 = simp P
+    useF = 1; % 1 = use frechet dist error, 0 = do not use frechet dist error
+        
     timeSearch = 0; timePrune = 0;
-    cntLBtot = 0; cntUBtot = 0; cntFDPtot = 0; cntCFDtot = 0;
-    foundResFlg = 0;
+    cntLB = 0; cntUB = 0; cntFDP = 0; cntCFD = 0;
+    foundResFlg = 0; smallestLB = 0;
     
     subStr = [];  % structure to store candidate sub-traj set
     
-    % initial level setup
-    for i = 1:size(sIdx,1) 
-        s = max(sIdx(i) - 1,1);
-        e = min(eIdx(i) + 1,inpTrajSz(level));
-        subStr(i).trajTbl = [];               % table to store pair-wise sub-traj, cols: start vertex Idx, end vertex Idx, LB dist, UB dist, discarded Flg
-        subStr(i).allSet = [s:e];             % array of vertex Idx (contiguous), all potential vertices in this candidate sub-traj set
-        subStr(i).notDiscSet = [s:e];         % array of vertex Idx, vertices not discarded
-        subStr(i).discSet = [];               % array of vertex Idx, vertices discarded
-        subStr(i).smallestLB = 0;             % smallest LB from trajTbl
-        subStr(i).smallestUB = Inf;           % smallest UB from trajTbl
-        subStr(i).sChain = 0;                 % start vertex Idx for chain
-        subStr(i).eChain = 0;                 % end vertex Idx for chain
-        allSetSz = size(subStr(i).allSet,2);
-        if allSetSz >= 5 % there is a chain
-            subStr(i).sChain = subStr(i).allSet(3);
-            subStr(i).eChain = subStr(i).allSet(allSetSz-2);
-        end
+    % initial level setup of sub-traj info
+    for i = 1:size(sIdx,1) % for each sub-traj
+        subStr(i,1) = sIdx(i);                             % start idx
+        subStr(i,2) = eIdx(i);                             % end idx
+        subStr(i,3) = subStr(i,2) - subStr(i,1) + 1;       % num vertices
+        subStr(i,4) = 0;                                   % lower bound
+        subStr(i,5) = Inf;                                 % upper bound
+        subStr(i,6) = 0;                                   % too far flag
+        subStr(i,7) = 0;                                   % within range flag
     end
-    
+ 
     Q = queryStrData(Qid).traj; % query trajectory vertices and coordinates
     maxLevel = size(inpTrajSz,2); % the leaf level for the simplification tree
     
@@ -70,157 +65,255 @@ function SubNNSimpTree(Qid,level,sIdx,eIdx,typeQ,eVal,bestDistUB,graphFlg)
     end
     
     for i = level+1:maxLevel % traverse the simplification tree one level at a time, start at level + 1
-        subStrSz = size(subStr,2);
-        for j = 1:subStrSz  % process each candidate sub-traj set
-            % get this level's allSet, sChain, eChain
-            [subStr(j).allSet,subStr(j).sChain,subStr(j).eChain] = ...
-                GetNextLevelVertices(i-1,subStr(j).notDiscSet,subStr(j).sChain,subStr(j).eChain);
-            
-            % get pairwise sub-traj
-            [subStr(j).trajTbl] = GetPairwiseSubTraj(subStr(j).allSet,subStr(j).sChain,subStr(j).eChain);
-            
-            tPrune = tic;
-            % populate trajTbl with Prune/Reduce/Decide results
-            [subStr(j).trajTbl,subStr(j).smallestLB,subStr(j).smallestUB,cntLB,cntUB,cntFDP,cntCFD,bestDistUB] = ...
-                SubNNPruneReduceDecide(Qid,Q,i,subStr(j).trajTbl,subStr(j).smallestUB,maxLevel,bestDistUB);
-            
-            timePrune = timePrune + toc(tPrune);
-            cntLBtot = cntLBtot + cntLB;
-            cntUBtot = cntUBtot + cntUB;
-            cntFDPtot = cntFDPtot + cntFDP;
-            cntCFDtot = cntCFDtot + cntCFD;
-            
-            if eVal > 0 % there is a query additive or multiplicative error
-                if typeQ == 1 % additive error
-                    eAdd = eVal;
-                else
-                    eAdd = eVal * subStr(j).smallestLB;
-                end
-                if subStr(j).smallestUB <= eAdd % we found a candidate within the error bound
-                    foundResFlg = 1;
-                    candTrajSet = j;
-                    break
-                end
+        
+        % determine number of pairwise traj so that memory can be pre-allocated (faster)
+        prevSubStr = subStr;
+        subStr = [];
+        numTraj = 0;
+        for j = 1:size(prevSubStr,1)
+            sidx = max(prevSubStr(j,1) - 1,1);
+            eidx = min(prevSubStr(j,2) + 1,inpTrajSz(i-1));
+            sidx = inpTrajPtr(sidx,i-1);
+            eidx = inpTrajPtr(eidx,i-1);
+            if prevSubStr(j,3) >= 3 % there are chain vertices
+                schainidx = prevSubStr(j,1) + 1;
+                echainidx = prevSubStr(j,2) - 1;
+                schainidx = inpTrajPtr(schainidx,i-1);
+                echainidx = inpTrajPtr(echainidx,i-1);
+                numTraj = numTraj + ((schainidx-sidx+1) * (eidx-echainidx+1));
+            else
+                numTraj = numTraj + sum(1:eidx-sidx+1);
             end
-
-            % compute notDiscSet
-            notDiscSet = [];
-            trajTbl = subStr(j).trajTbl;
-            trajTbl(trajTbl(:,5)==1,:) = []; % remove discarded traj
-            for k = 1:size(trajTbl,1)
-                notDiscSet = unique([notDiscSet trajTbl(k,1):trajTbl(k,2)]); % build set of start/end vertice indexes, remove duplicates
-            end
-            subStr(j).notDiscSet = notDiscSet;
-            
-            % compute discSet, i.e. the set difference allSet - notDiscSet
-            subStr(j).discSet = setdiff(subStr(j).allSet,subStr(j).notDiscSet);
-            
-            % see if there are "splits" in the notDiscSet, i.e. if it is non-contiguous
-            splitStr = [];
-            currSet = [];
-            splitNum = 1;
-            for k = 1:size(notDiscSet,2)
-                if k == 1
-                    currSet(end+1) = notDiscSet(k);
-                elseif notDiscSet(k) > notDiscSet(k-1) + 1  % non-contiguous chunk
-                    splitStr(splitNum).set = currSet; % save prev set
-                    splitNum = splitNum + 1;
-                    currSet = notDiscSet(k); % start new set
-                else % contiguous chunk
-                    currSet(end+1) = notDiscSet(k);
-                end
-            end
-            splitStr(splitNum).set = currSet; % save last set
-            
-            splitStrSz = size(splitStr,2);
-            if splitStrSz > 1 % we have to split, so update/insert some subStr info
-                subStrSz2 = size(subStr,2);
-                for k = 1:splitStrSz
-                    if k == 1
-                        subStrIdx = j;
-                    else
-                        subStrSz2 = subStrSz2 + 1;
-                        subStrIdx = subStrSz2;
+        end
+        subStr(1:numTraj,1:7) = 0;
+        
+        % generate this level pairwise subStr set
+        cnt = 1;
+        for j = 1:size(prevSubStr,1)
+            sidx = max(prevSubStr(j,1) - 1,1);
+            eidx = min(prevSubStr(j,2) + 1,inpTrajSz(i-1));
+            sidx = inpTrajPtr(sidx,i-1);
+            eidx = inpTrajPtr(eidx,i-1);
+            if prevSubStr(j,3) >= 3 % there are chain vertices
+                schainidx = prevSubStr(j,1) + 1;
+                echainidx = prevSubStr(j,2) - 1;
+                schainidx = inpTrajPtr(schainidx,i-1);
+                echainidx = inpTrajPtr(echainidx,i-1);
+                for ii = sidx:schainidx
+                    for jj = echainidx:eidx
+                        if ii ~= jj
+                            subStr(cnt,1:7) = [ii jj jj-ii+1 0 Inf 0 0];
+                            cnt = cnt + 1;
+                        end
                     end
-                    currSet = splitStr(k).set;
-                    subStr(subStrIdx).trajTbl = [];
-                    subStr(subStrIdx).allSet = currSet;  
-                    subStr(subStrIdx).notDiscSet = currSet; % Next level iteration will process this split set.
-                    subStr(subStrIdx).discSet = [];
-                    subStr(subStrIdx).smallestLB = 0;    % Set bounds to extremes because we do not want to discard, the
-                    subStr(subStrIdx).smallestUB = Inf;  % next level iteration will process the new candidate sub-traj set and compute bounds.
-                    subStr(subStrIdx).sChain = 0;        % Next level iteration will compute start/end chains, so just set to no chains.
-                    subStr(subStrIdx).eChain = 0;
                 end
-            else % no splitting, get the intersection of the non-discarded traj vertex Idx in trajTbl, this is the "chain"
-                if size(subStr(j).notDiscSet,2) > 3 && size(trajTbl,1) > 1 % only check for chains if there are 3 or more segments in trajTbl that are not discarded
-                    intersectSet = [];
-                    for m = 1:size(trajTbl,1)
-                        if isempty(intersectSet) == true
-                            intersectSet = [trajTbl(m,1) : trajTbl(m,2)];
-                        else
-                            intersectSet = intersect(intersectSet, [trajTbl(m,1) : trajTbl(m,2)]);
-                            if isempty(intersectSet) == true
+            else % no chain vertices
+                for ii = sidx:eidx-1
+                    for jj = ii+1:eidx
+                        subStr(cnt,1:7) = [ii jj jj-ii+1 0 Inf 0 0];
+                        cnt = cnt + 1;
+                    end
+                end
+            end
+        end
+        subStr = subStr(1:cnt-1,:); % we may have pre-allocated too much space so trim it
+        subStr = unique(subStr,'rows'); % remove any duplicate sub-trajectories
+
+        tPrune = tic;
+         
+        % get each sub-traj (vertices and coordinates) and LB/UB err
+        err = inpTrajErr(i); % current level error
+        subTrajStr = [];
+        for j = 1:size(subStr,1)
+            if typeP == 1 % non-simp P
+                idx1 = inpTrajVert(subStr(j,1),i);
+                idx2 = inpTrajVert(subStr(j,2),i);
+                subTrajStr(j).traj = inP(idx1:idx2,:); % contiguous list of vertex indices in P (a sub-traj of P)
+            else % simp P
+                idxP = [inpTrajVert(subStr(j,1):subStr(j,2),i)]';
+                subTrajStr(j).traj = inP(idxP,:); % contiguous list of vertex indices in simplified P (a sub-traj of P)
+            end
+            % compute error bounds
+            if useF == 1
+                idx3 = subStr(j,1);
+                idx4 = subStr(j,2)-1;
+                if i == maxLevel
+                    errF = 0;
+                else
+                    errF = max([inpTrajErrF(idx3:idx4,i)]);
+                end
+                errLB = err + errF;
+                if typeP == 1
+                    errUB = 0;
+                else
+                    errUB = errF;
+                end
+            else
+                errLB = 2 * err;
+                if typeP == 1
+                    errUB = 0;
+                else
+                    errUB = err;
+                end
+            end
+            subTrajStr(j).errLB = errLB;
+            subTrajStr(j).errUB = errUB;
+        end
+
+        % compute LB/UB and "too far flag"
+        bestDistUBidx = 0;
+        if i ~= maxLevel
+            for j = 1:size(subStr,1)
+                P = subTrajStr(j).traj;
+                subStr(j,4) = max(GetBestConstLB(P,Q,Inf,3,Qid,0,1) - subTrajStr(j).errLB, 0);  % get the LB
+                subStr(j,4) = round(subStr(j,4),10)+0.00000000009;
+                subStr(j,4) = fix(subStr(j,4) * 10^10)/10^10;
+                cntLB = cntLB + 1;
+                if subStr(j,4) > bestDistUB % discard traj
+                    subStr(j,6) = 1; % too far flg = 1
+                    subStr(j,5) = subStr(j,4); % just set UB to LB
+                else
+                    cntFDP = cntFDP + 1;
+                    if FrechetDecide(P,Q,bestDistUB+0.0000001+subTrajStr(j).errUB) == false % compute Frechet decision procedure, discard traj if = false
+                        subStr(j,6) = 1; % too far flg = 1
+                        subStr(j,5) = bestDistUB+0.0000001+subTrajStr(j).errUB; 
+                    else
+                        subStr(j,5) = GetBestUpperBound(P,Q,3,Qid,0,subStr(j,4),0) + subTrajStr(j).errUB; % get the UB
+                        subStr(j,5) = round(subStr(j,5),10)+0.00000000009;
+                        subStr(j,5) = fix(subStr(j,5) * 10^10)/10^10;
+                        cntUB = cntUB + 1;
+                        if subStr(j,5) < bestDistUB
+                            bestDistUB = subStr(j,5);
+                            bestDistUBidx = j;
+                        end
+                        if eVal > 0 % there is a query additive or multiplicative error
+                            if typeQ == 1 % additive error
+                                eAdd = eVal;
+                            else
+                                eAdd = eVal * smallestLB;
+                            end
+                            if subStr(j,5) <= eAdd % we found a candidate within the error bound
+                                foundResFlg = 1;
+                                candTrajSet = j;
                                 break
                             end
                         end
-                    end
-                    if isempty(intersectSet) == false
-                        subStr(j).sChain = intersectSet(1);
-                        subStr(j).eChain = intersectSet(end);
+                    end           
+                end
+            end
+        end
+        
+        if eVal > 0 && foundResFlg == 1
+            break
+        end
+        
+        % compute the Frechet dist for the sub-traj with the best UB
+        if bestDistUBidx > 0
+            P = subTrajStr(bestDistUBidx).traj;
+            cfDist = ContFrechet(P,Q); % compute continuous Frechet distance
+            cfDist = round(cfDist,10)+0.00000000009;
+            cfDist = fix(cfDist * 10^10)/10^10;
+            cntCFD = cntCFD + 1;
+            subStr(bestDistUBidx,4) = max(cfDist - subTrajStr(bestDistUBidx).errLB, 0); % update LB/UB
+            subStr(bestDistUBidx,5) = cfDist + subTrajStr(bestDistUBidx).errUB ;
+            if subStr(bestDistUBidx,5) < bestDistUB
+                bestDistUB = subStr(bestDistUBidx,5);
+            end
+        end
+
+        % compute dist using cont Frechet dist and DP
+        if i == maxLevel  % only compute these at leaf level
+            for j = 1:size(subStr,1)
+                if subStr(j,6) == 0 % only look at sub-traj that are not too far
+                    if subStr(j,4) > bestDistUB % discard traj
+                        subStr(j,6) = 1; % too far flg = 1
                     else
-                        subStr(j).sChain = 0;
-                        subStr(j).eChain = 0;
+                        P = subTrajStr(j).traj;
+                        cntFDP = cntFDP + 1;
+                        if FrechetDecide(P,Q,bestDistUB+0.0000001+subTrajStr(j).errUB) == false % compute Frechet decision procedure, discard traj if = false
+                            subStr(j,6) = 1; % too far flg = 1
+                            subStr(j,5) = bestDistUB+0.0000001+subTrajStr(j).errUB; 
+                        else
+                            % cfDist = ContFrechet(P,Q)-0.0000001; % compute continuous Frechet distance
+                            cfDist = ContFrechet(P,Q); % compute continuous Frechet distance
+                            cfDist = round(cfDist,10)+0.00000000009;
+                            cfDist = fix(cfDist * 10^10)/10^10;
+                            cntCFD = cntCFD + 1;
+                            subStr(j,4) = max(cfDist - subTrajStr(j).errLB, 0); % update LB/UB
+                            subStr(j,5) = cfDist + subTrajStr(j).errUB ;
+                            if subStr(j,5) < bestDistUB
+                                bestDistUB = subStr(j,5);
+                                bestDistUBidx = j;
+                            end
+                            if subStr(j,4) > bestDistUB % discard traj
+                                subStr(j,6) = 1; % too far flg = 1
+                            end
+                            if eVal > 0 % there is a query additive or multiplicative error
+                                if typeQ == 1 % additive error
+                                    eAdd = eVal;
+                                else
+                                    eAdd = eVal * smallestLB;
+                                end
+                                if subStr(j,5) <= eAdd % we found a candidate within the error bound
+                                    foundResFlg = 1;
+                                    candTrajSet = j;
+                                    break
+                                end
+                            end
+                        end
                     end
-                else
-                    subStr(j).sChain = 0;
-                    subStr(j).eChain = 0;
                 end
             end
         end
         
-        if foundResFlg == 1
-            break 
+        if eVal > 0 && foundResFlg == 1
+            break
         end
         
-        % if 2 or more candidate sub-traj sets, see if any can be discarded
-        if size(subStr,2) > 1
-            smallestUB = min([subStr.smallestUB]);
-            currStrIdx = 1;
-            while 1 == 1
-                if subStr(currStrIdx).smallestLB > smallestUB
-                    subStr(currStrIdx) = [];
-                elseif isempty(subStr(currStrIdx).notDiscSet) == true
-                    subStr(currStrIdx) = [];
-                else
-                    currStrIdx = currStrIdx + 1;
-                end
-                if currStrIdx > size(subStr,2)
-                    break
+        % there still may be some sub-traj that can be marked as too far
+        for j = 1:size(subStr,1)
+            if subStr(j,6) == 0 % only look at sub-traj that are not too far
+                if subStr(j,4) > bestDistUB % discard traj
+                    subStr(j,6) = 1; % too far flg = 1
                 end
             end
         end
         
+        timePrune = timePrune + toc(tPrune);
+
         if graphFlg == 1
             GraphSubNN(Qid,i,2,subStr);
         end
+        
+        % delete sub-traj that are too far
+        subStr = subStr(subStr(:,6)==0,:);
+
+        % compute smallest LB (needed for queries with additive/multiplicative errors)
+        if eVal > 0
+            smallestLB = min(subStr(:,4));
+        end
+
+        % more than one final result with same smallest distance
+        if i == maxLevel && size(subStr,1) > 1 
+            subStr = sortrows(subStr,3,'ascend'); % smallest size sub-traj first
+        end
+
     end
     
     timeSearch = toc(tSearch);
 
-    if foundResFlg == 1 % found a result early due to query additive/multiplicative error
-        currTbl = subStr(candTrajSet).trajTbl; % table where result is stored
-        currTbl = sortrows(currTbl,4,'ascend'); % sort by UB - first record is result
-        queryStrData(Qid).subschain = currTbl(1,1); % start vertex
-        queryStrData(Qid).subechain = currTbl(1,2); % end vertex
-    else
-        queryStrData(Qid).subschain = subStr(1).notDiscSet(1); % start vertex
-        queryStrData(Qid).subechain = subStr(1).notDiscSet(end); % end vertex
+    if foundResFlg == 0
+        candTrajSet = 1;
     end
-    queryStrData(Qid).subcntlb = cntLBtot;
-    queryStrData(Qid).subcntub = cntUBtot;
-    queryStrData(Qid).subcntfdp = cntFDPtot;
-    queryStrData(Qid).subcntcfd = cntCFDtot;
+
+    queryStrData(Qid).subsvert = subStr(candTrajSet,1); % start vertex
+    queryStrData(Qid).subevert = subStr(candTrajSet,2); % end vertex
+    queryStrData(Qid).sublb = subStr(candTrajSet,4); % LB dist
+    queryStrData(Qid).subub = subStr(candTrajSet,5); % UB dist
+    queryStrData(Qid).subcntlb = cntLB;
+    queryStrData(Qid).subcntub = cntUB;
+    queryStrData(Qid).subcntfdp = cntFDP;
+    queryStrData(Qid).subcntcfd = cntCFD;
     queryStrData(Qid).subsearchtime = timeSearch;
     queryStrData(Qid).subprunetime = timePrune;
     

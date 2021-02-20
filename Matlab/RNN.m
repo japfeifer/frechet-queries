@@ -16,6 +16,8 @@ function RNN(Qid,typeQ,tau,eVal,stage,doCnt)
     case 5
         doCnt = 0;
     end
+    
+    tSearch = tic;
 
     S1 = [];
     nodeCheckCnt = 0;
@@ -98,6 +100,8 @@ function RNN(Qid,typeQ,tau,eVal,stage,doCnt)
         if isempty(rangeTrajList) == false
             rangeTrajList = rangeTrajList(:,1); % just save traj id's
         end
+        
+        timeSearch = toc(tSearch);
 
         % save results from decide stage
         queryStrData(Qid).decidecfdcnt = numCFD;
@@ -108,6 +112,7 @@ function RNN(Qid,typeQ,tau,eVal,stage,doCnt)
             queryStrData(Qid).decideeadd = eAddImplicit;
             queryStrData(Qid).decideemult = eMultImplicit;
         end
+        queryStrData(Qid).searchtime = timeSearch;
     end
 
 end

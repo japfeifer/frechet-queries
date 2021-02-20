@@ -1,13 +1,12 @@
 % Function: SubRNNSimpTree
 %
-% Perform a sub-trajectory RNN on query Qid using the simplification tree.
+% Perform a sub-trajectory NN on query Qid using the simplification tree.
 % Can be used in conjunction with the CCT, i.e. the CCT search is run first and 
 % the approximate result is returned (has tree level and start/end vertex Idx).
 % Can also be used stand-alone, i.e. just call it from the root (level=1,sIdx=1,eIdx=2).
 % 
 % Inputs:
 % Qid: query ID
-% tau: Frechet distance range
 % level: simplification tree level to start at
 % sIdx: start vertex Idx in simplification tree
 % eIdx: end vertex Idx in simplification tree
@@ -30,181 +29,265 @@ function SubRNNSimpTree(Qid,tau,level,sIdx,eIdx,typeQ,eVal,graphFlg)
         graphFlg = 0;
     end
 
-    global queryStrData inpTrajSz 
+    global queryStrData inpTrajSz inpTrajPtr inpTrajVert inpTrajErr inpTrajErrF inP
 
     tSearch = tic;
 
+    typeP = 2; % 1 = non-simp P, 2 = simp P
+    useF = 1; % 1 = use frechet dist error, 0 = do not use frechet dist error
+        
     timeSearch = 0; timePrune = 0;
-    cntLBtot = 0; cntUBtot = 0; cntFDPtot = 0;
-
+    cntLB = 0; cntUB = 0; cntFDP = 0;
+    
     subStr = [];  % structure to store candidate sub-traj set
+    subStrRes = []; % structure to store result set
     
-    % initial level setup
-    for i = 1:size(sIdx,1) 
-        s = max(sIdx(i) - 1,1);
-        e = min(eIdx(i) + 1,inpTrajSz(level));
-        subStr(i).trajTbl = [];               % table to store pair-wise sub-traj, cols: start vertex Idx, end vertex Idx, LB dist, UB dist, discarded Flg
-        subStr(i).allSet = [s:e];             % array of vertex Idx (contiguous), all potential vertices in this candidate sub-traj set
-        subStr(i).notDiscSet = [s:e];         % array of vertex Idx, vertices not discarded
-        subStr(i).discSet = [];               % array of vertex Idx, vertices discarded
-        subStr(i).sChain = 0;                 % start vertex Idx for chain
-        subStr(i).eChain = 0;                 % end vertex Idx for chain
-        allSetSz = size(subStr(i).allSet,2);
-        if allSetSz >= 5 % there is a chain
-            subStr(i).sChain = subStr(i).allSet(3);
-            subStr(i).eChain = subStr(i).allSet(allSetSz-2);
-        end
+    % initial level setup of sub-traj info
+    for i = 1:size(sIdx,1) % for each sub-traj
+        subStr(i,1) = sIdx(i);                             % start idx
+        subStr(i,2) = eIdx(i);                             % end idx
+        subStr(i,3) = subStr(i,2) - subStr(i,1) + 1;       % num vertices
+        subStr(i,4) = 0;                                   % lower bound
+        subStr(i,5) = Inf;                                 % upper bound
+        subStr(i,6) = 0;                                   % too far flag
+        subStr(i,7) = 0;                                   % within range flag
+        subStr(i,8) = 0;                                   % start vertex id
+        subStr(i,9) = 0;                                   % end vertex id
     end
-    
+ 
     Q = queryStrData(Qid).traj; % query trajectory vertices and coordinates
     maxLevel = size(inpTrajSz,2); % the leaf level for the simplification tree
+    
+    if eVal > 0 % there is a query additive or multiplicative error
+        if typeQ == 1 % additive error
+            eAdd = eVal;
+        else
+            eAdd = eVal * tau;
+        end
+    else
+        eAdd = 0;
+    end
     
     if graphFlg == 1
         GraphSubRNN(Qid,level,1,subStr,tau);
     end
-    
-    for i = level+1:maxLevel % traverse the simplification tree one level at a time, start at level + 1
-        subStrSz = size(subStr,2);
-        for j = 1:subStrSz  % process each candidate sub-traj set
-            % get this level's allSet, sChain, eChain
-            [subStr(j).allSet,subStr(j).sChain,subStr(j).eChain] = ...
-                GetNextLevelVertices(i-1,subStr(j).notDiscSet,subStr(j).sChain,subStr(j).eChain);
-            
-            % get pairwise sub-traj
-            [subStr(j).trajTbl] = GetPairwiseSubTrajRNN(subStr(j).allSet,subStr(j).sChain,subStr(j).eChain);
-            
-            tPrune = tic;
-            % populate trajTbl with Prune/Reduce/Decide results
-            [subStr(j).trajTbl,cntLB,cntUB,cntFDP] = ...
-                SubRNNPruneReduceDecide(Qid,Q,tau,typeQ,eVal,i,subStr(j).trajTbl,maxLevel);
-            
-            timePrune = timePrune + toc(tPrune);
-            cntLBtot = cntLBtot + cntLB;
-            cntUBtot = cntUBtot + cntUB;
-            cntFDPtot = cntFDPtot + cntFDP;
 
-            % compute notDiscSet
-            notDiscSet = [];
-            trajTbl = subStr(j).trajTbl;
-            trajTbl(trajTbl(:,5)==1,:) = []; % remove discarded traj
-            for k = 1:size(trajTbl,1)
-                notDiscSet = unique([notDiscSet trajTbl(k,1):trajTbl(k,2)]); % build set of start/end vertice indexes, remove duplicates
-            end
-            subStr(j).notDiscSet = notDiscSet;
-            
-            if size(notDiscSet,2) == 0 % if this set is empty (i.e. all are too far from tau range) then do not have to process it anymore
-                break
-            end
-            
-            % compute discSet, i.e. the set difference allSet - notDiscSet
-            subStr(j).discSet = setdiff(subStr(j).allSet,subStr(j).notDiscSet);
-            
-            % see if there are "splits" in the notDiscSet, i.e. if it is non-contiguous
-            splitStr = [];
-            currSet = [];
-            splitNum = 1;
-            for k = 1:size(notDiscSet,2)
-                if k == 1
-                    currSet(end+1) = notDiscSet(k);
-                elseif notDiscSet(k) > notDiscSet(k-1) + 1  % non-contiguous chunk
-                    splitStr(splitNum).set = currSet; % save prev set
-                    splitNum = splitNum + 1;
-                    currSet = notDiscSet(k); % start new set
-                else % contiguous chunk
-                    currSet(end+1) = notDiscSet(k);
+    for i = level+1:maxLevel % traverse the simplification tree one level at a time, start at level + 1
+        
+        prevSubStr = subStr;
+        subStr = [];
+        
+        % get the worst-case number of sub-traj checks
+        if i == level+1
+            numWorst = 0;
+            for j = 1:size(prevSubStr,1)
+                sidx = max(prevSubStr(j,1) - 1,1);
+                eidx = min(prevSubStr(j,2) + 1,inpTrajSz(i-1));
+                svert = inpTrajVert(sidx,i-1);
+                evert = inpTrajVert(eidx,i-1);
+                if prevSubStr(j,3) >= 3 % there are chain vertices
+                    schainidx = prevSubStr(j,1) + 1;
+                    echainidx = prevSubStr(j,2) - 1;
+                    schainvert = inpTrajVert(schainidx,i-1);
+                    echainvert = inpTrajVert(echainidx,i-1);
+                    numWorst = numWorst + ((schainvert-svert+1) * (evert-echainidx+1));
+                else
+                    numWorst = numWorst + sum(1:evert-svert+1);
                 end
             end
-            splitStr(splitNum).set = currSet; % save last set
-            
-            splitStrSz = size(splitStr,2);
-            if splitStrSz > 1 % we have to split, so update/insert some subStr info
-                subStrSz2 = size(subStr,2);
-                for k = 1:splitStrSz
-                    if k == 1
-                        subStrIdx = j;
-                    else
-                        subStrSz2 = subStrSz2 + 1;
-                        subStrIdx = subStrSz2;
-                    end
-                    currSet = splitStr(k).set;
-                    subStr(subStrIdx).trajTbl = [];
-                    subStr(subStrIdx).allSet = currSet;  
-                    subStr(subStrIdx).notDiscSet = currSet; % Next level iteration will process this split set.
-                    subStr(subStrIdx).discSet = [];
-                    subStr(subStrIdx).sChain = 0;        % Next level iteration will compute start/end chains, so just set to no chains.
-                    subStr(subStrIdx).eChain = 0;
-                end
-            else % no splitting, get the intersection of the non-discarded traj vertex Idx in trajTbl, this is the "chain"
-                trajTbl = subStr(j).trajTbl;
-                trajTbl(trajTbl(:,6)==0,:) = []; % only keep sub-traj that are <= tau distance
-                if size(trajTbl,1) > 0 % only check for chains if there are 3 or more segments in trajTbl that are not discarded
-                    intersectSet = [];
-                    for m = 1:size(trajTbl,1)
-                        if isempty(intersectSet) == true
-                            intersectSet = [trajTbl(m,1) : trajTbl(m,2)];
-                        else
-%                             intersectSet = intersect(intersectSet, [trajTbl(m,1) : trajTbl(m,2)]);
-                            intersectSet = unique([intersectSet trajTbl(m,1):trajTbl(m,2)]);
-                            if isempty(intersectSet) == true
-                                break
-                            end
+        end
+        
+        % determine number of pairwise traj so that memory can be pre-allocated (faster)
+        numTraj = 0;
+        for j = 1:size(prevSubStr,1)
+            sidx = max(prevSubStr(j,1) - 1,1);
+            eidx = min(prevSubStr(j,2) + 1,inpTrajSz(i-1));
+            sidx = inpTrajPtr(sidx,i-1);
+            eidx = inpTrajPtr(eidx,i-1);
+            if prevSubStr(j,3) >= 3 % there are chain vertices
+                schainidx = prevSubStr(j,1) + 1;
+                echainidx = prevSubStr(j,2) - 1;
+                schainidx = inpTrajPtr(schainidx,i-1);
+                echainidx = inpTrajPtr(echainidx,i-1);
+                numTraj = numTraj + ((schainidx-sidx+1) * (eidx-echainidx+1));
+            else
+                numTraj = numTraj + sum(1:eidx-sidx+1);
+            end
+        end
+        subStr(1:numTraj,1:9) = 0;
+        
+        % generate this level pairwise subStr set
+        cnt = 1;
+        for j = 1:size(prevSubStr,1)
+            sidx = max(prevSubStr(j,1) - 1,1);
+            eidx = min(prevSubStr(j,2) + 1,inpTrajSz(i-1));
+            sidx = inpTrajPtr(sidx,i-1);
+            eidx = inpTrajPtr(eidx,i-1);
+            if prevSubStr(j,3) >= 3 % there are chain vertices
+                schainidx = prevSubStr(j,1) + 1;
+                echainidx = prevSubStr(j,2) - 1;
+                schainidx = inpTrajPtr(schainidx,i-1);
+                echainidx = inpTrajPtr(echainidx,i-1);
+                for ii = sidx:schainidx
+                    for jj = echainidx:eidx
+                        if ii ~= jj
+                            schainvert = inpTrajVert(ii,i);
+                            echainvert = inpTrajVert(jj,i);
+                            subStr(cnt,1:9) = [ii jj jj-ii+1 0 Inf 0 0 schainvert echainvert];
+                            cnt = cnt + 1;
                         end
                     end
-                    if size(intersectSet,2) > 0
-                        subStr(j).sChain = intersectSet(1);
-                        subStr(j).eChain = intersectSet(end);
-                    else
-                        subStr(j).sChain = 0;
-                        subStr(j).eChain = 0;
+                end
+            else % no chain vertices
+                for ii = sidx:eidx-1
+                    for jj = ii+1:eidx
+                        svert = inpTrajVert(ii,i);
+                        evert = inpTrajVert(jj,i);
+                        subStr(cnt,1:9) = [ii jj jj-ii+1 0 Inf 0 0 svert evert];
+                        cnt = cnt + 1;
                     end
-                else
-                    subStr(j).sChain = 0;
-                    subStr(j).eChain = 0;
                 end
             end
         end
+        subStr = subStr(1:cnt-1,:); % we may have pre-allocated too much space so trim it
+        subStr = unique(subStr,'rows'); % remove any duplicate sub-trajectories
 
-        % see if any candidate sub-traj sets can be discarded
-        cIdx = 1;
-        while 1 == 1
-            if size(subStr(cIdx).notDiscSet,2) == 0
-                subStr(cIdx) = [];
+        tPrune = tic;
+         
+        % get each sub-traj (vertices and coordinates) and LB/UB err
+        err = inpTrajErr(i); % current level error
+        subTrajStr = [];
+        for j = 1:size(subStr,1)
+            if typeP == 1 % non-simp P
+                idx1 = inpTrajVert(subStr(j,1),i);
+                idx2 = inpTrajVert(subStr(j,2),i);
+                subTrajStr(j).traj = inP(idx1:idx2,:); % contiguous list of vertex indices in P (a sub-traj of P)
+            else % simp P
+                idxP = [inpTrajVert(subStr(j,1):subStr(j,2),i)]';
+                subTrajStr(j).traj = inP(idxP,:); % contiguous list of vertex indices in simplified P (a sub-traj of P)
+            end
+            % compute error bounds
+            if useF == 1
+                idx3 = subStr(j,1);
+                idx4 = subStr(j,2)-1;
+                if i == maxLevel
+                    errF = 0;
+                else
+                    errF = max([inpTrajErrF(idx3:idx4,i)]);
+                end
+                errLB = err + errF;
+                if typeP == 1
+                    errUB = 0;
+                else
+                    errUB = errF;
+                end
             else
-                cIdx = cIdx + 1;
+                errLB = 2 * err;
+                if typeP == 1
+                    errUB = 0;
+                else
+                    errUB = err;
+                end
             end
-            if cIdx > size(subStr,2)
-                break
+            subTrajStr(j).errLB = errLB;
+            subTrajStr(j).errUB = errUB;
+        end
+
+        % compute LB/UB, "too far flag", and "within range flag"
+        for j = 1:size(subStr,1)
+            P = subTrajStr(j).traj;
+            subStr(j,4) = max(GetBestConstLB(P,Q,Inf,3,Qid,0,1) - subTrajStr(j).errLB, 0);  % get the LB
+            subStr(j,4) = round(subStr(j,4),10)+0.00000000009;
+            subStr(j,4) = fix(subStr(j,4) * 10^10)/10^10;
+            cntLB = cntLB + 1;
+            if subStr(j,4) > tau % discard traj
+                subStr(j,6) = 1; % too far flg = 1
+                subStr(j,5) = subStr(j,4); % just set UB to LB
+            else
+                subStr(j,5) = GetBestUpperBound(P,Q,3,Qid,0,subStr(j,4),0) + subTrajStr(j).errUB; % get the UB
+                subStr(j,5) = round(subStr(j,5),10)+0.00000000009;
+                subStr(j,5) = fix(subStr(j,5) * 10^10)/10^10;
+                cntUB = cntUB + 1;
+                if subStr(j,5) <= tau + eAdd
+                    subStr(j,7) = 1; % within range flag = 1
+                else
+                    currDist = max(tau - subTrajStr(j).errLB, 0);
+                    if currDist > 0
+                        cntFDP = cntFDP + 1;
+                        if FrechetDecide(P,Q,currDist) == true
+                            subStr(j,7) = 1; % within range flag = 1
+                        elseif i == maxLevel
+                            subStr(j,6) = 1; % too far flg = 1
+                        end
+                    end
+                end        
             end
         end
- 
-        if size(subStr,2) == 0 % there are no reults - return a null result
-            break
-        end
+
+        timePrune = timePrune + toc(tPrune);
 
         if graphFlg == 1
             GraphSubRNN(Qid,i,2,subStr,tau);
         end
+        
+        % delete sub-traj that are too far
+        subStr = subStr(subStr(:,6)==0,:);
+        
+        if size(subStr,1) == 0 % no more sub-traj to process
+            break
+        end
+        
+        % process any sub-traj that are within range
+        subStrRes = [subStrRes; subStr(subStr(:,7)==1,:)];
+        
+        subStr = subStr(subStr(:,7)==0,:);
+
+        if size(subStr,1) == 0 % no more sub-traj to process
+            break
+        end
+        
     end
     
     timeSearch = toc(tSearch);
 
-    if size(subStr,2) == 0
-        queryStrData(Qid).subschain = [];
-        queryStrData(Qid).subechain = [];
+    resRNN = [];
+    if size(subStrRes,1) == 0
+        queryStrData(Qid).sub1svert = 0; % start vertex
+        queryStrData(Qid).sub1evert = 0; % end vertex
+        queryStrData(Qid).sub1lb = 0; % LB dist
+        queryStrData(Qid).sub1ub = tau; % UB dist
     else
-        for j = 1:size(subStr,2)
-            queryStrData(Qid).subschain(j) = subStr(j).notDiscSet(1); % start vertex
-            queryStrData(Qid).subechain(j) = subStr(j).notDiscSet(end); % end vertex
+        % process subStrRes
+        subStrRes = sortrows(subStrRes,[8,9]); % sort by start vertex, end vertex
+        currIdx = 1;
+        for j = 1:size(subStrRes,1)
+            if j == 1 % first result
+                resRNN(currIdx,1:2) = subStrRes(j,8:9);
+            else
+                if subStrRes(j,8) >= resRNN(currIdx,1) && subStrRes(j,8) <= resRNN(currIdx,2) % this result start vertex between resRNN vertices
+                    if subStrRes(j,9) > resRNN(currIdx,2) % this result end vertex greater than resRNN end vertex, so update it
+                        resRNN(currIdx,2) = subStrRes(j,9);
+                    end
+                else % new result
+                    currIdx = currIdx + 1;
+                    resRNN(currIdx,1:2) = subStrRes(j,8:9);
+                end
+            end
         end
+        queryStrData(Qid).sub1svert = resRNN(:,1); % start vertex
+        queryStrData(Qid).sub1evert = resRNN(:,2); % end vertex
+        queryStrData(Qid).sub1lb = 0; % LB dist
+        queryStrData(Qid).sub1ub = tau; % UB dist
     end
-    queryStrData(Qid).subcntlb = cntLBtot;
-    queryStrData(Qid).subcntub = cntUBtot;
-    queryStrData(Qid).subcntfdp = cntFDPtot;
-    queryStrData(Qid).subsearchtime = timeSearch;
-    queryStrData(Qid).subprunetime = timePrune;
+    queryStrData(Qid).sub1cntworst = numWorst;
+    queryStrData(Qid).sub1cntlb = cntLB;
+    queryStrData(Qid).sub1cntub = cntUB;
+    queryStrData(Qid).sub1cntfdp = cntFDP;
+    queryStrData(Qid).sub1searchtime = timeSearch;
+    queryStrData(Qid).sub1prunetime = timePrune;
     
     if graphFlg == 1
-        GraphSubRNN(Qid,i,3,subStr,tau);
+        GraphSubRNN(Qid,i,3,subStr,tau,resRNN);
     end
 
 end
