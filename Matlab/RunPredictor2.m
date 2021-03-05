@@ -182,7 +182,11 @@ elseif classifierCurr == 2 % NN or kNN
             ConstTrainQuerySet5;
         end
     else % kNN
-        ConstTrainQuerySet4;
+        if size(trajFeatureCurr,2) == 1 % single feature traj
+            ConstTrainQuerySet4;
+        else % kNN-multi feature traj
+            ConstTrainQuerySet6;
+        end
     end
 end
 
@@ -201,6 +205,17 @@ end
 % end
 
 timeTrain = timeTrain + toc(tTrain);
+
+% % this code gets kNN word ID's for just the training data, so that one can look at patterns
+% if classifierCurr == 2 && kCurr > 1 % kNN query, get patterns from training data
+%     trainQueryType = 2;
+%     halfHalfFlg = 1;
+%     kCurr = kCurr + 1;
+%     ConstTrainQuerySet4;
+%     queryResults2 = queryResults;
+%     halfHalfFlg = 0;
+%     kCurr = kCurr - 1;
+% end
 
 tTest = tic;
 
@@ -225,7 +240,11 @@ elseif classifierCurr == 2 % NN or kNN
             ConstTrainQuerySet5;
         end
     else % kNN
-        ConstTrainQuerySet4;
+        if size(trajFeatureCurr,2) == 1 % single feature traj
+            ConstTrainQuerySet4;
+        else % kNN-multi feature traj
+            ConstTrainQuerySet6;
+        end
     end
 end
 

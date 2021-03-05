@@ -68,6 +68,10 @@ if ~exist('featureSetNum2','var')
     featureSetNum2 = 0;
 end
 
+if ~exist('kNNmDistWeightFlg','var')
+    kNNmDistWeightFlg = 0;
+end
+
 % determine query and input sets
 SplitTrainQuery(numTrainCurr,numTestCurr,trainMethodCurr,bestTrainRepFlgCurr, ...
     trainSubCurr,testSubCurr,trainSampleCurr,testSampleCurr,swapKFoldCurr,testSetClass,testSetList,keepTrainSetClass,testSetSub,trainSetSub); 
@@ -115,6 +119,7 @@ predNumCnt = 1;
 for mHM = 1:size(distMeasCurr,2) % for each dist measure
     if distMeasCurr(1,mHM) == 1 % process this dist
         distType = mHM;
+        queryResults = [];
         for kHM = 1:size(trajFeatureCurr,2) % for each traj feature
             predNum = predNumCnt; 
             exMethNum = trajFeatureCurr(1,kHM); 
@@ -128,6 +133,16 @@ if classifierCurr == 2 && kCurr == 1 && size(trajFeatureCurr,2) > 1 % NN with mu
     MajorityVote3;
     NNAccuracy = mean(queryResults(:,5)) * 100;
     disp(['NN multi mean accuracy: ',num2str(NNAccuracy)]);
+end
+
+if classifierCurr == 2 && kCurr > 1 && size(trajFeatureCurr,2) > 1 % kNN with multi feat traj
+    if kNNmDistWeightFlg == 0
+        MajorityVote5;
+    else
+        MajorityVote4;
+    end
+    NNAccuracy = mean(queryResults(:,5)) * 100;
+    disp(['kNN multi mean accuracy: ',num2str(NNAccuracy)]);
 end
 
 if saveEarlyFlg == 1

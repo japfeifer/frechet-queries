@@ -1,10 +1,12 @@
-% MajorityVote3
-% Used by NN-m , i.e. NN - multi feature traj
+% MajorityVote5
+% Used by kNN-m , i.e. kNN - multi feature traj
 % The word Id that occurs the most wins, for ties choose the one with the smallest distance
+
+numTrajFeat = size(trajFeatureCurr,2);
 
 for mvi = 1:size(queryResults,1)
 
-    idxOffset = size(trajFeatureCurr,2);
+    idxOffset = kCurr * numTrajFeat;
     predWordIds = queryResults(mvi,6:5+idxOffset);
     
     szA = size(predWordIds,2);

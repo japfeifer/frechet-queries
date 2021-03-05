@@ -52,7 +52,7 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
                 thisDef = currDef(kloop);  % insert one definition at a time
             end
             
-            if classifierCurr == 2 && kCurr == 1 && trajDefTypeCurr == 2 % NN - multi
+            if classifierCurr == 2 && kCurr >= 1 && trajDefTypeCurr == 2 % NN or kNN - multi
                 kHM = kloop;
                 trajFeatureCurr = currDef;
             end
@@ -227,7 +227,13 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
                         ConstTrainQuerySet5;
                     end
                 else % kNN
-                    ConstTrainQuerySet4;
+                    if trajDefTypeCurr == 1 % single feature traj
+                        ConstTrainQuerySet4;
+                    else % kNN-multi feature traj
+                        trajFeatureCurr = thisDef;
+                        kHM = size(trajFeatureCurr,2);
+                        ConstTrainQuerySet6;
+                    end
                 end
             end
 
@@ -258,7 +264,13 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
                         ConstTrainQuerySet5;
                     end
                 else % kNN
-                    ConstTrainQuerySet4;
+                    if trajDefTypeCurr == 1 % single feature traj
+                        ConstTrainQuerySet4;
+                    else % kNN-multi feature traj
+                        trajFeatureCurr = thisDef;
+                        kHM = size(trajFeatureCurr,2);
+                        ConstTrainQuerySet6;
+                    end
                 end
             end
 
@@ -277,6 +289,16 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
             MajorityVote3;
             NNAccuracy = mean(queryResults(:,5)) * 100;
             disp(['NN multi mean accuracy: ',num2str(NNAccuracy)]);
+        end
+        
+        if classifierCurr == 2 && kCurr > 1 && trajDefTypeCurr == 2 % kNN with multi feat traj
+            if kNNmDistWeightFlg == 0
+                MajorityVote5;
+            else
+                MajorityVote4;
+            end
+            NNAccuracy = mean(queryResults(:,5)) * 100;
+            disp(['kNN multi mean accuracy: ',num2str(NNAccuracy)]);
         end
 
         if classifierCurr == 1  % ensemble method: subspace, learner type: discriminant
@@ -353,10 +375,7 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
                  currTestMatDist = testMatDist;
                  currTestLabels = testLabels;
             end
-            
-            
         end
-        
     end
     
     if classifierCurr == 1 && trajDefTypeCurr == 2 % DM-m

@@ -2,7 +2,7 @@
 
 InitGlobalVars;
 
-scriptName = 'ProcessHMKinTrans_5pct_kNN_DTW_opt_sing';
+scriptName = 'ProcessHMKinTrans_5pct_SD_DTW_opt_multi_large_F_agg';
 bothFile = ['ExpRes/',scriptName,'_',datestr(now,'dd-mm-yy','local'),'_',datestr(now,'hh-MM-ss','local')];
 matFile = [bothFile '.mat'];
 diaryFile = [bothFile,'.txt'];
@@ -14,15 +14,15 @@ disp(['--------------------']);
 disp([scriptName]);
 
 datasetType = 1; % 1 = KinTrans, 2 = MHAD, 3 = LM, 4 = UCF
-classifierCurr = 2;  % 1 = subspace discriminant compute all distances, 2 = NN search
+classifierCurr = 1;  % 1 = subspace discriminant compute all distances, 2 = NN search
 iterHMSub = 1; % number of iterations
 numPredictor = 0;
 numLearner = 100;
 featureSetNum = 0;
 normDistCurr = 0;
-kCurr = 2;
+kCurr = 0;
 numTrainCurr = 0.05;
-trajFeatureCurr = [81];
+trajFeatureCurr = [1101 1102 67 65 1045 68 69 1108 1049 66];
 distMeasCurr = [1 0 0 0];
 seqNormalCurr = [0 0 0 0 0];
 numTestCurr = 0;

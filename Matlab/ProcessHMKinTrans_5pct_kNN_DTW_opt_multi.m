@@ -2,7 +2,7 @@
 
 InitGlobalVars;
 
-scriptName = 'ProcessHMKinTrans_5pct_kNN_DTW_opt_sing';
+scriptName = 'ProcessHMKinTrans_5pct_kNN_DTW_opt_multi';
 bothFile = ['ExpRes/',scriptName,'_',datestr(now,'dd-mm-yy','local'),'_',datestr(now,'hh-MM-ss','local')];
 matFile = [bothFile '.mat'];
 diaryFile = [bothFile,'.txt'];
@@ -22,7 +22,7 @@ featureSetNum = 0;
 normDistCurr = 0;
 kCurr = 2;
 numTrainCurr = 0.05;
-trajFeatureCurr = [81];
+trajFeatureCurr = [76 77 78]; % trajFeatureCurr = [80];
 distMeasCurr = [1 0 0 0];
 seqNormalCurr = [0 0 0 0 0];
 numTestCurr = 0;

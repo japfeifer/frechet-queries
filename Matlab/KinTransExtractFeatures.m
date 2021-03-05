@@ -271,7 +271,81 @@ function seq2 = KinTransExtractFeatures(seq,extractMethod)
         seq2(:,a:a+2) = seq(:,NECK) - seq(:,RWST); a=a+3;
         seq2(:,a:a+2) = seq(:,LSHO) - seq(:,RWST); a=a+3;
         seq2(:,a:a+2) = seq(:,LHND) - seq(:,RWST); a=a+3;
-        
+    elseif extractMethod == 65
+        seq2(:,a:a+2) = seq(:,LSHO) - seq(:,LELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,LWST) - seq(:,LELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,LELB); a=a+3;
+    elseif extractMethod == 66
+        seq2(:,a:a+2) = seq(:,RSHO) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,NECK) - seq(:,RHND); a=a+3;
+    elseif extractMethod == 67
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,LSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,NECK) - seq(:,LSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,LSHO); a=a+3;
+    elseif extractMethod == 68
+        seq2(:,a:a+2) = seq(:,RHND) - seq(:,LHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,RWST) - seq(:,LHND); a=a+3;
+    elseif extractMethod == 69
+        seq2(:,a:a+2) = seq(:,RHND) - seq(:,RSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,NECK) - seq(:,RSHO); a=a+3;
+    elseif extractMethod == 70
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,NECK); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB) - seq(:,NECK); a=a+3;
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,NECK); a=a+3;
+    elseif extractMethod == 71
+        seq2(:,a:a+2) = seq(:,RWST) - seq(:,LELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,NECK) - seq(:,LELB); a=a+3;
+    elseif extractMethod == 72
+        seq2(:,a:a+2) = seq(:,RHND) - seq(:,LHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,RWST) - seq(:,LHND); a=a+3;
+    elseif extractMethod == 73
+        seq2(:,a:a+2) = seq(:,LWST) - seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,NECK) - seq(:,RELB); a=a+3;
+    elseif extractMethod == 74
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,LSHO) - seq(:,RHND); a=a+3;
+    elseif extractMethod == 75
+        seq2(:,a:a+2) = seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,LSHO); a=a+3;
+    elseif extractMethod == 76
+        seq2(:,a:a+2) = seq(:,RHND) - seq(:,LWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,LWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,LHND) - seq(:,LWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,NECK) - seq(:,LWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RWST) - seq(:,LWST); a=a+3;
+    elseif extractMethod == 77
+        seq2(:,a:a+2) = seq(:,LWST) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,RHND); a=a+3;
+    elseif extractMethod == 78
+        seq2(:,a:a+2) = seq(:,TORS); a=a+3;
+        seq2(:,a:a+2) = seq(:,NECK); a=a+3;
+        seq2(:,a:a+2) = seq(:,LSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,LWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,LHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB); a=a+3;
+    elseif extractMethod == 79
+        seq2(:,a:a+2) = seq(:,LWST) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,LHND) - seq(:,RHND); a=a+3;
+    elseif extractMethod == 80
+        seq2(:,a:a+2) = seq(:,LWST) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,LHND) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,RWST) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,NECK) - seq(:,RHND); a=a+3;
+    elseif extractMethod == 81
+        seq2(:,a:a+2) = seq(:,RHND) - seq(:,LSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,RHND) - seq(:,LHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,RWST) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,RHND) - seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,LSHO); a=a+3;
+
     elseif extractMethod == 101
         seq2(:,a:a+2) = seq(:,LSHO); a=a+3;
         seq2(:,a:a+2) = seq(:,LELB); a=a+3;

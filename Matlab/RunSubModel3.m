@@ -47,6 +47,14 @@ if ~exist('doIterNumJtsIncl','var')
     doIterNumJtsIncl = 0;
 end
 
+if ~exist('kNNmDistWeightFlg','var')
+    kNNmDistWeightFlg = 0;
+end
+
+if ~exist('aggFlg','var')
+    aggFlg = 0;
+end
+
 tSeqPrep = tic;
 
 if classifierCurr == 2 && kCurr == 0
@@ -157,6 +165,7 @@ for mHM = 1:size(distMeasCurr,2) % for each dist measure
             disp(['======================']);
             disp(['distType: ',num2str(distType)]);
             disp(['seqNormalCurr: ',num2str(seqNormalCurr)]);
+            queryResults = [];
             if classifierCurr == 1 && trajDefTypeCurr == 2
                 if doIterNumJtsIncl == 1
                     if aggFlg == 1
@@ -168,7 +177,11 @@ for mHM = 1:size(distMeasCurr,2) % for each dist measure
                     RunPredictor3DMm; % faster stepwise inclusion algo for DM-m
                 end
             else
-                RunPredictor3; % perform the step-wise inclusion algo 
+                if aggFlg == 1 % do NN/kNN multi traj aggregation feature discovery
+                    RunPredictor3kNNmulti;
+                else
+                    RunPredictor3; % do NN/kNN single traj feature discovery
+                end
             end
             disp(['----------------------']);
             disp(['distType: ',num2str(distType)]);

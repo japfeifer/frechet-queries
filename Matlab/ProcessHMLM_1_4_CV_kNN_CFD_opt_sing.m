@@ -41,6 +41,7 @@ HMNumSets = 5;  % five equal-sized test sets
 swapKFoldCurr = 0;
 
 mvFactor = 10;
+kNNmDistWeightFlg = 1;
 
 % output variable selections
 disp(['datasetType: ',num2str(datasetType)]);

@@ -2,7 +2,7 @@
 
 InitGlobalVars;
 
-scriptName = 'ProcessHMKinTrans_Opt_Multi_Traj_NN_5pct';
+scriptName = 'ProcessHMKinTrans_Opt_Multi_Traj_SD_5pct_large_F_agg';
 bothFile = ['ExpRes/',scriptName,'_',datestr(now,'dd-mm-yy','local'),'_',datestr(now,'hh-MM-ss','local')];
 matFile = [bothFile '.mat'];
 diaryFile = [bothFile,'.txt'];
@@ -14,7 +14,7 @@ disp(['--------------------']);
 disp([scriptName]);
 
 datasetType = 1; % 1 = KinTrans, 2 = MHAD, 3 = LM, 4 = UCF
-classifierCurr = 2;  % 1 = subspace discriminant compute all distances, 2 = NN search
+classifierCurr = 1;  % 1 = subspace discriminant compute all distances, 2 = NN search
 trajDefTypeCurr = 2; % Trajectory definition type, 1 = append to a single traj, 2 = insert to a traj set
 doTrainSplit = 1;
 acc_iter_def = [1001 1002 1003 1004 1005 1006 1007 1008 1009 1010 ...
@@ -32,7 +32,7 @@ numPredictor = 0;
 numLearner = 100;
 featureSetNum = 0;
 normDistCurr = 0;
-kCurr = 1;
+kCurr = 0;
 numTrainCurr = 0.05;
 distMeasCurr = [1 0 0 0];
 % distMeasCurr = [1 1 0 1];
@@ -51,7 +51,18 @@ trainMethodCurr = 1;
 bestTrainRepFlgCurr = 0;
 swapKFoldCurr = 0;
 
+groupClassesFlg = 0; 
+subsetClassesFlg = 0;
+groupClassesList = {[]}; 
+subsetClassesList = [];
+featureSetClass = [];
+testSetClass = [];
+trainSetClass = [];
+testSetList = [];
+
+doIterNumJtsIncl = 1;
 iterNumJtsIncl = 3;
+doSVMFlg = 1;
 doDMmMin = 15;
 
 aggFlg = 1;

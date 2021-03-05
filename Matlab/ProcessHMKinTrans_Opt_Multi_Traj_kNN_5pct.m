@@ -2,7 +2,7 @@
 
 InitGlobalVars;
 
-scriptName = 'ProcessHMKinTrans_Opt_Multi_Traj_NN_5pct';
+scriptName = 'ProcessHMKinTrans_Opt_Multi_Traj_kNN_5pct';
 bothFile = ['ExpRes/',scriptName,'_',datestr(now,'dd-mm-yy','local'),'_',datestr(now,'hh-MM-ss','local')];
 matFile = [bothFile '.mat'];
 diaryFile = [bothFile,'.txt'];
@@ -32,7 +32,7 @@ numPredictor = 0;
 numLearner = 100;
 featureSetNum = 0;
 normDistCurr = 0;
-kCurr = 1;
+kCurr = 2;
 numTrainCurr = 0.05;
 distMeasCurr = [1 0 0 0];
 % distMeasCurr = [1 1 0 1];
@@ -51,8 +51,8 @@ trainMethodCurr = 1;
 bestTrainRepFlgCurr = 0;
 swapKFoldCurr = 0;
 
-iterNumJtsIncl = 3;
-doDMmMin = 15;
+iterNumJtsIncl = 1;
+doDMmMin = 7;
 
 aggFlg = 1;
 totBodyJts = 11;  % 10 relative, 1 absolute

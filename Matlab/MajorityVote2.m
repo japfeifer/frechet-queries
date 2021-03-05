@@ -1,4 +1,7 @@
 % MajorityVote2
+% Used by kNN-s , i.e. kNN - single feature traj
+% Computes a distance-weighted kNN result
+
 if ~exist('mvFactor','var')
     mvFactor = 1;
 end
@@ -31,7 +34,7 @@ for mvi = 1:size(queryResults,1)
     bestPredWord = resA(1,1);
     
     queryResults(mvi,5) = queryResults(mvi,4) == bestPredWord;
-    queryResults(mvi,6+(idxOffset*2)) = bestPredWord; % store the best work the majority vote chose
+    queryResults(mvi,6+(idxOffset*2)) = bestPredWord; % store the best word the majority vote chose
     
 end
 
