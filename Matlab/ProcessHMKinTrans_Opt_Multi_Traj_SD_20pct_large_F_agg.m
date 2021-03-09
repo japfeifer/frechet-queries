@@ -60,10 +60,10 @@ testSetClass = [];
 trainSetClass = [];
 testSetList = [];
 
-doIterNumJtsIncl = 1;
-iterNumJtsIncl = 3;
-doSVMFlg = 1;
-doDMmMin = 15;
+% doIterNumJtsIncl = 1;
+% iterNumJtsIncl = 3;
+% doSVMFlg = 1;
+% doDMmMin = 15;
 
 aggFlg = 1;
 totBodyJts = 11;  % 10 relative, 1 absolute

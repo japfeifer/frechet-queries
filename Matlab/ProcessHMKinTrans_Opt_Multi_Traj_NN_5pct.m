@@ -51,8 +51,8 @@ trainMethodCurr = 1;
 bestTrainRepFlgCurr = 0;
 swapKFoldCurr = 0;
 
-iterNumJtsIncl = 3;
-doDMmMin = 15;
+% iterNumJtsIncl = 3;
+% doDMmMin = 15;
 
 aggFlg = 1;
 totBodyJts = 11;  % 10 relative, 1 absolute

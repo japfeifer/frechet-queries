@@ -228,6 +228,7 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
                     end
                 else % kNN
                     if trajDefTypeCurr == 1 % single feature traj
+                        trajFeatureCurr = [1];
                         ConstTrainQuerySet4;
                     else % kNN-multi feature traj
                         trajFeatureCurr = thisDef;
@@ -265,6 +266,7 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
                     end
                 else % kNN
                     if trajDefTypeCurr == 1 % single feature traj
+                        trajFeatureCurr = [1];
                         ConstTrainQuerySet4;
                     else % kNN-multi feature traj
                         trajFeatureCurr = thisDef;
@@ -285,18 +287,23 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
             end
         end
         
-        if classifierCurr == 2 && kCurr == 1 && trajDefTypeCurr == 2 % NN - multi
-            MajorityVote3;
-            NNAccuracy = mean(queryResults(:,5)) * 100;
-            disp(['NN multi mean accuracy: ',num2str(NNAccuracy)]);
-        end
+%         if classifierCurr == 2 && kCurr == 1 && trajDefTypeCurr == 2 % NN - multi
+%             MajorityVote3;
+%             NNAccuracy = mean(queryResults(:,5)) * 100;
+%             disp(['NN multi mean accuracy: ',num2str(NNAccuracy)]);
+%         end
         
-        if classifierCurr == 2 && kCurr > 1 && trajDefTypeCurr == 2 % kNN with multi feat traj
-            if kNNmDistWeightFlg == 0
-                MajorityVote5;
-            else
-                MajorityVote4;
-            end
+        if classifierCurr == 2 && trajDefTypeCurr == 2 % NN or kNN with multi feat traj
+%             if kCurr == 1 % NN-m
+%                 MajorityVote5; % just do majority vote
+%             else % kNN-m
+                MajorityVote6; % do weighted method for each traj feature, then majority vote on those results
+%             end
+%             if kNNmDistWeightFlg == 0
+%                 MajorityVote5;
+%             else
+%                 MajorityVote4;
+%             end
             NNAccuracy = mean(queryResults(:,5)) * 100;
             disp(['kNN multi mean accuracy: ',num2str(NNAccuracy)]);
         end

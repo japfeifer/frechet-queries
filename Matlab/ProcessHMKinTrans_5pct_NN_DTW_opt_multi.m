@@ -22,7 +22,7 @@ featureSetNum = 0;
 normDistCurr = 0;
 kCurr = 1;
 numTrainCurr = 0.05;
-trajFeatureCurr = [76 77 78];
+trajFeatureCurr = [229];   % trajFeatureCurr = [76 77 78];
 distMeasCurr = [1 0 0 0];
 seqNormalCurr = [0 0 0 0 0];
 numTestCurr = 0;
@@ -37,6 +37,8 @@ ConstructCCTType = 1;
 trainMethodCurr = 1;
 bestTrainRepFlgCurr = 0;
 swapKFoldCurr = 0;
+
+kNNmDistWeightFlg = 0;
 
 % output variable selections
 disp(['datasetType: ',num2str(datasetType)]);

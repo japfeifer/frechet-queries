@@ -116,19 +116,18 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
         end
  
         % get accuracy from queryResults
-        if kCurr == 1 % NN with multi feat traj
-            MajorityVote3;
-            classAccuracy = mean(queryResults(:,5)) * 100;
-            disp(['NN multi mean accuracy: ',num2str(classAccuracy)]);
-        else % kNN with multi feat traj
-            if kNNmDistWeightFlg == 0
-                MajorityVote5;
-            else
-                MajorityVote4;
-            end
-            classAccuracy = mean(queryResults(:,5)) * 100;
-            disp(['kNN multi mean accuracy: ',num2str(classAccuracy)]);
-        end
+%         if kCurr == 1 % NN-m
+%             MajorityVote5; % just do majority vote
+%         else % kNN-m
+            MajorityVote6; % do weighted method for each traj feature, then majority vote on those results
+%         end
+%         if kNNmDistWeightFlg == 0
+%             MajorityVote5;
+%         else
+%             MajorityVote4;
+%         end
+        classAccuracy = mean(queryResults(:,5)) * 100;
+        disp(['kNN multi mean accuracy: ',num2str(classAccuracy)]);
     
         currIterAccList(HMc,1) = currJt;
         currIterAccList(HMc,2) = classAccuracy;

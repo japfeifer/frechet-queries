@@ -48,7 +48,7 @@ if ~exist('doIterNumJtsIncl','var')
 end
 
 if ~exist('kNNmDistWeightFlg','var')
-    kNNmDistWeightFlg = 0;
+    kNNmDistWeightFlg = 1;
 end
 
 if ~exist('aggFlg','var')

@@ -228,7 +228,7 @@ if trainQueryType == 2
             waitbar(i/szSet, h, X);
         end
     end
-    MajorityVote2; % compute the kNN result, put in queryResults(i,5)
+    MajorityVote6; % compute the kNN result, put in queryResults(i,5)
     close(h);
 
     NNAccuracy = mean(queryResults(:,5)) * 100;

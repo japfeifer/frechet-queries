@@ -22,7 +22,7 @@ featureSetNum = 0;
 normDistCurr = 0;
 kCurr = 1;
 numTrainCurr = 2;
-trajFeatureCurr = [32];
+trajFeatureCurr = [220];   % trajFeatureCurr = [32];
 distMeasCurr = [1 0 0 0];
 seqNormalCurr = [1 1 1 1 1];
 numTestCurr = 0;
