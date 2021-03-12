@@ -22,7 +22,7 @@ featureSetNum = 0;
 normDistCurr = 0;
 kCurr = 0;
 numTrainCurr = -1;
-trajFeatureCurr = [101 105 107];
+trajFeatureCurr = [201 1023 1044];   % trajFeatureCurr = [101 105 107];
 distMeasCurr = [1 0 0 0];
 seqNormalCurr = [1 0 0 0 0];
 numTestCurr = -1;
@@ -69,7 +69,8 @@ LoadModelDataset;
 timeLoad = timeLoad + toc(tLoad);
 disp(['Data Load Time (sec): ',num2str(timeLoad)]);
 
-trainSampleHMSub = [1 2 3 4 5]; % run for several training samples
+% trainSampleHMSub = [1 2 3 4 5]; % run for several training samples
+trainSampleHMSub = [5]; % run for several training samples
 for iHMSub = 1:size(trainSampleHMSub,2)
     rngSeed = 1; % random seed value - set to 1
     rng(rngSeed); % reset random seed so experiments are reproducable

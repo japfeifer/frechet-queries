@@ -61,7 +61,7 @@ testSetClass = [];
 trainSetClass = [];
 testSetList = [];
 
-% doIterNumJtsIncl = 1;
+doIterNumJtsIncl = 1;
 % iterNumJtsIncl = 3;
 % doSVMFlg = 1;
 % doDMmMin = 15;

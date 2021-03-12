@@ -55,6 +55,15 @@ if ~exist('aggFlg','var')
     aggFlg = 0;
 end
 
+if doIterNumJtsIncl == 1
+    if ~exist('iterNumJtsIncl','var')
+        iterNumJtsIncl = 1;
+    end
+    if ~exist('doDMmMin','var')
+        doDMmMin = 1;
+    end
+end
+
 tSeqPrep = tic;
 
 if classifierCurr == 2 && kCurr == 0

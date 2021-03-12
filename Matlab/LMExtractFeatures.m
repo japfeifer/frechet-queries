@@ -403,6 +403,21 @@ function seq2 = LMExtractFeatures(seq,extractMethod,idx)
         seq2(:,a:a+2) = seq(:,RIEF); a=a+3;
         seq2(:,a:a+2) = seq(:,RAFU); a=a+3;
         seq2(:,a:a+2) = seq(:,RMEF); a=a+3;
+    elseif extractMethod == 201
+        seq2(:,a:a+2) = seq(:,RMEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,LIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RREF); a=a+3;
+    elseif extractMethod == 202
+        seq2(:,a:a+2) = seq(:,RIEF) - seq(:,LMPR);  a=a+3;
+    elseif extractMethod == 203
+        seq2(:,a:a+2) = seq(:,LREF) - seq(:,LRPR);  a=a+3;
+    elseif extractMethod == 204
+        seq2(:,a:a+2) = seq(:,RIEF) - seq(:,RIPR);  a=a+3;
+    elseif extractMethod == 205
+        seq2(:,a:a+2) = seq(:,RMEF) - seq(:,RMPR);  a=a+3;
+    elseif extractMethod == 206
+        seq2(:,a:a+2) = seq(:,RPEF) - seq(:,RTEF);  a=a+3;
+        seq2(:,a:a+2) = seq(:,RREF) - seq(:,RTEF);  a=a+3;
 
     end
 
