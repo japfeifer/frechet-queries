@@ -21,7 +21,7 @@ numPredictor = 0;
 numLearner = 100;
 featureSetNum = 0;
 normDistCurr = 0;
-kCurr = 3;
+kCurr = 20;
 numTrainCurr = 5;
 distMeasCurr = [0 0 1 0];
 % distMeasCurr = [1 1 0 1];
@@ -42,6 +42,7 @@ swapKFoldCurr = 0;
 
 % iterNumJtsIncl = 1;
 % doDMmMin = 10;
+mvFactor = 10;
 
 aggFlg = 1;
 totBodyJts = 12;  % 11 relative, 1 absolute

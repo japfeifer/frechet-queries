@@ -280,7 +280,16 @@ function seq2 = NTURGBDExtractFeatures(seq,extractMethod)
         seq2(:,a:a+2) = seq(:,HEAD); a=a+3;
         seq2(:,a:a+2) = seq(:,RELB); a=a+3;
         seq2(:,a:a+2) = seq(:,SHO); a=a+3; 
-
+    elseif extractMethod == 203
+        seq2(:,a:a+2) = seq(:,RTIP) - seq(:,HIP); a=a+3;
+        seq2(:,a:a+2) = seq(:,RHIP) - seq(:,HIP); a=a+3;
+    elseif extractMethod == 204
+        seq2(:,a:a+2) = seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,LWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,SHO); a=a+3; 
+        seq2(:,a:a+2) = seq(:,SPIN); a=a+3;
+        seq2(:,a:a+2) = seq(:,LHND); a=a+3;
+        
     elseif extractMethod == 1001
         seq2(:,a:a+2) = seq(:,HIP); a=a+3;
     elseif extractMethod == 1002

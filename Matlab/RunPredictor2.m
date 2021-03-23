@@ -211,7 +211,7 @@ timeTrain = timeTrain + toc(tTrain);
 %     trainQueryType = 2;
 %     halfHalfFlg = 1;
 %     kCurr = kCurr + 1;
-%     ConstTrainQuerySet4;
+%     ConstTrainQuerySet6;
 %     queryResults2 = queryResults;
 %     halfHalfFlg = 0;
 %     kCurr = kCurr - 1;

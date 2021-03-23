@@ -813,6 +813,39 @@ function seq2 = KinTransExtractFeatures(seq,extractMethod)
     elseif extractMethod == 281
         seq2(:,a:a+2) = seq(:,LELB); a=a+3;
         seq2(:,a:a+2) = seq(:,RWST); a=a+3;
+    elseif extractMethod == 282
+        seq2(:,a:a+2) = seq(:,LHND) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,LWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,RWST); a=a+3;
+    elseif extractMethod == 283
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,LHND) - seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,LHND); a=a+3;
+    elseif extractMethod == 284
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,LWST) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,LSHO) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,LWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,RSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,RSHO); a=a+3;
+    elseif extractMethod == 285
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,LWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,TORS); a=a+3;
+    elseif extractMethod == 286
+        seq2(:,a:a+2) = seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,LHND) - seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,LHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,LSHO) - seq(:,RSHO); a=a+3;
+    elseif extractMethod == 287
+        seq2(:,a:a+2) = seq(:,LSHO) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,RSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,TORS) - seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,LHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO); a=a+3;
 
     elseif extractMethod == 1001
         seq2(:,a:a+2) = seq(:,TORS); a=a+3;

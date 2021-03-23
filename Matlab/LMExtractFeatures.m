@@ -418,6 +418,12 @@ function seq2 = LMExtractFeatures(seq,extractMethod,idx)
     elseif extractMethod == 206
         seq2(:,a:a+2) = seq(:,RPEF) - seq(:,RTEF);  a=a+3;
         seq2(:,a:a+2) = seq(:,RREF) - seq(:,RTEF);  a=a+3;
+    elseif extractMethod == 207
+        seq2(:,a:a+2) = seq(:,RREF); a=a+3;
+        seq2(:,a:a+2) = seq(:,LIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RIPR); a=a+3;
+        seq2(:,a:a+2) = seq(:,RAFU); a=a+3;
+        seq2(:,a:a+2) = seq(:,LWST); a=a+3;
 
     end
 
