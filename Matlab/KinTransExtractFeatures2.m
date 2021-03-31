@@ -100,6 +100,92 @@ function seq2 = KinTransExtractFeatures2(seq,def)
                 seq2(:,a:a+2) = seq(:,LSHO) - seq(:,NECK); a=a+3;
                 seq2(:,a:a+2) = seq(:,RSHO) - seq(:,NECK); a=a+3;
                 seq2(:,a:a+2) = seq(:,TORS) - seq(:,NECK); a=a+3;
+ 
+            case 401
+                seq2(:,a:a+2) = seq(:,LSHO); a=a+3;
+                seq2(:,a:a+2) = seq(:,LELB); a=a+3;
+                seq2(:,a:a+2) = seq(:,LWST); a=a+3;
+                seq2(:,a:a+2) = seq(:,LHND); a=a+3;
+            case 402
+                seq2(:,a:a+2) = seq(:,RSHO); a=a+3;
+                seq2(:,a:a+2) = seq(:,RELB); a=a+3;
+                seq2(:,a:a+2) = seq(:,RWST); a=a+3;
+                seq2(:,a:a+2) = seq(:,RHND); a=a+3;
+            case 403
+                seq2(:,a:a+2) = seq(:,TORS); a=a+3;
+                seq2(:,a:a+2) = seq(:,NECK); a=a+3;
+            case 404
+                seq2(:,a:a+2) = seq(:,LSHO) - seq(:,LHND); a=a+3;
+                seq2(:,a:a+2) = seq(:,LELB) - seq(:,LHND); a=a+3;
+                seq2(:,a:a+2) = seq(:,LWST) - seq(:,LHND); a=a+3;
+            case 405
+                seq2(:,a:a+2) = seq(:,RSHO) - seq(:,LHND); a=a+3;
+                seq2(:,a:a+2) = seq(:,RELB) - seq(:,LHND); a=a+3;
+                seq2(:,a:a+2) = seq(:,RWST) - seq(:,LHND); a=a+3;
+                seq2(:,a:a+2) = seq(:,RHND) - seq(:,LHND); a=a+3;
+            case 406
+                seq2(:,a:a+2) = seq(:,TORS) - seq(:,LHND); a=a+3;
+                seq2(:,a:a+2) = seq(:,NECK) - seq(:,LHND); a=a+3;
+            case 407
+                seq2(:,a:a+2) = seq(:,LSHO) - seq(:,RHND); a=a+3;
+                seq2(:,a:a+2) = seq(:,LELB) - seq(:,RHND); a=a+3;
+                seq2(:,a:a+2) = seq(:,LWST) - seq(:,RHND); a=a+3;
+                seq2(:,a:a+2) = seq(:,LHND) - seq(:,RHND); a=a+3;
+            case 408
+                seq2(:,a:a+2) = seq(:,RSHO) - seq(:,RHND); a=a+3;
+                seq2(:,a:a+2) = seq(:,RELB) - seq(:,RHND); a=a+3;
+                seq2(:,a:a+2) = seq(:,RWST) - seq(:,RHND); a=a+3;
+            case 409
+                seq2(:,a:a+2) = seq(:,TORS) - seq(:,RHND); a=a+3;
+                seq2(:,a:a+2) = seq(:,NECK) - seq(:,RHND); a=a+3;
+            case 410
+                seq2(:,a:a+2) = seq(:,LSHO) - seq(:,TORS); a=a+3;
+                seq2(:,a:a+2) = seq(:,LELB) - seq(:,TORS); a=a+3;
+                seq2(:,a:a+2) = seq(:,LWST) - seq(:,TORS); a=a+3;
+                seq2(:,a:a+2) = seq(:,LHND) - seq(:,TORS); a=a+3;
+            case 411
+                seq2(:,a:a+2) = seq(:,RSHO) - seq(:,TORS); a=a+3;
+                seq2(:,a:a+2) = seq(:,RELB) - seq(:,TORS); a=a+3;
+                seq2(:,a:a+2) = seq(:,RWST) - seq(:,TORS); a=a+3;
+                seq2(:,a:a+2) = seq(:,RHND) - seq(:,TORS); a=a+3;
+            case 412
+                seq2(:,a:a+2) = seq(:,NECK) - seq(:,TORS); a=a+3;
+            case 413
+                seq2(:,a:a+2) = seq(:,LSHO) - seq(:,NECK); a=a+3;
+                seq2(:,a:a+2) = seq(:,LELB) - seq(:,NECK); a=a+3;
+                seq2(:,a:a+2) = seq(:,LWST) - seq(:,NECK); a=a+3;
+                seq2(:,a:a+2) = seq(:,LHND) - seq(:,NECK); a=a+3;
+            case 414
+                seq2(:,a:a+2) = seq(:,RSHO) - seq(:,NECK); a=a+3;
+                seq2(:,a:a+2) = seq(:,RELB) - seq(:,NECK); a=a+3;
+                seq2(:,a:a+2) = seq(:,RWST) - seq(:,NECK); a=a+3;
+                seq2(:,a:a+2) = seq(:,RHND) - seq(:,NECK); a=a+3;
+            case 415
+                seq2(:,a:a+2) = seq(:,TORS) - seq(:,NECK); a=a+3;
+            case 416
+                seq2(:,a:a+2) = seq(:,LELB) - seq(:,LSHO); a=a+3;
+                seq2(:,a:a+2) = seq(:,LWST) - seq(:,LSHO); a=a+3;
+                seq2(:,a:a+2) = seq(:,LHND) - seq(:,LSHO); a=a+3;
+            case 417
+                seq2(:,a:a+2) = seq(:,RSHO) - seq(:,LSHO); a=a+3;
+                seq2(:,a:a+2) = seq(:,RELB) - seq(:,LSHO); a=a+3;
+                seq2(:,a:a+2) = seq(:,RWST) - seq(:,LSHO); a=a+3;
+                seq2(:,a:a+2) = seq(:,RHND) - seq(:,LSHO); a=a+3;
+            case 418
+                seq2(:,a:a+2) = seq(:,TORS) - seq(:,LSHO); a=a+3;
+                seq2(:,a:a+2) = seq(:,NECK) - seq(:,LSHO); a=a+3;
+            case 419
+                seq2(:,a:a+2) = seq(:,LSHO) - seq(:,RSHO); a=a+3;
+                seq2(:,a:a+2) = seq(:,LELB) - seq(:,RSHO); a=a+3;
+                seq2(:,a:a+2) = seq(:,LWST) - seq(:,RSHO); a=a+3;
+                seq2(:,a:a+2) = seq(:,LHND) - seq(:,RSHO); a=a+3;
+            case 420
+                seq2(:,a:a+2) = seq(:,RELB) - seq(:,RSHO); a=a+3;
+                seq2(:,a:a+2) = seq(:,RWST) - seq(:,RSHO); a=a+3;
+                seq2(:,a:a+2) = seq(:,RHND) - seq(:,RSHO); a=a+3;
+            case 421
+                seq2(:,a:a+2) = seq(:,TORS) - seq(:,RSHO); a=a+3;
+                seq2(:,a:a+2) = seq(:,NECK) - seq(:,RSHO); a=a+3;
                 
             case 1001
                 seq2(:,a:a+2) = seq(:,TORS); a=a+3;

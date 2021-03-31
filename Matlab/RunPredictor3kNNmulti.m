@@ -133,6 +133,7 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
         currIterAccList(HMc,2) = classAccuracy;
         
         if classAccuracy > lastBestAcc
+%         if classAccuracy >= lastBestAcc
             lastBestAcc = classAccuracy;
             currBestDef = currDef;
             currBestJt = currJt;

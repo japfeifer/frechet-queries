@@ -2,12 +2,13 @@
 lW = 2;
 vW = 4;
 
-seqID = 1030;
+seqID = 1208;
 seq = cell2mat(CompMoveData(seqID,4));   
 
 % seq = KinTransNormalizeSeq(seq,[1 1 1 1 1]);
 
 seq = seq([1 3  7 11 15],:); 
+% seq = seq([1 3 4 5 6  ],:); 
 
 TORS = [4,5,6]; NECK = [1,2,3]; 
 LSHO = [19,20,21]; LELB = [22,23,24]; LWST = [25,26,27]; LHND = [28,29,30]; 

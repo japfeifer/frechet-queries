@@ -263,6 +263,349 @@ function seq2 = LMExtractFeatures2(seq,def,idx)
                 seq2(:,a:a+2) = seq(:,RREF) - seq(:,RTEF);  a=a+3;
                 seq2(:,a:a+2) = seq(:,RPEF) - seq(:,RTEF);  a=a+3;
                 
+            case 1001
+                seq2(:,a:a+2) = seq(:,LTPR); a=a+3;
+                seq2(:,a:a+2) = seq(:,LTDI); a=a+3;
+                seq2(:,a:a+2) = seq(:,LTEF); a=a+3;
+            case 1002
+                seq2(:,a:a+2) = seq(:,LIPR); a=a+3;
+                seq2(:,a:a+2) = seq(:,LIME); a=a+3;
+                seq2(:,a:a+2) = seq(:,LIDI); a=a+3;
+                seq2(:,a:a+2) = seq(:,LIEF); a=a+3;
+            case 1003
+                seq2(:,a:a+2) = seq(:,LMPR); a=a+3;
+                seq2(:,a:a+2) = seq(:,LMME); a=a+3;
+                seq2(:,a:a+2) = seq(:,LMDI); a=a+3;
+                seq2(:,a:a+2) = seq(:,LMEF); a=a+3;
+            case 1004
+                seq2(:,a:a+2) = seq(:,LRPR); a=a+3;
+                seq2(:,a:a+2) = seq(:,LRME); a=a+3;
+                seq2(:,a:a+2) = seq(:,LRDI); a=a+3;
+                seq2(:,a:a+2) = seq(:,LREF); a=a+3;
+            case 1005
+                seq2(:,a:a+2) = seq(:,LPPR); a=a+3;
+                seq2(:,a:a+2) = seq(:,LPME); a=a+3;
+                seq2(:,a:a+2) = seq(:,LPDI); a=a+3;
+                seq2(:,a:a+2) = seq(:,LPEF); a=a+3;
+            case 1006
+                seq2(:,a:a+2) = seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LWST); a=a+3;
+                seq2(:,a:a+2) = seq(:,LHND); a=a+3;
+                seq2(:,a:a+2) = seq(:,LELB); a=a+3;
+            case 1007
+                seq2(:,a:a+2) = seq(:,LAFR); a=a+3;
+                seq2(:,a:a+2) = seq(:,LAFU); a=a+3;
+                seq2(:,a:a+2) = seq(:,LABL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LABM); a=a+3;
+            case 1008
+                seq2(:,a:a+2) = seq(:,RTPR); a=a+3;
+                seq2(:,a:a+2) = seq(:,RTDI); a=a+3;
+                seq2(:,a:a+2) = seq(:,RTEF); a=a+3;
+            case 1009
+                seq2(:,a:a+2) = seq(:,RIPR); a=a+3;
+                seq2(:,a:a+2) = seq(:,RIME); a=a+3;
+                seq2(:,a:a+2) = seq(:,RIDI); a=a+3;
+                seq2(:,a:a+2) = seq(:,RIEF); a=a+3;
+            case 1010
+                seq2(:,a:a+2) = seq(:,RMPR); a=a+3;
+                seq2(:,a:a+2) = seq(:,RMME); a=a+3;
+                seq2(:,a:a+2) = seq(:,RMDI); a=a+3;
+                seq2(:,a:a+2) = seq(:,RMEF); a=a+3;
+            case 1011
+                seq2(:,a:a+2) = seq(:,RRPR); a=a+3;
+                seq2(:,a:a+2) = seq(:,RRME); a=a+3;
+                seq2(:,a:a+2) = seq(:,RRDI); a=a+3;
+                seq2(:,a:a+2) = seq(:,RREF); a=a+3;
+            case 1012
+                seq2(:,a:a+2) = seq(:,RPPR); a=a+3;
+                seq2(:,a:a+2) = seq(:,RPME); a=a+3;
+                seq2(:,a:a+2) = seq(:,RPDI); a=a+3;
+                seq2(:,a:a+2) = seq(:,RPEF); a=a+3;
+            case 1013
+                seq2(:,a:a+2) = seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RWST); a=a+3;
+                seq2(:,a:a+2) = seq(:,RHND); a=a+3;
+                seq2(:,a:a+2) = seq(:,RELB); a=a+3;
+            case 1014
+                seq2(:,a:a+2) = seq(:,RAFR); a=a+3;
+                seq2(:,a:a+2) = seq(:,RAFU); a=a+3;
+                seq2(:,a:a+2) = seq(:,RABL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RABM); a=a+3;
+                
+            case 1015
+                seq2(:,a:a+2) = seq(:,LTPR) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LTDI) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LTEF) - seq(:,LPAL); a=a+3;
+            case 1016
+                seq2(:,a:a+2) = seq(:,LIPR) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LIME) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LIDI) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LIEF) - seq(:,LPAL); a=a+3;
+            case 1017
+                seq2(:,a:a+2) = seq(:,LMPR) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LMME) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LMDI) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LMEF) - seq(:,LPAL); a=a+3;
+            case 1018
+                seq2(:,a:a+2) = seq(:,LRPR) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LRME) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LRDI) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LREF) - seq(:,LPAL); a=a+3;
+            case 1019
+                seq2(:,a:a+2) = seq(:,LPPR) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LPME) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LPDI) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LPEF) - seq(:,LPAL); a=a+3;
+            case 1020
+                seq2(:,a:a+2) = seq(:,LWST) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LHND) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LELB) - seq(:,LPAL); a=a+3;
+            case 1021
+                seq2(:,a:a+2) = seq(:,LAFR) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LAFU) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LABL) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LABM) - seq(:,LPAL); a=a+3;
+            case 1022
+                seq2(:,a:a+2) = seq(:,RTPR) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RTDI) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RTEF) - seq(:,LPAL); a=a+3;
+            case 1023
+                seq2(:,a:a+2) = seq(:,RIPR) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RIME) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RIDI) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RIEF) - seq(:,LPAL); a=a+3;
+            case 1024
+                seq2(:,a:a+2) = seq(:,RMPR) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RMME) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RMDI) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RMEF) - seq(:,LPAL); a=a+3;
+            case 1025
+                seq2(:,a:a+2) = seq(:,RRPR) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RRME) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RRDI) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RREF) - seq(:,LPAL); a=a+3;
+            case 1026
+                seq2(:,a:a+2) = seq(:,RPPR) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RPME) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RPDI) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RPEF) - seq(:,LPAL); a=a+3;
+            case 1027
+                seq2(:,a:a+2) = seq(:,RPAL) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RWST) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RHND) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RELB) - seq(:,LPAL); a=a+3;
+            case 1028
+                seq2(:,a:a+2) = seq(:,RAFR) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RAFU) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RABL) - seq(:,LPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RABM) - seq(:,LPAL); a=a+3;
+                
+            case 1029
+                seq2(:,a:a+2) = seq(:,LTPR) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LTDI) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LTEF) - seq(:,RPAL); a=a+3;
+            case 1030
+                seq2(:,a:a+2) = seq(:,LIPR) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LIME) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LIDI) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LIEF) - seq(:,RPAL); a=a+3;
+            case 1031
+                seq2(:,a:a+2) = seq(:,LMPR) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LMME) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LMDI) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LMEF) - seq(:,RPAL); a=a+3;
+            case 1032
+                seq2(:,a:a+2) = seq(:,LRPR) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LRME) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LRDI) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LREF) - seq(:,RPAL); a=a+3;
+            case 1033
+                seq2(:,a:a+2) = seq(:,LPPR) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LPME) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LPDI) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LPEF) - seq(:,RPAL); a=a+3;
+            case 1034
+                seq2(:,a:a+2) = seq(:,LPAL) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LWST) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LHND) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LELB) - seq(:,RPAL); a=a+3;
+            case 1035
+                seq2(:,a:a+2) = seq(:,LAFR) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LAFU) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LABL) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,LABM) - seq(:,RPAL); a=a+3;
+            case 1036
+                seq2(:,a:a+2) = seq(:,RTPR) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RTDI) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RTEF) - seq(:,RPAL); a=a+3;
+            case 1037
+                seq2(:,a:a+2) = seq(:,RIPR) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RIME) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RIDI) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RIEF) - seq(:,RPAL); a=a+3;
+            case 1038
+                seq2(:,a:a+2) = seq(:,RMPR) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RMME) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RMDI) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RMEF) - seq(:,RPAL); a=a+3;
+            case 1039
+                seq2(:,a:a+2) = seq(:,RRPR) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RRME) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RRDI) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RREF) - seq(:,RPAL); a=a+3;
+            case 1040
+                seq2(:,a:a+2) = seq(:,RPPR) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RPME) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RPDI) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RPEF) - seq(:,RPAL); a=a+3;
+            case 1041
+                seq2(:,a:a+2) = seq(:,RWST) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RHND) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RELB) - seq(:,RPAL); a=a+3;
+            case 1042
+                seq2(:,a:a+2) = seq(:,RAFR) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RAFU) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RABL) - seq(:,RPAL); a=a+3;
+                seq2(:,a:a+2) = seq(:,RABM) - seq(:,RPAL); a=a+3;
+                
+            case 1043
+                seq2(:,a:a+2) = seq(:,LTPR) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LTDI) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LTEF) - seq(:,LIEF); a=a+3;
+            case 1044
+                seq2(:,a:a+2) = seq(:,LIPR) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LIME) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LIDI) - seq(:,LIEF); a=a+3;
+            case 1045
+                seq2(:,a:a+2) = seq(:,LMPR) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LMME) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LMDI) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LMEF) - seq(:,LIEF); a=a+3;
+            case 1046
+                seq2(:,a:a+2) = seq(:,LRPR) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LRME) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LRDI) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LREF) - seq(:,LIEF); a=a+3;
+            case 1047
+                seq2(:,a:a+2) = seq(:,LPPR) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LPME) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LPDI) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LPEF) - seq(:,LIEF); a=a+3;
+            case 1048
+                seq2(:,a:a+2) = seq(:,LPAL) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LWST) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LHND) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LELB) - seq(:,LIEF); a=a+3;
+            case 1049
+                seq2(:,a:a+2) = seq(:,LAFR) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LAFU) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LABL) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LABM) - seq(:,LIEF); a=a+3;
+            case 1050
+                seq2(:,a:a+2) = seq(:,RTPR) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RTDI) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RTEF) - seq(:,LIEF); a=a+3;
+            case 1051
+                seq2(:,a:a+2) = seq(:,RIPR) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RIME) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RIDI) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RIEF) - seq(:,LIEF); a=a+3;
+            case 1052
+                seq2(:,a:a+2) = seq(:,RMPR) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RMME) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RMDI) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RMEF) - seq(:,LIEF); a=a+3;
+            case 1053
+                seq2(:,a:a+2) = seq(:,RRPR) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RRME) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RRDI) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RREF) - seq(:,LIEF); a=a+3;
+            case 1054
+                seq2(:,a:a+2) = seq(:,RPPR) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RPME) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RPDI) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RPEF) - seq(:,LIEF); a=a+3;
+            case 1055
+                seq2(:,a:a+2) = seq(:,RPAL) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RWST) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RHND) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RELB) - seq(:,LIEF); a=a+3;
+            case 1056
+                seq2(:,a:a+2) = seq(:,RAFR) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RAFU) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RABL) - seq(:,LIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RABM) - seq(:,LIEF); a=a+3;
+                
+            case 1057
+                seq2(:,a:a+2) = seq(:,LTPR) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LTDI) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LTEF) - seq(:,RIEF); a=a+3;
+            case 1058
+                seq2(:,a:a+2) = seq(:,LIPR) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LIME) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LIDI) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LIEF) - seq(:,RIEF); a=a+3;
+            case 1059
+                seq2(:,a:a+2) = seq(:,LMPR) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LMME) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LMDI) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LMEF) - seq(:,RIEF); a=a+3;
+            case 1060
+                seq2(:,a:a+2) = seq(:,LRPR) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LRME) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LRDI) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LREF) - seq(:,RIEF); a=a+3;
+            case 1061
+                seq2(:,a:a+2) = seq(:,LPPR) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LPME) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LPDI) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LPEF) - seq(:,RIEF); a=a+3;
+            case 1062
+                seq2(:,a:a+2) = seq(:,LPAL) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LWST) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LHND) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LELB) - seq(:,RIEF); a=a+3;
+            case 1063
+                seq2(:,a:a+2) = seq(:,LAFR) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LAFU) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LABL) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,LABM) - seq(:,RIEF); a=a+3;
+            case 1064
+                seq2(:,a:a+2) = seq(:,RTPR) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RTDI) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RTEF) - seq(:,RIEF); a=a+3;
+            case 1065
+                seq2(:,a:a+2) = seq(:,RIPR) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RIME) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RIDI) - seq(:,RIEF); a=a+3;
+            case 1066
+                seq2(:,a:a+2) = seq(:,RMPR) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RMME) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RMDI) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RMEF) - seq(:,RIEF); a=a+3;
+            case 1067
+                seq2(:,a:a+2) = seq(:,RRPR) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RRME) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RRDI) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RREF) - seq(:,RIEF); a=a+3;
+            case 1068
+                seq2(:,a:a+2) = seq(:,RPPR) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RPME) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RPDI) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RPEF) - seq(:,RIEF); a=a+3;
+            case 1069
+                seq2(:,a:a+2) = seq(:,RPAL) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RWST) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RHND) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RELB) - seq(:,RIEF); a=a+3;
+            case 1070
+                seq2(:,a:a+2) = seq(:,RAFR) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RAFU) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RABL) - seq(:,RIEF); a=a+3;
+                seq2(:,a:a+2) = seq(:,RABM) - seq(:,RIEF); a=a+3;
+
+  
+                
         end
     end
 end
