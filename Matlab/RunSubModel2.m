@@ -24,6 +24,10 @@ if ~exist('testSetClass','var')
     testSetClass = [];
 end
 
+if ~exist('featureSetIgnoreSubFlg','var')
+    featureSetIgnoreSubFlg = 0;
+end
+
 if ~exist('trainSetClass','var')
     trainSetClass = [];
 end
@@ -80,7 +84,7 @@ disp(['Num Train seq: ',num2str(size(trainSet,1))]);
 disp(['Num Test seq: ',num2str(size(querySet,1))]);
 
 if classifierCurr == 1
-    featureSet = CreateFeatureSet(featureSetNum,featureSetClass,otherFeatureColFlg,featureSetNum2);
+    featureSet = CreateFeatureSet(featureSetNum,featureSetClass,otherFeatureColFlg,featureSetNum2,featureSetIgnoreSubFlg);
     disp(['Num Feature cols: ',num2str(size(featureSet,1))]);
 end
 

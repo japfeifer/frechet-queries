@@ -59,13 +59,13 @@ for i = 1:szSeq
     
     % relative joint
     for j = [6]
-        plot3(seq(i,j*3-2),seq(i,j*3-1),seq(i,j*3-0),'o','MarkerSize',vW,'MarkerEdgeColor',currColor);
+        plot3(seq(i,j*3-2),seq(i,j*3-1),seq(i,j*3-0),'x','MarkerSize',vW,'MarkerEdgeColor',currColor);
         hold on;  
     end
-    for j = [6]
-        plot3(seq(i,j*3-2),seq(i,j*3-1),seq(i,j*3-0),'o','MarkerSize',2,'MarkerFaceColor',currColor,'MarkerEdgeColor',currColor);
-        hold on;  
-    end
+%     for j = [6]
+%         plot3(seq(i,j*3-2),seq(i,j*3-1),seq(i,j*3-0),'-s','MarkerSize',2,'MarkerFaceColor',currColor,'MarkerEdgeColor',currColor);
+%         hold on;  
+%     end
     
     jointCol = 0.95 - ((1/szSeq) * 0.7);
     jointCol = [jointCol jointCol jointCol];

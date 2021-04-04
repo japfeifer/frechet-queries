@@ -3,8 +3,16 @@
 
 timeTrain = 0;  timeTest = 0; timeSeqPrep = 0; resultRow = 1;
 
+if ~exist('featureSetIgnoreSubFlg','var')
+    featureSetIgnoreSubFlg = 0;
+end
+
 if ~exist('testSetClass','var')
     testSetClass = [];
+end
+
+if ~exist('kFoldSeqPerClass','var')
+    kFoldSeqPerClass = [];
 end
 
 if ~exist('trainSetClass','var')
@@ -85,7 +93,7 @@ disp(['Initial Num Test seq: ',num2str(size(querySet,1))]);
 
 featureSet = {[]};
 if classifierCurr == 1
-    featureSet = CreateFeatureSet(featureSetNum,featureSetClass,otherFeatureColFlg,featureSetNum2);
+    featureSet = CreateFeatureSet(featureSetNum,featureSetClass,otherFeatureColFlg,featureSetNum2,featureSetIgnoreSubFlg);
     disp(['Num Feature cols: ',num2str(size(featureSet,1))]);
 end
 
@@ -113,6 +121,9 @@ if doTrainSplit == 1 % put 2/3 of trainers into testers
     querySetTcnt = 1;
     for i = 1:size(classes,1) % process each unique class
         classIDs = find(ismember(allClasses,classes(i))); % get list of class ID's for this unique class label
+        if kFoldSeqPerClass > 0 % reduce the number of classIDs
+            [classIDs,garbage] = datasample(classIDs,kFoldSeqPerClass,'Replace',false);
+        end
 %         numTrainSeq = ceil(size(classIDs,1)/2);
         numTrainSeq = floor(size(classIDs,1)/3);
         if numTrainSeq == 0

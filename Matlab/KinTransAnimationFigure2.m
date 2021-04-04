@@ -16,7 +16,7 @@
 lW = 1;
 vW = 5;
 
-seqID = 4348;
+seqID = 1205;
 seq = cell2mat(CompMoveData(seqID,4));   
 
 % seq = KinTransNormalizeSeq(seq,[1 1 1 1 1]);

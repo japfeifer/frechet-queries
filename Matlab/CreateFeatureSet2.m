@@ -1,4 +1,4 @@
-function featureSet = CreateFeatureSet2(fSetNum,featureSetClass)
+function featureSet = CreateFeatureSet2(fSetNum,featureSetClass,fSetIgnoreSubFlg)
 
     global trainSet CompMoveData
     
@@ -37,19 +37,35 @@ function featureSet = CreateFeatureSet2(fSetNum,featureSetClass)
             if isempty(featureSetClass) == 1 || ismember(classes(i),featureSetClass) == 1
                 tSetIDs1 = find(ismember(allClasses,classes(i))); % get list of tSet row ID's
                 tSet1 = tSet(tSetIDs1',:);
-                allSubjects = tSet1(:,3);
-                subjects = unique(allSubjects); % list of unique subjects for this particular class
-                for j = 1:size(subjects,1) % process each unique subject for this class
-                    tSetIDs2 = find(ismember(allSubjects,subjects(j)));
-                    if size(tSetIDs2,1) <= fSetNum 
-                        for k = 1: size(tSetIDs2,1)
-                            featureSet(cnt,1) = num2cell(tSet1(tSetIDs2(k),4));
+                if fSetIgnoreSubFlg == 0
+                    allSubjects = tSet1(:,3);
+                    subjects = unique(allSubjects); % list of unique subjects for this particular class
+                    for j = 1:size(subjects,1) % process each unique subject for this class
+                        tSetIDs2 = find(ismember(allSubjects,subjects(j)));
+                        if size(tSetIDs2,1) <= fSetNum 
+                            for k = 1: size(tSetIDs2,1)
+                                featureSet(cnt,1) = num2cell(tSet1(tSetIDs2(k),4));
+                                cnt = cnt + 1;
+                            end
+                        else
+                            % randomly choose indexes without replacement from tSetIDs2 list
+                            [tmpIds,garbage] = datasample(tSetIDs2,fSetNum,'Replace',false);
+                            for k = 1: size(tmpIds,1)
+                                featureSet(cnt,1) = num2cell(tSet1(tmpIds(k),4));
+                                cnt = cnt + 1;
+                            end
+                        end
+                    end
+                else
+                    if size(tSetIDs1,1) <= fSetNum 
+                        for k = 1: size(tSet1,1)
+                            featureSet(cnt,1) = num2cell(tSet1(k,4));
                             cnt = cnt + 1;
                         end
                     else
-                        % randomly choose indexes without replacement from tSetIDs2 list
-                        [tmpIds,garbage] = datasample(tSetIDs2,fSetNum,'Replace',false);
-                        for k = 1: size(tmpIds,1)
+                        % randomly choose indexes without replacement from tSetIDs1 list
+                        [garbage,tmpIds] = datasample(tSetIDs1,fSetNum,'Replace',false);
+                        for k = 1: size(tmpIds,2)
                             featureSet(cnt,1) = num2cell(tSet1(tmpIds(k),4));
                             cnt = cnt + 1;
                         end
