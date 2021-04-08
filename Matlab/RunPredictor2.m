@@ -33,7 +33,7 @@ for i = 1:size(trainSet,1) % training set
     elseif datasetType == 6
         seq = NTURGBDExtractFeatures(seq,exMethNum);
     elseif datasetType == 7
-        seq = KineticsExtractFeatures(seq,exMethNum);
+        seq = MSASLExtractFeatures(seq,exMethNum);
     end
     if reachPctCurr > 0 % simplify the curve
         reach = TrajReach(seq); % get traj reach 
@@ -64,7 +64,7 @@ if classifierCurr == 2
             elseif datasetType == 6
                 seq = NTURGBDExtractFeatures(seq,exMethNum);
             elseif datasetType == 7
-                seq = KineticsExtractFeatures(seq,exMethNum);
+                seq = MSASLExtractFeatures(seq,exMethNum);
             end
             if reachPctCurr > 0 % simplify the curve
                 reach = TrajReach(seq); % get traj reach 
@@ -95,7 +95,7 @@ for i = 1:size(querySet,1) % query set
     elseif datasetType == 6
         seq = NTURGBDExtractFeatures(seq,exMethNum);
     elseif datasetType == 7
-        seq = KineticsExtractFeatures(seq,exMethNum);
+        seq = MSASLExtractFeatures(seq,exMethNum);
     end
     if reachPctCurr > 0 % simplify the curve
         reach = TrajReach(seq); % get traj reach 
@@ -127,7 +127,7 @@ if classifierCurr == 1
         elseif datasetType == 6
             seq = NTURGBDExtractFeatures(seq,exMethNum);
         elseif datasetType == 7
-            seq = KineticsExtractFeatures(seq,exMethNum);
+            seq = MSASLExtractFeatures(seq,exMethNum);
         end
         if reachPctCurr > 0 % simplify the curve
             reach = TrajReach(seq); % get traj reach 

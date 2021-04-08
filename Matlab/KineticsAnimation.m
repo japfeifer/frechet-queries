@@ -12,17 +12,12 @@ REAR = [49,50,51]; LEAR = [52,53,54];
 xval = [seq(:,1)' seq(:,4)' seq(:,7)' seq(:,10)' seq(:,13)' seq(:,16)' seq(:,19)' seq(:,22)' seq(:,25)' seq(:,28)' seq(:,31)' seq(:,34)' seq(:,37)' seq(:,40)' seq(:,43)' seq(:,46)' seq(:,49)' seq(:,52)' ];
 yval = [seq(:,2)' seq(:,5)' seq(:,8)' seq(:,11)' seq(:,14)' seq(:,17)' seq(:,20)' seq(:,23)' seq(:,26)' seq(:,29)' seq(:,32)' seq(:,35)' seq(:,37)' seq(:,41)' seq(:,44)' seq(:,47)' seq(:,50)' seq(:,53)' ];
 zval = [seq(:,3)' seq(:,6)' seq(:,9)' seq(:,12)' seq(:,15)' seq(:,18)' seq(:,21)' seq(:,24)' seq(:,27)' seq(:,30)' seq(:,33)' seq(:,36)' seq(:,39)' seq(:,42)' seq(:,45)' seq(:,48)' seq(:,51)' seq(:,54)' ];
-minxval = -0.1;
-maxxval = 1.1;
-minyval = -0.1;
-maxyval = 1.1;
-minzval = -0.1;
-maxzval = 0.1;
-
-disp(['min(xval) = ',num2str(min(xval))]);
-disp(['max(xval) = ',num2str(max(xval))]);
-disp(['min(yval) = ',num2str(min(yval))]);
-disp(['max(xval) = ',num2str(max(yval))]);
+minxval = min(xval) - 0.1;
+maxxval = max(xval) + 0.1;
+minyval = min(yval) - 0.1;
+maxyval = max(yval) + 0.1;
+minzval = min(zval) - 0.1;
+maxzval = max(zval) + 0.1;
 
 figure(100);
 set(gcf, 'Position',  [100, 100, 600, 600]); % set figure window position and size
@@ -64,10 +59,7 @@ for i = 1:size(seq,1)
     
     daspect([1 1 1]); % axis length ratio - equal data units in all directions
     
-%     view(160,-70); % set the azimuth and elevation for viewing the 3D data
-%     view(78,14);
-    view(-20,-50);
-%     view(180,-10);
+    view(-200,-50); % set the azimuth and elevation for viewing the 3D data
 
     drawnow;
     pause(0.1);

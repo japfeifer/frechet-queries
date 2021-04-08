@@ -14,7 +14,6 @@ skelTrackID = 1;  % skeleton tracking ID
 % training data
 repeatNum = 40;
 targetFolder = 'C:\Users\jpfe0390\Documents\MATLAB\Export\Train\';
-% targetFolder = 'Export\Train\';
 targetType = 1;
 delete([targetFolder,'*.skeleton']);
 currSeqSet = {[]};

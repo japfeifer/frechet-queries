@@ -86,7 +86,7 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
                 elseif datasetType == 6
                     seq = NTURGBDExtractFeatures2(seq,thisDef);
                 elseif datasetType == 7
-                    seq = KineticsExtractFeatures2(seq,thisDef);
+                    seq = MSASLExtractFeatures2(seq,thisDef);
                 end
                 if reachPctCurr > 0 % simplify the curve
                     reach = TrajReach(seq); % get traj reach 
@@ -115,7 +115,7 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
                         elseif datasetType == 6
                             seq = NTURGBDExtractFeatures2(seq,thisDef);
                         elseif datasetType == 7
-                            seq = KineticsExtractFeatures2(seq,thisDef);
+                            seq = MSASLExtractFeatures2(seq,thisDef);
                         end
                         if reachPctCurr > 0 % simplify the curve
                             reach = TrajReach(seq); % get traj reach 
@@ -144,7 +144,7 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
                 elseif datasetType == 6
                     seq = NTURGBDExtractFeatures2(seq,thisDef);
                 elseif datasetType == 7
-                    seq = KineticsExtractFeatures2(seq,thisDef);
+                    seq = MSASLExtractFeatures2(seq,thisDef);
                 end
                 if reachPctCurr > 0 % simplify the curve
                     reach = TrajReach(seq); % get traj reach 
@@ -172,7 +172,7 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
                     elseif datasetType == 6
                         seq = NTURGBDExtractFeatures2(seq,thisDef);
                     elseif datasetType == 7
-                        seq = KineticsExtractFeatures2(seq,thisDef);
+                        seq = MSASLExtractFeatures2(seq,thisDef);
                     end
                     if reachPctCurr > 0 % simplify the curve
                         reach = TrajReach(seq); % get traj reach 

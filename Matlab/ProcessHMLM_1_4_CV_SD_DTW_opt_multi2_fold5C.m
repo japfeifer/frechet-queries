@@ -2,7 +2,7 @@
 
 InitGlobalVars;
 
-scriptName = 'ProcessHMLM_1_4_CV_SD_DTW_opt_multi2_fold5B';
+scriptName = 'ProcessHMLM_1_4_CV_SD_DTW_opt_multi2_fold5C';
 bothFile = ['ExpRes/',scriptName,'_',datestr(now,'dd-mm-yy','local'),'_',datestr(now,'hh-MM-ss','local')];
 matFile = [bothFile '.mat'];
 diaryFile = [bothFile,'.txt'];
@@ -22,9 +22,9 @@ featureSetNum = 2;
 normDistCurr = 0;
 kCurr = 0;
 numTrainCurr = -2;
-trajFeatureCurr = [238 239 240 241 1054];   
+trajFeatureCurr = [236 237 1066]; 
 distMeasCurr = [1 0 0 0];
-seqNormalCurr = [1 0 0 0 1 0];
+seqNormalCurr = [0 0 0 0 0 0];
 numTestCurr = 0;
 trainSubCurr = [0 1 2 3];
 testSubCurr = [20];
