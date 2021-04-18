@@ -26,6 +26,8 @@ elseif datasetType == 6
     % load('MatlabData/NTURGBD60NoSimpSingleSubjectCutData.mat');
     % load('MatlabData/NTURGBD60NoSimpData.mat');
     % load('MatlabData/NTURGBD60SimpData.mat');
+elseif datasetType == 7
+    load('MatlabData/MSASLData.mat');
 end
 
 CompMoveClassID; % create class ID's

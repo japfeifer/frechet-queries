@@ -707,6 +707,84 @@ function seq2 = LMExtractFeatures(seq,extractMethod,idx)
         seq2(:,a:a+2) = seq(:,RTPR) - seq(:,RIEF); a=a+3;
         seq2(:,a:a+2) = seq(:,RTDI) - seq(:,RIEF); a=a+3;
         seq2(:,a:a+2) = seq(:,RTEF) - seq(:,RIEF); a=a+3;
+    elseif extractMethod == 234
+        seq2(:,a:a+2) = seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,RMPR); a=a+3;
+        seq2(:,a:a+2) = seq(:,RMME); a=a+3;
+        seq2(:,a:a+2) = seq(:,RMDI); a=a+3;
+        seq2(:,a:a+2) = seq(:,RMEF); a=a+3;
+    elseif extractMethod == 235
+        seq2(:,a:a+2) = seq(:,RTPR) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTDI) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTEF) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RRPR) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RRME) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RRDI) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RREF) - seq(:,RPAL); a=a+3;
+    elseif extractMethod == 236
+        seq2(:,a:a+2) = seq(:,LIPR) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,LIME) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,LIDI) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,LIEF) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTPR) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTDI) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTEF) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RPPR) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RPME) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RPDI) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RPEF) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RRPR) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RRME) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RRDI) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RREF) - seq(:,RPAL); a=a+3;
+    elseif extractMethod == 237
+        seq2(:,a:a+2) = seq(:,RIPR) - seq(:,LIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RIME) - seq(:,LIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RIDI) - seq(:,LIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RIEF) - seq(:,LIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTPR) - seq(:,LIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTDI) - seq(:,LIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTEF) - seq(:,LIEF); a=a+3;
+    elseif extractMethod == 238
+        seq2(:,a:a+2) = seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RHND); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,RMPR); a=a+3;
+        seq2(:,a:a+2) = seq(:,RMME); a=a+3;
+        seq2(:,a:a+2) = seq(:,RMDI); a=a+3;
+        seq2(:,a:a+2) = seq(:,RMEF); a=a+3;
+    elseif extractMethod == 239
+        seq2(:,a:a+2) = seq(:,LTPR) - seq(:,LPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,LTDI) - seq(:,LPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,LTEF) - seq(:,LPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,LRPR) - seq(:,LPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,LRME) - seq(:,LPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,LRDI) - seq(:,LPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,LREF) - seq(:,LPAL); a=a+3;
+    elseif extractMethod == 240
+        seq2(:,a:a+2) = seq(:,RTPR) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTDI) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTEF) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RRPR) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RRME) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RRDI) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RREF) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RIPR) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RIME) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RIDI) - seq(:,RPAL); a=a+3;
+        seq2(:,a:a+2) = seq(:,RIEF) - seq(:,RPAL); a=a+3;
+    elseif extractMethod == 241
+        seq2(:,a:a+2) = seq(:,RMPR) - seq(:,RIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RMME) - seq(:,RIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RMDI) - seq(:,RIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RMEF) - seq(:,RIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTPR) - seq(:,RIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTDI) - seq(:,RIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTEF) - seq(:,RIEF); a=a+3;
 
     elseif extractMethod == 1001
         seq2(:,a:a+2) = seq(:,LTPR); a=a+3;
