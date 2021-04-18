@@ -2,7 +2,7 @@
 
 InitGlobalVars;
 
-scriptName = 'ProcessHMLM_1_4_CV_SD_DTW_opt_multi2_fold5B';
+scriptName = 'ProcessHMMSASL_SD_CFD_opt_multi';
 bothFile = ['ExpRes/',scriptName,'_',datestr(now,'dd-mm-yy','local'),'_',datestr(now,'hh-MM-ss','local')];
 matFile = [bothFile '.mat'];
 diaryFile = [bothFile,'.txt'];
@@ -13,31 +13,31 @@ resultList = [];
 disp(['--------------------']);
 disp([scriptName]);
 
-datasetType = 3; % 1 = KinTrans, 2 = MHAD, 3 = LM, 4 = UCF
+batchFlg = 1;
+datasetType = 7; % 1 = KinTrans, 2 = MHAD, 3 = LM, 4 = UCF
 classifierCurr = 1;  % 1 = subspace discriminant compute all distances, 2 = NN search
-iterHMSub = 0; % number of iterations
+reachPctCurr = 0;
+iterHMSub = 1; % number of iterations
 numPredictor = 0;
-numLearner = 0;
-featureSetNum = 2;
+numLearner = 100;
+featureSetNum = 10;  
 normDistCurr = 0;
 kCurr = 0;
-numTrainCurr = -2;
-trajFeatureCurr = [238 239 240 241 1054];   
-distMeasCurr = [1 0 0 0];
-seqNormalCurr = [1 0 0 0 1 0];
-numTestCurr = 0;
-trainSubCurr = [0 1 2 3];
-testSubCurr = [20];
-trainSampleCurr = 1;
-testSampleCurr = 2;
+numTrainCurr = -1;
+trajFeatureCurr = [5 1047];
+distMeasCurr = [0 0 1 0];
+seqNormalCurr = [1 0 0 0 1 1];
+numTestCurr = -1;
+trainSubCurr = [1];
+testSubCurr = [2];
+trainSampleCurr = 0; 
+testSampleCurr = 0;  
 edrTol = 0.15;  % edit distance tolerance
 % these variables should never be changed for this type of experiment
 implicitErrorFlg = 0;
 ConstructCCTType = 1;
 trainMethodCurr = 1;
 bestTrainRepFlgCurr = 0;
-% variables specific to this experiment
-HMNumSets = 5;  % five equal-sized test sets
 swapKFoldCurr = 0;
 
 % output variable selections
@@ -64,7 +64,10 @@ disp(['ConstructCCTType: ',num2str(ConstructCCTType)]);
 disp(['trainMethodCurr: ',num2str(trainMethodCurr)]);
 disp(['bestTrainRepFlgCurr: ',num2str(bestTrainRepFlgCurr)]);
 disp(['swapKFoldCurr: ',num2str(swapKFoldCurr)]);
-disp(['HMNumSets: ',num2str(HMNumSets)]);
+
+% parfor i=1:1000 % do this to startup the parallel pool
+% 	a=0;
+% end
 
 % load the dataset
 timeLoad = 0; tLoad = tic;
@@ -72,22 +75,20 @@ LoadModelDataset;
 timeLoad = timeLoad + toc(tLoad);
 disp(['Data Load Time (sec): ',num2str(timeLoad)]);
 
-rngSeed = 1; % random seed value
-rng(rngSeed); % reset random seed so experiments are reproducable
-CreateQuerySets2(HMNumSets);
+% change Subject to Xview
+MSASLSubjectToXview;
 
-for currHMTrainSet = 5:5
-    rngSeed = 1; % random seed value
+for iHMSub = 1:iterHMSub
+    rngSeed = iHMSub; % random seed value
     rng(rngSeed); % reset random seed so experiments are reproducable
-    disp(['-----------------']);
-    disp(['Current train set: ',num2str(currHMTrainSet)]);
+    disp(['Iteration: ',num2str(iHMSub)]);
     RunSubModel2;
-    resultList(1,currHMTrainSet) = classAccuracy;
+    resultList(1,iHMSub) = classAccuracy;
 end
 
 % output the results
-for currHMTrainSet = 5:5
-    disp(['resultList ',num2str(currHMTrainSet),': ',num2str(resultList(currHMTrainSet))]);
+for iHMSub = 1:iterHMSub
+    disp(['resultList ',num2str(iHMSub),': ',num2str(resultList(iHMSub))]);
 end
 
 classAccuracyMean = mean(resultList(1,:));
@@ -96,6 +97,9 @@ disp(['--> Final classAccuracyMean: ',num2str(classAccuracyMean),' classAccuracy
 resultList(2,1) = classAccuracyMean;
 resultList(2,2) = classAccuracyStdDev;
 
-save(matFile,'resultList');
+save(matFile,'resultList','allClasses','classes','classIDs','classifierRes','compIDs','featureSet','',...
+     'queryResults','querySet','testLabels','testMat','trainLabels','trainMat','trainSet',...
+     'trainWordIDs','-v7.3');
+ 
 diary off;
 

@@ -46,7 +46,7 @@ else % append currJt to existing Jts and create new DM
         elseif datasetType == 6
             seq = NTURGBDExtractFeatures2(seq,thisDef);
         elseif datasetType == 7
-            seq = KineticsExtractFeatures2(seq,thisDef);
+            seq = MSASLExtractFeatures2(seq,thisDef);
         end
         if reachPctCurr > 0 % simplify the curve
             reach = TrajReach(seq); % get traj reach 
@@ -72,7 +72,7 @@ else % append currJt to existing Jts and create new DM
         elseif datasetType == 6
             seq = NTURGBDExtractFeatures2(seq,thisDef);
         elseif datasetType == 7
-            seq = KineticsExtractFeatures2(seq,thisDef);
+            seq = MSASLExtractFeatures2(seq,thisDef);
         end
         if reachPctCurr > 0 % simplify the curve
             reach = TrajReach(seq); % get traj reach 
@@ -98,7 +98,7 @@ else % append currJt to existing Jts and create new DM
         elseif datasetType == 6
             seq = NTURGBDExtractFeatures2(seq,thisDef);
         elseif datasetType == 7
-            seq = KineticsExtractFeatures2(seq,thisDef);
+            seq = MSASLExtractFeatures2(seq,thisDef);
         end
         if reachPctCurr > 0 % simplify the curve
             reach = TrajReach(seq); % get traj reach 

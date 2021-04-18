@@ -19,7 +19,7 @@ for i = 1:size(trainSet,1) % training set
     elseif datasetType == 6
         seq = NTURGBDExtractFeatures2(seq,kNNFeatureCurr);
     elseif datasetType == 7
-        seq = KineticsExtractFeatures2(seq,kNNFeatureCurr);
+        seq = MSASLExtractFeatures2(seq,kNNFeatureCurr);
     end
     if reachPctCurr > 0 % simplify the curve
         reach = TrajReach(seq); % get traj reach 
@@ -45,7 +45,7 @@ for i = 1:size(querySet,1) % query set
     elseif datasetType == 6
         seq = NTURGBDExtractFeatures2(seq,kNNFeatureCurr);
     elseif datasetType == 7
-        seq = KineticsExtractFeatures2(seq,kNNFeatureCurr);
+        seq = MSASLExtractFeatures2(seq,kNNFeatureCurr);
     end
     if reachPctCurr > 0 % simplify the curve
         reach = TrajReach(seq); % get traj reach 
