@@ -2,7 +2,7 @@
 
 InitGlobalVars;
 
-scriptName = 'ProcessHMMSASL_SD_DTW_opt_multi';
+scriptName = 'ProcessHMMSASL_SVM_DTW_opt_multi';
 bothFile = ['ExpRes/',scriptName,'_',datestr(now,'dd-mm-yy','local'),'_',datestr(now,'hh-MM-ss','local')];
 matFile = [bothFile '.mat'];
 diaryFile = [bothFile,'.txt'];
@@ -24,7 +24,7 @@ featureSetNum = 10;
 normDistCurr = 0;
 kCurr = 0;
 numTrainCurr = -1;
-trajFeatureCurr = [20 1045 1069 1089];
+trajFeatureCurr = [14 1017 1058 1061 1079];
 distMeasCurr = [1 0 0 0];
 seqNormalCurr = [0 1 1 1];
 numTestCurr = -1;
@@ -39,6 +39,8 @@ ConstructCCTType = 1;
 trainMethodCurr = 1;
 bestTrainRepFlgCurr = 0;
 swapKFoldCurr = 0;
+
+doSVMFlg = 1;
 
 % output variable selections
 disp(['datasetType: ',num2str(datasetType)]);

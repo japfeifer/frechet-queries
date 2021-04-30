@@ -8,7 +8,7 @@
 % Note that an experiment must first be loaded with trainSet and testSet data
 % delete files in the Test and Train folders.
 
-repeatNum = 40;
+repeatNum = 10;
 
 % training data
 targetFolder = 'C:\Users\johna\Downloads\Export\Train\train';

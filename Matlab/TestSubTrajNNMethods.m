@@ -2,10 +2,10 @@
 
 InitGlobalVars;
 
-testMethods = [2 4];
+testMethods = [8];
 % testMethods = [2 3 4 5 6];
 reachType = 2; % 1 = small reach, 2 = large reach
-numQueries = 100;
+numQueries = 10;
 typeQ = 1;
 eVal = 0;
 
@@ -54,6 +54,10 @@ for i = 1:size(testMethods,2) % sub-traj methods
     else % faster CCT
         load(['MatlabData/TestSimpCCT2.mat']); % load the pre-processed CCT, simp tree, inP, and simpLevelCCT
     end
+    
+    if currMeth == 8
+        load(['MatlabData/TestSimpCCT.mat']);
+    end
 
     % perform queries
     tic
@@ -97,6 +101,15 @@ for i = 1:size(testMethods,2) % sub-traj methods
             txt = 'Segment Interior use Simp Tree avg ms per query: ';
             level = 1; sIdx = 1; eIdx = 2;
             SubNNSimpTreeDP(j,level,sIdx,eIdx);
+        elseif currMeth == 7
+            txt = 'Vertex Aligned independent call avg ms per query: ';
+            level = 1; sIdx = 1; eIdx = 2;
+            SubNNSimpTreeVAIntraBall(j,level,sIdx,eIdx,typeQ,eVal,0);
+        elseif currMeth == 8
+            txt = 'Vertex Aligned independent call avg ms per query: ';
+            load(['MatlabData/TestSimpCCT.mat']);
+            level = 1; sIdx = 1; eIdx = 2;
+            SubNNSimpTreeVA(j,level,sIdx,eIdx,typeQ,eVal,0);
         end
     end
     t1 = toc;

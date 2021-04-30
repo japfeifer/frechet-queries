@@ -38,7 +38,7 @@ function SubNNSimpTree(Qid,level,sIdx,eIdx,typeQ,eVal,bestDistUB,graphFlg)
     tSearch = tic;
 
     typeP = 2; % 1 = non-simp P, 2 = simp P
-    useF = 1; % 1 = use frechet dist error, 0 = do not use frechet dist error
+    useF = 0; % 1 = use frechet dist error, 0 = do not use frechet dist error
         
     timeSearch = 0; timePrune = 0;
     cntLB = 0; cntUB = 0; cntFDP = 0; cntCFD = 0;

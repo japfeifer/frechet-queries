@@ -2,7 +2,7 @@
 
 InitGlobalVars;
 
-scriptName = 'ProcessHMMSASL_SD_DTW_opt_multi';
+scriptName = 'ProcessHMMSASL_3NN_DTW_opt_multi';
 bothFile = ['ExpRes/',scriptName,'_',datestr(now,'dd-mm-yy','local'),'_',datestr(now,'hh-MM-ss','local')];
 matFile = [bothFile '.mat'];
 diaryFile = [bothFile,'.txt'];
@@ -15,16 +15,16 @@ disp([scriptName]);
 
 batchFlg = 1;
 datasetType = 7; % 1 = KinTrans, 2 = MHAD, 3 = LM, 4 = UCF
-classifierCurr = 1;  % 1 = subspace discriminant compute all distances, 2 = NN search
+classifierCurr = 2;  % 1 = subspace discriminant compute all distances, 2 = NN search
 reachPctCurr = 0;
 iterHMSub = 1; % number of iterations
 numPredictor = 0;
 numLearner = 100;
-featureSetNum = 10;  
+featureSetNum = 0;  
 normDistCurr = 0;
-kCurr = 0;
+kCurr = 3;
 numTrainCurr = -1;
-trajFeatureCurr = [20 1045 1069 1089];
+trajFeatureCurr = [12];   
 distMeasCurr = [1 0 0 0];
 seqNormalCurr = [0 1 1 1];
 numTestCurr = -1;

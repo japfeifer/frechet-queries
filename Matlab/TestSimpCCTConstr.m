@@ -13,15 +13,15 @@ doDFD = false;
 inP = cell2mat(trajOrigData(34,1)); % input traj P
 inP = DriemelSimp(inP,0); % get rid of duplicate vertices
 
-% tic
-% ConstTrajSimpTree(inP,1.7,10); % construct the simplification tree
-% t = toc;
-% disp(['Simplification tree construction time (s): ',num2str(t)]);
-
 tic
-ConstTrajSimpTree2(inP,3); % construct the simplification tree with "balanced" levels
+ConstTrajSimpTree(inP,2,10); % construct the simplification tree
 t = toc;
 disp(['Simplification tree construction time (s): ',num2str(t)]);
+
+% tic
+% ConstTrajSimpTree2(inP,3); % construct the simplification tree with "balanced" levels
+% t = toc;
+% disp(['Simplification tree construction time (s): ',num2str(t)]);
 
 simpLevelCCT = 7; % the level of the simplification tree to store in CCT
 simpPVertIdx = [inpTrajVert(1:inpTrajSz(simpLevelCCT),simpLevelCCT)]';

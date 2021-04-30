@@ -14,11 +14,17 @@
 % inpTrajErr -  stores the error at each tree level (1 row, mtl columns)
 % inpTrajSz -   stores the size of simplified P at each tree level (1 row, mtl columns)
 
-function ConstTrajSimpTree(P,erd,mtl)
+function ConstTrajSimpTree(P,erd,mtl,simpType,compFreErr)
 
-    global inpTrajVert inpTrajPtr inpTrajErr inpTrajSz 
+    global inpTrajVert inpTrajPtr inpTrajErr inpTrajSz inpTrajErrF
+    
+    switch nargin
+    case 3
+        simpType = 1;
+        compFreErr = 0;
+    end
 
-    inpTrajVert = []; inpTrajPtr = []; inpTrajErr = []; inpTrajSz = []; 
+    inpTrajVert = []; inpTrajPtr = []; inpTrajErr = []; inpTrajSz = []; inpTrajErrF = [];
     numDim = size(P,2);  % number of dimensions in P 
     numVert = size(P,1); % number of vertices in P
    
@@ -43,7 +49,11 @@ function ConstTrajSimpTree(P,erd,mtl)
                 if i == mtl % leaf level
                     er = 0; % set error to 0
                 end
-                [simpP,idxListP] = BallSimp(P(seIdx(1,1):seIdx(2,1),:),er);  % simplify level i-1 curve using Driemel method
+                if simpType == 1
+                    [simpP,idxListP] = LinearSimp(P(seIdx(1,1):seIdx(2,1),:),er);  % simplify level i-1 curve using Driemel method
+                else
+                    [simpP,idxListP] = BallSimp(P(seIdx(1,1):seIdx(2,1),:),er);  % simplify level i-1 curve using Intra-ball method
+                end
                 for k = 1:size(simpP,1) % loop through each node at level i
                     if ~(k==1 && j > 1)
                         levelSzCnt = levelSzCnt + 1;
@@ -59,6 +69,21 @@ function ConstTrajSimpTree(P,erd,mtl)
         inpTrajSz(i) = levelSzCnt;
         inpTrajErr(i) = er; % store the level error
         er = er / erd; % reduce error for next tree level
+    end
+    
+    % compute the Frechet distance from each segment in the tree to its underlying non-simp vertices
+    inpTrajErrF(1:numVert-1,1:mtl-1) = Inf;
+    if compFreErr == 1
+        for i = 1:size(inpTrajSz,2) - 1 % for each parent level
+            for j = 1:inpTrajSz(i) - 1 % for each segment in the level
+                idx1 = inpTrajVert(j,i);
+                idx2 = inpTrajVert(j+1,i);
+                segP = P([idx1 idx2],:);
+                nonsimpSegP = P(idx1:idx2,:);
+                cDist = ContFrechet(segP,nonsimpSegP);
+                inpTrajErrF(j,i) = cDist;
+            end
+        end
     end
 
 end

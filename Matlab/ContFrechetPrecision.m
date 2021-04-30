@@ -1,15 +1,16 @@
 % compute the continuous Frechet distance up to a decimal precision 
 
-function [frechetDist] = ContFrechetPrecision(P,Q,decPrec)
+function [frechetDist] = ContFrechetPrecision(P,Q,decPrec,runBringmann)
 
     global decimalPrecision
     
     switch nargin
     case 2
         decPrec = decimalPrecision;
+        runBringmann = 1;
     end
     
-    if size(P,2) == 1 % use Bringmann code for 2D traj
+    if size(P,2) == 2 && runBringmann == 1 % use Bringmann code for 2D traj
         frechetDist = FrechetDistBringmann(P,Q);
     else
         % get upper/lower bounds

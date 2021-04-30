@@ -2,7 +2,7 @@
 
 InitGlobalVars;
 
-scriptName = 'ProcessHMMSASL_SD_DTW_opt_multi';
+scriptName = 'ProcessHMMSASL_Hand_SD_DTW_opt_multi';
 bothFile = ['ExpRes/',scriptName,'_',datestr(now,'dd-mm-yy','local'),'_',datestr(now,'hh-MM-ss','local')];
 matFile = [bothFile '.mat'];
 diaryFile = [bothFile,'.txt'];
@@ -24,7 +24,7 @@ featureSetNum = 10;
 normDistCurr = 0;
 kCurr = 0;
 numTrainCurr = -1;
-trajFeatureCurr = [20 1045 1069 1089];
+trajFeatureCurr = [17 18 19 2817];
 distMeasCurr = [1 0 0 0];
 seqNormalCurr = [0 1 1 1];
 numTestCurr = -1;

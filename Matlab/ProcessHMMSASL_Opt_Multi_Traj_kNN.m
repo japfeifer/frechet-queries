@@ -2,7 +2,7 @@
 
 InitGlobalVars;
 
-scriptName = 'ProcessHMMSASL_Opt_Multi_Traj_SD';
+scriptName = 'ProcessHMMSASL_Opt_Multi_Traj_kNN';
 bothFile = ['ExpRes/',scriptName,'_',datestr(now,'dd-mm-yy','local'),'_',datestr(now,'hh-MM-ss','local')];
 matFile = [bothFile '.mat'];
 diaryFile = [bothFile,'.txt'];
@@ -15,7 +15,7 @@ disp([scriptName]);
 
 batchFlg = 1;
 datasetType = 7; % 1 = KinTrans, 2 = MHAD, 3 = LM, 4 = UCF
-classifierCurr = 1;  % 1 = subspace discriminant compute all distances, 2 = NN search
+classifierCurr = 2;  % 1 = subspace discriminant compute all distances, 2 = NN search
 trajDefTypeCurr = 2; % Trajectory definition type, 1 = append to a single traj, 2 = insert to a traj set
 doTrainSplit = 1;
 reachPctCurr = 0;
@@ -30,9 +30,9 @@ acc_iter_def = [1001 1002 1003 1004 1005 1006 1007 1008 1009 1010 1011 1012 ...
                 1097 1098 1099 1100 1101 1102      1104 1105 1106 1107 1108]; % accuracy iteration traj def id's
 numPredictor = 0;
 numLearner = 100;
-featureSetNum = 5;
+featureSetNum = 0;
 normDistCurr = 0;
-kCurr = 0;
+kCurr = 3;
 numTrainCurr = -1;
 distMeasCurr = [1 0 0 0];
 % distMeasCurr = [1 1 0 0];

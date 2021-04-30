@@ -2,9 +2,9 @@
 
 InitGlobalVars;
 
-testMethods = [2 3];
+testMethods = [8];
 reachType = 2; % 1 = small reach, 2 = large reach
-numQueries = 100;
+numQueries = 10;
 typeQ = 1;
 eVal = 0;
 
@@ -74,9 +74,20 @@ for i = 1:size(testMethods,2) % sub-traj methods
                 SubRNNSimpTree(j,tau,simpLevelCCT,sIdx,eIdx,typeQ,eVal,0);
             end
         elseif currMeth == 5
+            txt = 'Segment Interior independent call avg ms per query: ';
+        elseif currMeth == 6
             txt = 'Segment Interior use Simp Tree avg ms per query: ';
             level = 1; sIdx = 1; eIdx = 2;
             SubRNNSimpTreeDP(j,tau,level,sIdx,eIdx);
+        elseif currMeth == 7
+            txt = 'Vertex Aligned independent call avg ms per query: ';
+            level = 1; sIdx = 1; eIdx = 2;
+            SubRNNSimpTreeVAIntraBall(j,tau,level,sIdx,eIdx,typeQ,eVal,0);
+        elseif currMeth == 8
+            txt = 'Vertex Aligned independent call avg ms per query: ';
+            load(['MatlabData/TestSimpCCT.mat']);
+            level = 1; sIdx = 1; eIdx = 2;
+            SubRNNSimpTreeVA(j,tau,level,sIdx,eIdx,typeQ,eVal,0);
         end
     end
     t1 = toc;

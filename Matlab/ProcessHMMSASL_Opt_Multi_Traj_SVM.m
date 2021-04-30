@@ -2,7 +2,7 @@
 
 InitGlobalVars;
 
-scriptName = 'ProcessHMMSASL_Opt_Multi_Traj_SD';
+scriptName = 'ProcessHMMSASL_Opt_Multi_Traj_SVM';
 bothFile = ['ExpRes/',scriptName,'_',datestr(now,'dd-mm-yy','local'),'_',datestr(now,'hh-MM-ss','local')];
 matFile = [bothFile '.mat'];
 diaryFile = [bothFile,'.txt'];
@@ -62,7 +62,7 @@ testSetList = [];
 
 doIterNumJtsIncl = 1;
 % iterNumJtsIncl = 3;
-% doSVMFlg = 1;
+doSVMFlg = 1;
 % doDMmMin = 15;
 
 aggFlg = 1;
