@@ -55,8 +55,6 @@ function SubRNNSimpTreeDP(Qid,tau,level,sVertList,eVertList)
     end
     
     timeSearch = toc(tSearch);
-    
-    numWorst = size(inP,1) * size(Q,1);
 
     if size(sVertList,1) > 0
         queryStrData(Qid).sub2svert = sP(:,1);
@@ -69,14 +67,13 @@ function SubRNNSimpTreeDP(Qid,tau,level,sVertList,eVertList)
         queryStrData(Qid).sub2evert = [];
         queryStrData(Qid).sub2eseginterior = [];        
     end
-
-    queryStrData(Qid).sub2cntworst = numWorst;
     queryStrData(Qid).sub2lb = 0;
     queryStrData(Qid).sub2ub = tau;
-    queryStrData(Qid).sub2cntcellcheck = sumCellCheck;
+    queryStrData(Qid).sub2szinP = size(inP,1);
     queryStrData(Qid).sub2cntdpcalls = sumDPCalls;
+    queryStrData(Qid).sub2cntcellcheck = sumCellCheck;
     queryStrData(Qid).sub2cntspvert = sumSPVert;
+    queryStrData(Qid).sub2cntubvert = 0;
     queryStrData(Qid).sub2searchtime = timeSearch;
-    queryStrData(Qid).sub2rangedist = tau;
 
 end

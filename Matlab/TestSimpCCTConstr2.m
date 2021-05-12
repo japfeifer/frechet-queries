@@ -14,7 +14,7 @@ inP = cell2mat(trajOrigData(34,1)); % input traj P
 inP = DriemelSimp(inP,0); % get rid of duplicate vertices
 
 % tic
-% ConstTrajSimpTree(inP,1.7,10); % construct the simplification tree
+% ConstTrajSimpTree(inP,2,10); % construct the simplification tree
 % t = toc;
 % disp(['Simplification tree construction time (s): ',num2str(t)]);
 

@@ -2,9 +2,9 @@
 
 InitGlobalVars;
 
-testMethods = [2 3];
+testMethods = [6];
 reachType = 2; % 1 = small reach, 2 = large reach
-numQueries = 100;
+numQueries = 10;
 typeQ = 1;
 eVal = 0;
 
@@ -48,11 +48,13 @@ disp(['================']);
 for i = 1:size(testMethods,2) % sub-traj methods
     currMeth = testMethods(i);
     disp(['--------------']);
-    if currMeth == 1 % slower CCT
-        load(['MatlabData/TestSimpCCT.mat']); % load the pre-processed CCT, simp tree, inP, and simpLevelCCT
-    else % faster CCT
-        load(['MatlabData/TestSimpCCT2.mat']); % load the pre-processed CCT, simp tree, inP, and simpLevelCCT
-    end
+%     if currMeth == 1 % slower CCT
+%         load(['MatlabData/TestSimpCCT.mat']); % load the pre-processed CCT, simp tree, inP, and simpLevelCCT
+%     else % faster CCT
+%         load(['MatlabData/TestSimpCCT2.mat']); % load the pre-processed CCT, simp tree, inP, and simpLevelCCT
+%     end
+    
+    load(['MatlabData/TestSimpCCT.mat']);
 
     % perform queries
     tic
@@ -74,9 +76,41 @@ for i = 1:size(testMethods,2) % sub-traj methods
                 SubRNNSimpTree(j,tau,simpLevelCCT,sIdx,eIdx,typeQ,eVal,0);
             end
         elseif currMeth == 5
+            txt = 'Segment Interior independent call avg ms per query: ';
+        elseif currMeth == 6
             txt = 'Segment Interior use Simp Tree avg ms per query: ';
             level = 1; sIdx = 1; eIdx = 2;
             SubRNNSimpTreeDP(j,tau,level,sIdx,eIdx);
+        elseif currMeth == 7
+            txt = 'Vertex Aligned independent call avg ms per query: ';
+            level = 1; sIdx = 1; eIdx = 2;
+            SubRNNSimpTreeVAIntraBall(j,tau,level,sIdx,eIdx,typeQ,eVal,0);
+        elseif currMeth == 8
+            txt = 'Vertex Aligned independent call avg ms per query: ';
+            load(['MatlabData/TestSimpCCT.mat']);
+            level = 1; sIdx = 1; eIdx = 2;
+            SubRNNSimpTreeVA(j,tau,level,sIdx,eIdx,typeQ,eVal,0);
+        elseif currMeth == 9
+            txt = 'Vertex Aligned independent call avg ms per query: ';
+            RNN(j,2,tau + inpTrajErr(simpLevelCCT),0);
+            if size(queryStrData(j).decidetrajids) > 0
+                [sIdx,eIdx] = GetCCTPairwiseCand(j);
+                SubRNNSimpTreeVA(j,tau,simpLevelCCT,sIdx,eIdx,typeQ,eVal,0);
+            else
+                queryStrData(j).subsvert = 0; % start vertex
+                queryStrData(j).subevert = 0; % end vertex
+                queryStrData(j).sublb = 0; % LB dist
+                queryStrData(j).subub = tau; % UB dist
+                queryStrData(j).subcntworst = 0;
+                queryStrData(j).subcntsubtraj = 0;
+                queryStrData(j).subcntlb = 0;
+                queryStrData(j).subcntub = 0;
+                queryStrData(j).subcntfdp = 0;
+                queryStrData(j).subsearchtime = 0;
+                queryStrData(j).subprunetime = 0;
+                queryStrData(j).subrangedist = tau;
+            end
+            queryStrData(j).rnnsearchtime = queryStrData(j).searchtime;
         end
     end
     t1 = toc;

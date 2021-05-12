@@ -1,6 +1,9 @@
 % Simplifies a trajectory - reduces the number of vertices based on an
-% epsilon value.  Based on the Driemel et al. (2012) method.
-% search.
+% epsilon value.  This algo modifies the Driemel et al. (2012) method.
+% For the Driemel method, the first vertex outside the ball is connected to
+% the vertex at the center of the ball.  For this algo, the last vertex
+% inside the ball is connected to the vertex at the center of the
+% ball. So, this can be thought of as an intra-ball simplification.
 
 function [newTraj,idxListP] = BallSimp(P,epsilonDist)
 

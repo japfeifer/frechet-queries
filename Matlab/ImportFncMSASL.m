@@ -1,4 +1,4 @@
-function ImportFncMSASL(trainTest,fileName,dirName)
+function ImportFncMSASL(trainTest,fileName,dirName,handThresh)
 
     global CompMoveData
     
@@ -12,17 +12,30 @@ function ImportFncMSASL(trainTest,fileName,dirName)
 
     % this file contains a list of sequences
     fileid = fopen(fileName);
+    
+    emptyHand = [0 0 0  0 0 0  0 0 0  0 0 0 ...
+                 0 0 0  0 0 0  0 0 0  0 0 0 ...
+                 0 0 0  0 0 0  0 0 0  0 0 0 ...
+                 0 0 0  0 0 0  0 0 0  0 0 0 ...
+                 0 0 0  0 0 0  0 0 0  0 0 0 ...
+                 0 0 0];
 
     while 1 == 1 
         line = fgetl(fileid);
         if line == -1 % end of file
             break
         end
+        
+%         if numSequence == 6
+%             break
+%         end
 
         [seqId,line] = strtok(line,char(9));
         if isnan(str2double(seqId)) == 0 % seq data exists for this sequence
-            [label,line] = strtok(line,char(9)); % get the signed word
-            X = ['Import MS-ASL Dataset:  ' label,'  ',num2str(numSequence)];
+            [labelTxt,line] = strtok(line,char(9)); % get the signed word text
+            [labelId,line] = strtok(line,char(9)); % get the signed word id number
+            [subjectNum,line] = strtok(line,char(9)); % get the subject id number
+            X = ['Import MS-ASL Dataset:  ' labelTxt,'  ',num2str(numSequence)];
             waitbar(numSequence, h, X);
             thisDirName = [dirName '\' num2str(seqId) '\*.json'];
             fileList = dir(thisDirName);
@@ -35,23 +48,49 @@ function ImportFncMSASL(trainTest,fileName,dirName)
                 fileid2 = fopen(fileName);
                 line = fgetl(fileid2);
                 fclose(fileid2);
-                [garbage,line] = strtok(line,'['); % remove some unwanted text
-                [garbage,line] = strtok(line,'[');
-                [garbage,line] = strtok(line,'[');
-                if size(line,2) > 0 % some seq frame files contain no coordinate info
-                    c = sscanf(strrep(line(2:end),',',' '),'%f',[3 18]); % get x &y coordinates and score for 18 joints
-                    currTraj(end+1,:) = [c(1,1)  c(2,1)  0 c(1,2)  c(2,2)  0 c(1,3)  c(2,3)  0 c(1,4)  c(2,4)  0 ...
-                                         c(1,5)  c(2,5)  0 c(1,6)  c(2,6)  0 c(1,7)  c(2,7)  0 c(1,8)  c(2,8)  0 ...
-                                         c(1,9)  c(2,9)  0 c(1,10) c(2,10) 0 c(1,11) c(2,11) 0 c(1,12) c(2,12) 0 ...
-                                         c(1,13) c(2,13) 0 c(1,14) c(2,14) 0 c(1,15) c(2,15) 0 c(1,16) c(2,16) 0 ...
-                                         c(1,17) c(2,17) 0 c(1,18) c(2,18) 0];
+
+                value = jsondecode(line);
+                if isfield(value.people,'pose_keypoints_2d') == true
+                    v = value.people.pose_keypoints_2d; % 18 joints, each has x,y, and score
+                    if size(v,2) > 0
+                        currTraj(end+1,1:54) = [v(1)   v(2)   0 v(4)   v(5)  0 v(7)   v(8)  0 v(10)  v(11) 0 ...
+                                                v(13)  v(14)  0 v(16)  v(17) 0 v(19)  v(20) 0 v(22)  v(23) 0 ...
+                                                v(25)  v(26)  0 v(28)  v(29) 0 v(31)  v(32) 0 v(34)  v(35) 0 ...
+                                                v(37)  v(38)  0 v(40)  v(41) 0 v(43)  v(44) 0 v(46)  v(47) 0 ...
+                                                v(49)  v(50)  0 v(52)  v(53) 0];
+                                         
+                        if isfield(value.people,'hand_left_keypoints_2d') == true
+                            v = value.people.hand_left_keypoints_2d; % 21 joints, each has x,y, and score
+                            if size(v,2) > 0
+                                vNew = MSASLGetHand(v,handThresh);
+                                currTraj(end,55:117) = vNew;
+                            else
+                                currTraj(end,55:117) = emptyHand;
+                            end
+                        else
+                            currTraj(end,55:117) = emptyHand;
+                        end
+                        
+                        if isfield(value.people,'hand_right_keypoints_2d') == true
+                            v = value.people.hand_right_keypoints_2d; % 21 joints, each has x,y, and score
+                            if size(v,2) > 0
+                                vNew = MSASLGetHand(v,handThresh);
+                                currTraj(end,118:180) = vNew;
+                            else
+                                currTraj(end,118:180) = emptyHand;
+                            end
+                        else
+                            currTraj(end,118:180) = emptyHand;
+                        end
+                    end
                 end
             end
             % store results in CompMoveData
-            CompMoveData(numSequence,1) = {label};
-            CompMoveData(numSequence,2) = {['Subject 0']};
+            CompMoveData(numSequence,1) = {labelId};
+            CompMoveData(numSequence,2) = {['Subject ',subjectNum]};
             CompMoveData(numSequence,3) = num2cell(trainTest);
             CompMoveData(numSequence,4) = mat2cell(currTraj,size(currTraj,1),size(currTraj,2));
+            CompMoveData(numSequence,7) = {labelTxt};
             numSequence = numSequence + 1;
         end
 

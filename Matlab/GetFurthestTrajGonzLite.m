@@ -4,6 +4,10 @@ function [furthestTrajID,largestRSize,tList] = GetFurthestTrajGonzLite(cTrajId,t
     global numCFD trajStrData numFurthestCFD
     
     bndList = []; cTraj = []; tTraj = []; currDist = 0;
+    
+    if size(tList,1) == 0
+        error('tList is empty in GetFurthestTrajGonzLite');
+    end
 
     % first get upper and lower bounds for each traj
     cTraj = trajStrData(cTrajId).traj;

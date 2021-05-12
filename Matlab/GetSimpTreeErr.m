@@ -1,12 +1,16 @@
 
 
-function currBestErr = GetSimpTreeErr(P,nSimp,polyExp,dispFlg)
+function currBestErr = GetSimpTreeErr(P,nSimp,polyExp,simpType,dispFlg)
 
     switch nargin
     case 2
         polyExp = 2; % polylog exponent
+        simpType = 1;
         dispFlg = 0;
     case 3
+        simpType = 1;
+        dispFlg = 0;
+    case 4
         dispFlg = 0;
     end
 
@@ -36,7 +40,11 @@ function currBestErr = GetSimpTreeErr(P,nSimp,polyExp,dispFlg)
 
     for i = 1:numIter
         currErr = minVal + (maxVal - minVal)*rand; % uniformly distributed random real in the interval [minVal,minVal]
-        currPSimp = BallSimp(P,currErr); % call Driemel linear-time simplification algorithm
+        if simpType == 1
+            currPSimp = LinearSimp(P,currErr); % call Driemel linear-time simplification algorithm
+        else
+            currPSimp = BallSimp(P,currErr); % call Intra-ball linear-time simplification algorithm
+        end
         szCurrPSimp = size(currPSimp,1); % |P'|
         if i == 1
             currBestErr = currErr;

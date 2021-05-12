@@ -2,11 +2,10 @@
 
 InitGlobalVars;
 
-testMethods = [2 4];
-% testMethods = [2 3 4 5 6];
+testMethods = [13];
 reachType = 2; % 1 = small reach, 2 = large reach
-numQueries = 100;
-typeQ = 1;
+numQueries = 10;
+typeQ = 2;
 eVal = 0;
 
 rngSeed = 1;
@@ -49,11 +48,16 @@ disp(['================']);
 for i = 1:size(testMethods,2) % sub-traj methods
     currMeth = testMethods(i);
     disp(['--------------']);
-    if currMeth == 1 % slower CCT
-        load(['MatlabData/TestSimpCCT.mat']); % load the pre-processed CCT, simp tree, inP, and simpLevelCCT
-    else % faster CCT
-        load(['MatlabData/TestSimpCCT2.mat']); % load the pre-processed CCT, simp tree, inP, and simpLevelCCT
-    end
+%     if currMeth == 1 % slower CCT
+%         load(['MatlabData/TestSimpCCT.mat']); % load the pre-processed CCT, simp tree, inP, and simpLevelCCT
+%     else % faster CCT
+%         load(['MatlabData/TestSimpCCT2.mat']); % load the pre-processed CCT, simp tree, inP, and simpLevelCCT
+%     end
+%     if currMeth == 8
+%         load(['MatlabData/TestSimpCCT.mat']);
+%     end
+    
+    load(['MatlabData/TestSimpCCT.mat']);
 
     % perform queries
     tic
@@ -97,6 +101,52 @@ for i = 1:size(testMethods,2) % sub-traj methods
             txt = 'Segment Interior use Simp Tree avg ms per query: ';
             level = 1; sIdx = 1; eIdx = 2;
             SubNNSimpTreeDP(j,level,sIdx,eIdx);
+        elseif currMeth == 7
+            txt = 'Vertex Aligned independent call avg ms per query: ';
+            level = 1; sIdx = 1; eIdx = 2;
+            SubNNSimpTreeVAIntraBall(j,level,sIdx,eIdx,typeQ,eVal,0);
+        elseif currMeth == 8
+            txt = 'Vertex Aligned independent call avg ms per query: ';
+            level = 1; sIdx = 1; eIdx = 2;
+            SubNNSimpTreeVA(j,level,sIdx,eIdx,typeQ,eVal,0);
+        elseif currMeth == 9
+            txt = 'Vertex Aligned use CCT result avg ms per query: ';
+            NN(j,2,eMult);
+            trajNNidx = queryStrData(j).decidetrajids;
+            NNdist = ContFrechet(trajStrData(trajNNidx).traj,queryStrData(j).traj);
+            QidR = numQueries + 1;
+            queryStrData(QidR).traj = queryStrData(j).traj;
+            PreprocessQuery(QidR);
+            RNN(QidR,2,NNdist + inpTrajErr(simpLevelCCT),0);
+            [sIdx,eIdx] = GetCCTPairwiseCand(QidR);
+            SubNNSimpTreeVA(j,simpLevelCCT,sIdx,eIdx,typeQ,eVal,0);
+            queryStrData(j).nnsearchtime = queryStrData(j).searchtime;
+            queryStrData(j).rnnsearchtime = queryStrData(QidR).searchtime;
+        elseif currMeth == 10
+            txt = 'Segment Interior use CCT result avg ms per query: ';
+            NN(j,2,eMult);
+            trajNNidx = queryStrData(j).decidetrajids;
+            NNdist = ContFrechet(trajStrData(trajNNidx).traj,queryStrData(j).traj);
+            QidR = numQueries + 1;
+            queryStrData(QidR).traj = queryStrData(j).traj;
+            PreprocessQuery(QidR);
+            RNN(QidR,2,NNdist + inpTrajErr(simpLevelCCT),0);
+            [sIdx,eIdx] = GetCCTPairwiseCand(QidR);
+            SubNNSimpTreeDP(j,simpLevelCCT,sIdx,eIdx);
+            queryStrData(j).nnsearchtime = queryStrData(j).searchtime;
+            queryStrData(j).rnnsearchtime = queryStrData(QidR).searchtime;
+        elseif currMeth == 11
+            txt = 'Base Vertex Aligned independent call avg ms per query: ';
+            level = 1; sIdx = 1; eIdx = 2;
+            BaseSubNN(j,level,[sIdx eIdx]);
+        elseif currMeth == 12
+            txt = 'Recursive Vertex Aligned independent call avg ms per query: ';
+            level = 1; sIdx = 1; eIdx = 2;
+            RecSubNNInit(j,level,[sIdx eIdx]);
+        elseif currMeth == 13
+            txt = 'Base Vertex Aligned independent call avg ms per query: ';
+            level = 1; sIdx = 1; eIdx = 2;
+            FastSubNN(j,level,[sIdx eIdx],1,typeQ,eVal);
         end
     end
     t1 = toc;

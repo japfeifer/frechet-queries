@@ -1,359 +1,144 @@
 
 function seq = MSASLNormalizeSeq(seq,seqNormalCurr)
 
-    HEAD  = [1,2,3]; SHO = [4,5,6]; RSHO = [7,8,9]; RELB = [10,11,12];
-    RHND = [13,14,15]; LSHO = [16,17,18]; LELB = [19,20,21]; LHND = [22,23,24];
-    RHIP = [25,26,27]; RKNE = [28,29,30]; RFOT = [31,32,33]; LHIP = [34,35,36];
-    LKNE = [37,38,39]; LFOT = [40,41,42]; RHED = [43,44,45]; LHED = [46,47,48];
-    REAR = [49,50,51]; LEAR = [52,53,54]; 
+    HEAD = [1,2,3];         NECK = [4,5,6];         RSHO = [7,8,9];        RELB = [10,11,12];
+    RWST = [13,14,15];      LSHO = [16,17,18];      LELB = [19,20,21];     LWST = [22,23,24];
+    RHIP = [25,26,27];      RKNE = [28,29,30];      RFOT = [31,32,33];     LHIP = [34,35,36];
+    LKNE = [37,38,39];      LFOT = [40,41,42];      REYE = [43,44,45];     LEYE = [46,47,48];
+    REAR = [49,50,51];      LEAR = [52,53,54]; 
 
-    if seqNormalCurr(1,5) == 1
-        % (5) for each frame, normalize the limb lengths, but keep the same
-        % limb vector
-        
-        % normalized limb distances
-        SHO_HEAD = 145.894;
-        HEAD_RHED = 34.53;
-        RHED_REAR = 41.846;
-        HEAD_LHED = 35.219;
-        LHED_LEAR = 44.445;
-        SHO_RSHO = 121.13;
-        RSHO_RELB = 189.155;
-        RELB_RHND = 137.743;
-        SHO_LSHO = 120.905;
-        LSHO_LELB = 196.287;
-        LELB_LHND = 117.775;
+    LTPR = [61,62,63];      LTDI = [64,65,66];      LTEF = [67,68,69];                            % thumb
+    LIPR = [70,71,72];      LIME = [73,74,75];      LIDI = [76,77,78];     LIEF = [79,80,81];     % index finger
+    LMPR = [82,83,84];      LMME = [85,86,87];      LMDI = [88,89,90];     LMEF = [91,92,93];     % middle finger
+    LRPR = [94,95,96];      LRME = [97,98,99];      LRDI = [100,101,102];  LREF = [103,104,105];  % ring finger
+    LPPR = [106,107,108];   LPME = [109,110,111];   LPDI = [112,113,114];  LPEF = [115,116,117];  % pinky finger
+    LPAL = [55,56,57];      LTPA = [58,59,60];                                                    % palm and thumb palm
 
-        for i=1:size(seq,1)
-            % normalize HEAD
-            vec = seq(i,HEAD) - seq(i,SHO); % original vector
-            uvec = vec ./ CalcPointDist(seq(i,HEAD),seq(i,SHO)); % unit normal vector
-            nvec = uvec .* SHO_HEAD; % new vector
-            p = seq(i,SHO) + nvec; % new point
-            seq(i,HEAD) = p; % save the new point
+    RTPR = [124,125,126];   RTDI = [127,128,129];   RTEF = [130,131,132];                         % thumb
+    RIPR = [133,134,135];   RIME = [136,137,138];   RIDI = [139,140,141];  RIEF = [142,143,144];  % index finger
+    RMPR = [145,146,147];   RMME = [148,149,150];   RMDI = [151,152,153];  RMEF = [154,155,156];  % middle finger
+    RRPR = [157,158,159];   RRME = [160,161,162];   RRDI = [163,164,165];  RREF = [166,167,168];  % ring finger
+    RPPR = [169,170,171];   RPME = [172,173,174];   RPDI = [175,176,177];  RPEF = [178,179,180];  % pinky finger
+    RPAL = [118,119,120];   RTPA = [121,122,123];                                                 % palm and thumb palm
 
-            % normalize RHED
-            vec = seq(i,RHED) - seq(i,HEAD); % original vector
-            uvec = vec ./ CalcPointDist(seq(i,RHED),seq(i,HEAD)); % unit normal vector
-            nvec = uvec .* HEAD_RHED; % new vector
-            p = seq(i,HEAD) + nvec; % new point
-            seq(i,RHED) = p; % save the new point
-            
-            % normalize REAR
-            vec = seq(i,REAR) - seq(i,RHED); % original vector
-            uvec = vec ./ CalcPointDist(seq(i,REAR),seq(i,RHED)); % unit normal vector
-            nvec = uvec .* RHED_REAR; % new vector
-            p = seq(i,RHED) + nvec; % new point
-            seq(i,REAR) = p; % save the new point
-            
-            % normalize LHED
-            vec = seq(i,LHED) - seq(i,HEAD); % original vector
-            uvec = vec ./ CalcPointDist(seq(i,LHED),seq(i,HEAD)); % unit normal vector
-            nvec = uvec .* HEAD_LHED; % new vector
-            p = seq(i,HEAD) + nvec; % new point
-            seq(i,LHED) = p; % save the new point
-            
-            % normalize LEAR
-            vec = seq(i,LEAR) - seq(i,LHED); % original vector
-            uvec = vec ./ CalcPointDist(seq(i,LEAR),seq(i,LHED)); % unit normal vector
-            nvec = uvec .* LHED_LEAR; % new vector
-            p = seq(i,LHED) + nvec; % new point
-            seq(i,LEAR) = p; % save the new point
-            
-            % normalize RSHO
-            vec = seq(i,RSHO) - seq(i,SHO); % original vector
-            uvec = vec ./ CalcPointDist(seq(i,RSHO),seq(i,SHO)); % unit normal vector
-            nvec = uvec .* SHO_RSHO; % new vector
-            p = seq(i,SHO) + nvec; % new point
-            seq(i,RSHO) = p; % save the new point
-            
-            % normalize RELB
-            vec = seq(i,RELB) - seq(i,RSHO); % original vector
-            uvec = vec ./ CalcPointDist(seq(i,RELB),seq(i,RSHO)); % unit normal vector
-            nvec = uvec .* RSHO_RELB; % new vector
-            p = seq(i,RSHO) + nvec; % new point
-            seq(i,RELB) = p; % save the new point
-            
-            % normalize RHND
-            vec = seq(i,RHND) - seq(i,RELB); % original vector
-            uvec = vec ./ CalcPointDist(seq(i,RHND),seq(i,RELB)); % unit normal vector
-            nvec = uvec .* RELB_RHND; % new vector
-            p = seq(i,RELB) + nvec; % new point
-            seq(i,RHND) = p; % save the new point
-            
-            % normalize LSHO
-            vec = seq(i,LSHO) - seq(i,SHO); % original vector
-            uvec = vec ./ CalcPointDist(seq(i,LSHO),seq(i,SHO)); % unit normal vector
-            nvec = uvec .* SHO_LSHO; % new vector
-            p = seq(i,SHO) + nvec; % new point
-            seq(i,LSHO) = p; % save the new point
-            
-            % normalize LELB
-            vec = seq(i,LELB) - seq(i,LSHO); % original vector
-            uvec = vec ./ CalcPointDist(seq(i,LELB),seq(i,LSHO)); % unit normal vector
-            nvec = uvec .* LSHO_LELB; % new vector
-            p = seq(i,LSHO) + nvec; % new point
-            seq(i,LELB) = p; % save the new point
-            
-            % normalize LHND
-            vec = seq(i,LHND) - seq(i,LELB); % original vector
-            uvec = vec ./ CalcPointDist(seq(i,LHND),seq(i,LELB)); % unit normal vector
-            nvec = uvec .* LELB_LHND; % new vector
-            p = seq(i,LELB) + nvec; % new point
-            seq(i,LHND) = p; % save the new point
-
-        end
-    end
-
-    if seqNormalCurr(1,3) == 1 % rotate such that subject faces camera in first frame  
-        % (3a) calc first frame rotation of HEAD & SHO to face camera (rotate about x-axis),
-        % then apply rotation to all frames
-
-        % get degrees to rotate
-        p1 = [seq(1,SHO(2)) seq(1,SHO(3)) 0];
-        p2 = [seq(1,HEAD(2)) seq(1,HEAD(3)) 0];
-        p3 = [seq(1,SHO(2)) seq(1,HEAD(3)) 0];
-        deg = AngDeg3DVec(p1,p2,p3); % get degree angle from p1 to p2 to p3
-        if seq(1,HEAD(2)) < seq(1,SHO(2)) % subject HEAD lower than SHO
-            deg = 180 - deg;
-        end
-
-        % determine if HEAD or SHO is closer to camera, look at z axis
-        if seq(1,HEAD(3)) < seq(1,SHO(3)) % HEAD is closer
-            % rotate counter-clockwise about x axis (when viewing from camera-right side)
-            rotMat = [1  0          0          ; ...
-                      0  cosd(deg)  sind(deg) ; ...
-                      0  -sind(deg)  cosd(deg)] ;
-        else % SHO is closer
-            % rotate clockwise about x axis (when viewing from camera-right side)
-            rotMat = [1  0          0          ; ...
-                      0  cosd(deg)  -sind(deg) ; ...
-                      0  sind(deg)  cosd(deg)] ;
-        end
-        for i = 1:size(seq,2)/3 % for each traj in the seq
-            seq(:,i*3-2:i*3) = seq(:,i*3-2:i*3) * rotMat; % matrix multiplication    
-        end
-
-%         % ensure rotate worked
-%         if round(seq(1,HEAD(3)),7) ~= round(seq(1,SHO(3)),7)
-%            error('Issue with rotate about x-axis'); 
-%         end
-
-        % (3b) calc first frame rotation of HEAD & SHO such that SHO is directly 
-        % beneath HEAD (rotate about z-axis), then apply rotation to all frames
-
-        % get degrees to rotate
-        p1 = [seq(1,SHO(1)) seq(1,SHO(2)) 0];
-        p2 = [seq(1,HEAD(1)) seq(1,HEAD(2)) 0];
-        p3 = [seq(1,HEAD(1)) seq(1,SHO(2)) 0];
-        deg = AngDeg3DVec(p1,p2,p3); % get degree angle from p1 to p2 to p3
-        if seq(1,HEAD(2)) < seq(1,SHO(2)) % subject HEAD lower than SHOo
-            deg = 180 - deg;
-        end
-
-        % determine if HEAD is left or right from SHO, look at x axis
-        if seq(1,HEAD(1)) < seq(1,SHO(1)) % HEAD is right from SHO
-            % rotate counter-clockwise about z axis (when viewing from camera)
-            rotMat = [cosd(deg)  -sind(deg)  0 ; ...
-                      sind(deg)  cosd(deg)   0 ; ...
-                      0          0           1 ] ;
-        else % HEAD is left from SHO
-            % rotate clockwise about z axis (when viewing from camera)  
-            rotMat = [cosd(deg)  sind(deg)  0 ; ...
-                      -sind(deg)  cosd(deg)   0 ; ...
-                      0          0           1 ] ;
-        end
-        for i = 1:size(seq,2)/3 % for each traj in the seq
-            seq(:,i*3-2:i*3) = seq(:,i*3-2:i*3) * rotMat; % matrix multiplication    
-        end
-
-%         % ensure rotate worked
-%         if round(seq(1,HEAD(1)),7) ~= round(seq(1,SHO(1)),7)
-%            error('Issue with rotate about z-axis'); 
-%         end
-
-        % (3c) calc first frame rotation of RSHO & LSHO to face camera (rotate about y-axis),
-        % then apply rotation to all frames.
-        % (for this data, smaller z axis values are closer to camera)
-
-        % first get degrees to rotate - remove y-axis dim
-        p1 = [seq(1,RSHO(1)) seq(1,RSHO(3))]; % RSHO point
-        p2 = [seq(1,LSHO(1)) seq(1,LSHO(3))]; % LSHO point
-        p3 = [seq(1,HEAD(1)) seq(1,HEAD(3))]; % HEAD point
-        p5 = Cplsp([seq(1,RSHO(1)) seq(1,RSHO(3))],[seq(1,LSHO(1)) seq(1,LSHO(3))],[seq(1,HEAD(1)) seq(1,HEAD(3))]); % closest point on line segment RSHO-LSHO to origin (HEAD)
-        if p5(2) < p3(2) % subject facing camera
-            p4 = [seq(1,HEAD(1)) min(seq(1,RSHO(3)),seq(1,LSHO(3)))]; % furthest point on z-axis perpendicular to HEAD
-        else % back of subject facing camera
-            p4 = [seq(1,HEAD(1)) max(seq(1,RSHO(3)),seq(1,LSHO(3)))]; % furthest point on z-axis perpendicular to HEAD
-        end
-        p6 = LineIntersect2D(p1,p2,p3,p4); % find where line p1-p2 intersects line p3-p4
-        deg = AngDeg3DVec([p5 0] , [p3 0] , [p6 0]); % get degree angle from p5 to p3 to p6
-        if seq(1,RSHO(1)) < seq(1,LSHO(1)) % back of subject facing camera
-            deg = 180 - deg;
-        end
-
-        % determine if RSHO or LSHO is closer to camera, look at z axis
-        if seq(1,LSHO(3)) < seq(1,RSHO(3)) % left shoulder is closer
-            % rotate counter-clockwise about y axis (when viewing top-down from camera)
-            rotMat = [cosd(deg)  0  -sind(deg); ...
-                      0          1  0         ; ...
-                      sind(deg)  0  cosd(deg)];
-        else % right shouder is closer
-            % rotate clockwise about y axis (when viewing top-down from camera)
-            rotMat = [cosd(deg)  0  sind(deg) ; ...
-                     0           1  0         ; ...
-                     -sind(deg)  0  cosd(deg)];
-        end
-        for i = 1:size(seq,2)/3 % for each traj in the seq
-            seq(:,i*3-2:i*3) = seq(:,i*3-2:i*3) * rotMat; % matrix multiplication    
-        end
-
-%         % ensure rotate worked
-%         if round(seq(1,RSHO(3)),7) ~= round(seq(1,LSHO(3)),7)
-%            error('Issue with rotate about y-axis'); 
-%         end
-    end
-    
-    if seqNormalCurr(1,4) == 1 % rotate such that subject faces camera in first frame  
-        
-        for i = 1:size(seq,1)
-            % (4a) calc first frame rotation of HEAD & SHO to face camera (rotate about x-axis),
-            % then apply rotation to all frames
-
-            % get degrees to rotate
-            p1 = [seq(i,SHO(2)) seq(i,SHO(3)) 0];
-            p2 = [seq(i,HEAD(2)) seq(i,HEAD(3)) 0];
-            p3 = [seq(i,SHO(2)) seq(i,HEAD(3)) 0];
-            deg = AngDeg3DVec(p1,p2,p3); % get degree angle from p1 to p2 to p3
-            if seq(i,HEAD(2)) < seq(i,SHO(2)) % subject HEAD lower than SHOo
-                deg = 180 - deg;
-            end
-
-            % determine if HEAD or SHO is closer to camera, look at z axis
-            if seq(i,HEAD(3)) < seq(i,SHO(3)) % HEAD is closer
-                % rotate counter-clockwise about x axis (when viewing from camera-right side)
-                rotMat = [1  0          0          ; ...
-                          0  cosd(deg)  sind(deg) ; ...
-                          0  -sind(deg)  cosd(deg)] ;
-            else % SHO is closer
-                % rotate clockwise about x axis (when viewing from camera-right side)
-                rotMat = [1  0          0          ; ...
-                          0  cosd(deg)  -sind(deg) ; ...
-                          0  sind(deg)  cosd(deg)] ;
-            end
-            for j = 1:size(seq,2)/3 % for each joint in the seq
-                seq(i,j*3-2:j*3) = seq(i,j*3-2:j*3) * rotMat; % matrix multiplication    
-            end
-
-%             % ensure rotate worked
-%             if round(seq(i,HEAD(3)),7) ~= round(seq(i,SHO(3)),7)
-%                error('Issue with rotate about x-axis'); 
-%             end
-
-            % (4b) calc first frame rotation of HEAD & SHO such that SHO is directly 
-            % beneath HEAD (rotate about z-axis), then apply rotation to all frames
-
-            % get degrees to rotate
-            p1 = [seq(i,SHO(1)) seq(i,SHO(2)) 0];
-            p2 = [seq(i,HEAD(1)) seq(i,HEAD(2)) 0];
-            p3 = [seq(i,HEAD(1)) seq(i,SHO(2)) 0];
-            deg = AngDeg3DVec(p1,p2,p3); % get degree angle from p1 to p2 to p3
-            if seq(i,HEAD(2)) < seq(i,SHO(2)) % subject HEAD lower than SHOo
-                deg = 180 - deg;
-            end
-
-            % determine if HEAD is left or right from SHO, look at x axis
-            if seq(i,HEAD(1)) < seq(i,SHO(1)) % HEAD is right from SHO
-                % rotate counter-clockwise about z axis (when viewing from camera)
-                rotMat = [cosd(deg)  -sind(deg)  0 ; ...
-                          sind(deg)  cosd(deg)   0 ; ...
-                          0          0           1 ] ;
-            else % HEAD is left from SHO
-                % rotate clockwise about z axis (when viewing from camera)  
-                rotMat = [cosd(deg)  sind(deg)  0 ; ...
-                          -sind(deg)  cosd(deg)   0 ; ...
-                          0          0           1 ] ;
-            end
-            for j = 1:size(seq,2)/3 % for each joint in the seq
-                seq(i,j*3-2:j*3) = seq(i,j*3-2:j*3) * rotMat; % matrix multiplication    
-            end
-
-%             % ensure rotate worked
-%             if round(seq(i,HEAD(1)),7) ~= round(seq(i,SHO(1)),7)
-%                error('Issue with rotate about z-axis'); 
-%             end
-
-            % (4c) calc first frame rotation of RSHO & LSHO to face camera (rotate about y-axis),
-            % then apply rotation to all frames.
-            % (for this data, smaller z axis values are closer to camera)
-
-            % first get degrees to rotate - remove y-axis dim
-            p1 = [seq(i,RSHO(1)) seq(i,RSHO(3))]; % RSHO point
-            p2 = [seq(i,LSHO(1)) seq(i,LSHO(3))]; % LSHO point
-            p3 = [seq(i,HEAD(1)) seq(i,HEAD(3))]; % HEAD point
-            p5 = Cplsp([seq(i,RSHO(1)) seq(i,RSHO(3))],[seq(i,LSHO(1)) seq(i,LSHO(3))],[seq(i,HEAD(1)) seq(i,HEAD(3))]); % closest point on line segment RSHO-LSHO to origin (HEAD)
-            if p5(2) < p3(2) % subject facing camera
-                p4 = [seq(i,HEAD(1)) min(seq(i,RSHO(3)),seq(i,LSHO(3)))]; % furthest point on z-axis perpendicular to HEAD
-            else % back of subject facing camera
-                p4 = [seq(i,HEAD(1)) max(seq(i,RSHO(3)),seq(i,LSHO(3)))]; % furthest point on z-axis perpendicular to HEAD
-            end
-            p6 = LineIntersect2D(p1,p2,p3,p4); % find where line p1-p2 intersects line p3-p4
-            deg = AngDeg3DVec([p5 0] , [p3 0] , [p6 0]); % get degree angle from p5 to p3 to p6
-            if seq(i,RSHO(1)) < seq(i,LSHO(1)) % back of subject facing camera
-                deg = 180 - deg;
-            end
-
-            % determine if RSHO or LSHO is closer to camera, look at z axis
-            if seq(i,LSHO(3)) < seq(i,RSHO(3)) % left shoulder is closer
-                % rotate counter-clockwise about y axis (when viewing top-down from camera)
-                rotMat = [cosd(deg)  0  -sind(deg); ...
-                          0          1  0         ; ...
-                          sind(deg)  0  cosd(deg)];
-            else % right shouder is closer
-                % rotate clockwise about y axis (when viewing top-down from camera)
-                rotMat = [cosd(deg)  0  sind(deg) ; ...
-                         0           1  0         ; ...
-                         -sind(deg)  0  cosd(deg)];
-            end
-            for j = 1:size(seq,2)/3 % for each traj in the seq
-                seq(i,j*3-2:j*3) = seq(i,j*3-2:j*3) * rotMat; % matrix multiplication    
-            end
-
-%             % ensure rotate worked
-%             if round(seq(i,RSHO(3)),7) ~= round(seq(i,LSHO(3)),7)
-%                error('Issue with rotate about y-axis'); 
-%             end
-        end
-    end
-    
     if seqNormalCurr(1,1) == 1
-        % (1) for each frame, translate all joints so that SHO first frame
+        % (1) for each frame, translate all joints so that NECK first frame
         % is at coordinate (0,0,0)
-        transPoint = [seq(1,SHO(1))*-1 seq(1,SHO(2))*-1 seq(1,SHO(3))*-1];
-        seq = [seq(:,HEAD)+transPoint seq(:,SHO)+transPoint seq(:,RSHO)+transPoint seq(:,RELB)+transPoint ...
-                   seq(:,RHND)+transPoint seq(:,LSHO)+transPoint seq(:,LELB)+transPoint seq(:,LHND)+transPoint ...
+        transPoint = [seq(1,NECK(1))*-1 seq(1,NECK(2))*-1 seq(1,NECK(3))*-1];
+        seq = [seq(:,HEAD)+transPoint seq(:,NECK)+transPoint seq(:,RSHO)+transPoint seq(:,RELB)+transPoint ...
+                   seq(:,RWST)+transPoint seq(:,LSHO)+transPoint seq(:,LELB)+transPoint seq(:,LWST)+transPoint ...
                    seq(:,RHIP)+transPoint seq(:,RKNE)+transPoint seq(:,RFOT)+transPoint seq(:,LHIP)+transPoint ...
-                   seq(:,LKNE)+transPoint seq(:,LFOT)+transPoint seq(:,RHED)+transPoint seq(:,LHED)+transPoint ...
-                   seq(:,REAR)+transPoint seq(:,LEAR)+transPoint];
+                   seq(:,LKNE)+transPoint seq(:,LFOT)+transPoint seq(:,REYE)+transPoint seq(:,LEYE)+transPoint ...
+                   seq(:,REAR)+transPoint seq(:,LEAR)+transPoint seq(:,LPAL)+transPoint seq(:,LTPA)+transPoint ...
+                   seq(:,LTPR)+transPoint seq(:,LTDI)+transPoint seq(:,LTEF)+transPoint seq(:,LIPR)+transPoint ...
+                   seq(:,LIME)+transPoint seq(:,LIDI)+transPoint seq(:,LIEF)+transPoint seq(:,LMPR)+transPoint ...
+                   seq(:,LMME)+transPoint seq(:,LMDI)+transPoint seq(:,LMEF)+transPoint seq(:,LRPR)+transPoint ...
+                   seq(:,LRME)+transPoint seq(:,LRDI)+transPoint seq(:,LREF)+transPoint seq(:,LPPR)+transPoint ...
+                   seq(:,LPME)+transPoint seq(:,LPDI)+transPoint seq(:,LPEF)+transPoint seq(:,RPAL)+transPoint ...
+                   seq(:,RTPA)+transPoint seq(:,RTPR)+transPoint seq(:,RTDI)+transPoint seq(:,RTEF)+transPoint ...
+                   seq(:,RIPR)+transPoint seq(:,RIME)+transPoint seq(:,RIDI)+transPoint seq(:,RIEF)+transPoint ...
+                   seq(:,RMPR)+transPoint seq(:,RMME)+transPoint seq(:,RMDI)+transPoint seq(:,RMEF)+transPoint ...
+                   seq(:,RRPR)+transPoint seq(:,RRME)+transPoint seq(:,RRDI)+transPoint seq(:,RREF)+transPoint ...
+                   seq(:,RPPR)+transPoint seq(:,RPME)+transPoint seq(:,RPDI)+transPoint seq(:,RPEF)+transPoint];
     end
 
     if seqNormalCurr(1,2) == 1
-        % (2) for each frame, translate all joints so that SHO is always
+        % (2) for each frame, translate all joints so that NECK is always
         % fixed to coordinate (0,0,0)
-        transPoint = [seq(:,SHO(1))*-1 seq(:,SHO(2))*-1 seq(:,SHO(3))*-1];
-        seq = [seq(:,HEAD)+transPoint seq(:,SHO)+transPoint seq(:,RSHO)+transPoint seq(:,RELB)+transPoint ...
-                   seq(:,RHND)+transPoint seq(:,LSHO)+transPoint seq(:,LELB)+transPoint seq(:,LHND)+transPoint ...
+        transPoint = [seq(:,NECK(1))*-1 seq(:,NECK(2))*-1 seq(:,NECK(3))*-1];
+        seq = [seq(:,HEAD)+transPoint seq(:,NECK)+transPoint seq(:,RSHO)+transPoint seq(:,RELB)+transPoint ...
+                   seq(:,RWST)+transPoint seq(:,LSHO)+transPoint seq(:,LELB)+transPoint seq(:,LWST)+transPoint ...
                    seq(:,RHIP)+transPoint seq(:,RKNE)+transPoint seq(:,RFOT)+transPoint seq(:,LHIP)+transPoint ...
-                   seq(:,LKNE)+transPoint seq(:,LFOT)+transPoint seq(:,RHED)+transPoint seq(:,LHED)+transPoint ...
-                   seq(:,REAR)+transPoint seq(:,LEAR)+transPoint];
+                   seq(:,LKNE)+transPoint seq(:,LFOT)+transPoint seq(:,REYE)+transPoint seq(:,LEYE)+transPoint ...
+                   seq(:,REAR)+transPoint seq(:,LEAR)+transPoint seq(:,LPAL)+transPoint seq(:,LTPA)+transPoint ...
+                   seq(:,LTPR)+transPoint seq(:,LTDI)+transPoint seq(:,LTEF)+transPoint seq(:,LIPR)+transPoint ...
+                   seq(:,LIME)+transPoint seq(:,LIDI)+transPoint seq(:,LIEF)+transPoint seq(:,LMPR)+transPoint ...
+                   seq(:,LMME)+transPoint seq(:,LMDI)+transPoint seq(:,LMEF)+transPoint seq(:,LRPR)+transPoint ...
+                   seq(:,LRME)+transPoint seq(:,LRDI)+transPoint seq(:,LREF)+transPoint seq(:,LPPR)+transPoint ...
+                   seq(:,LPME)+transPoint seq(:,LPDI)+transPoint seq(:,LPEF)+transPoint seq(:,RPAL)+transPoint ...
+                   seq(:,RTPA)+transPoint seq(:,RTPR)+transPoint seq(:,RTDI)+transPoint seq(:,RTEF)+transPoint ...
+                   seq(:,RIPR)+transPoint seq(:,RIME)+transPoint seq(:,RIDI)+transPoint seq(:,RIEF)+transPoint ...
+                   seq(:,RMPR)+transPoint seq(:,RMME)+transPoint seq(:,RMDI)+transPoint seq(:,RMEF)+transPoint ...
+                   seq(:,RRPR)+transPoint seq(:,RRME)+transPoint seq(:,RRDI)+transPoint seq(:,RREF)+transPoint ...
+                   seq(:,RPPR)+transPoint seq(:,RPME)+transPoint seq(:,RPDI)+transPoint seq(:,RPEF)+transPoint];
+    end
+    
+    if seqNormalCurr(1,3) == 1  % normalize upper body joints to [0,1], and set lower body joints to origin
+        z = [];
+        z(size(seq,1)) = 0; % origin for lower body joints
+        
+        xval = [seq(:,1)'   seq(:,4)'   seq(:,7)'   seq(:,10)'   seq(:,13)'  seq(:,16)'  seq(:,19)'  seq(:,22)' ...
+                z           z           z           z            z           z           seq(:,43)'  seq(:,46)' ...
+                seq(:,49)'  seq(:,52)'  seq(:,55)'  seq(:,58)'   seq(:,61)'  seq(:,64)'  seq(:,67)'  seq(:,70)' ...
+                seq(:,73)'  seq(:,76)'  seq(:,79)'  seq(:,82)'   seq(:,85)'  seq(:,88)'  seq(:,91)'  seq(:,94)' ...
+                seq(:,97)'  seq(:,100)' seq(:,103)' seq(:,106)'  seq(:,109)' seq(:,112)' seq(:,115)' seq(:,118)' ...
+                seq(:,121)' seq(:,124)' seq(:,127)' seq(:,130)'  seq(:,133)' seq(:,136)' seq(:,139)' seq(:,142)' ...
+                seq(:,145)' seq(:,148)' seq(:,151)' seq(:,154)'  seq(:,157)' seq(:,160)' seq(:,163)' seq(:,166)' ...
+                seq(:,169)' seq(:,172)' seq(:,175)' seq(:,178)'];
+        yval = [seq(:,1+1)'   seq(:,4+1)'   seq(:,7+1)'   seq(:,10+1)'   seq(:,13+1)'  seq(:,16+1)'  seq(:,19+1)'  seq(:,22+1)' ...
+                z           z           z           z            z           z           seq(:,43+1)'  seq(:,46+1)' ...
+                seq(:,49+1)'  seq(:,52+1)'  seq(:,55+1)'  seq(:,58+1)'   seq(:,61+1)'  seq(:,64+1)'  seq(:,67+1)'  seq(:,70+1)' ...
+                seq(:,73+1)'  seq(:,76+1)'  seq(:,79+1)'  seq(:,82+1)'   seq(:,85+1)'  seq(:,88+1)'  seq(:,91+1)'  seq(:,94+1)' ...
+                seq(:,97+1)'  seq(:,100+1)' seq(:,103+1)' seq(:,106+1)'  seq(:,109+1)' seq(:,112+1)' seq(:,115+1)' seq(:,118+1)' ...
+                seq(:,121+1)' seq(:,124+1)' seq(:,127+1)' seq(:,130+1)'  seq(:,133+1)' seq(:,136+1)' seq(:,139+1)' seq(:,142+1)' ...
+                seq(:,145+1)' seq(:,148+1)' seq(:,151+1)' seq(:,154+1)'  seq(:,157+1)' seq(:,160+1)' seq(:,163+1)' seq(:,166+1)' ...
+                seq(:,169+1)' seq(:,172+1)' seq(:,175+1)' seq(:,178+1)'];
+        minxval = min(xval);
+        maxxval = max(xval);
+        minyval = min(yval);
+        maxyval = max(yval);
+
+        normSeq = seq;
+
+        % x axis
+        colsProcess = [1 4 7 10 13 16 19 22 25 28 31 34 37 40 43 46 49 52 55 58 61 ...
+                       64 67 70 73 76 79 82 85 88 91 94 97 100 103 106 109 112 115 ...
+                       118 121 124 127 130 133 136 139 142 145 148 151 154 157 160 ...
+                       163 166 169 172 175 178];
+        for j = 1:size(colsProcess,2)
+            normSeq(:,colsProcess(j)) = ((normSeq(:,colsProcess(j)) - minxval) / (maxxval - minxval));
+        end
+
+        % y axis
+        colsProcess = [1+1 4+1 7+1 10+1 13+1 16+1 19+1 22+1 25+1 28+1 31+1 34+1 37+1 40+1 43+1 46+1 49+1 52+1 55+1 58+1 61+1 ...
+                       64+1 67+1 70+1 73+1 76+1 79+1 82+1 85+1 88+1 91+1 94+1 97+1 100+1 103+1 106+1 109+1 112+1 115+1 ...
+                       118+1 121+1 124+1 127+1 130+1 133+1 136+1 139+1 142+1 145+1 148+1 151+1 154+1 157+1 160+1 ...
+                       163+1 166+1 169+1 172+1 175+1 178+1];
+        for j = 1:size(colsProcess,2)
+            normSeq(:,colsProcess(j)) = ((normSeq(:,colsProcess(j)) - minyval) / (maxyval - minyval));
+        end
+
+        % x axis
+        colsProcess = [25 28 31 34 37 40];
+        for j = 1:size(colsProcess,2)
+            normSeq(:,colsProcess(j)) = 0;
+        end
+
+        % y axis
+        colsProcess = [26 29 32 35 38 41];
+        for j = 1:size(colsProcess,2)
+            normSeq(:,colsProcess(j)) = 0;
+        end
+        
+        % z axis
+        colsProcess = [1+2 4+2 7+2 10+2 13+2 16+2 19+2 22+2 25+2 28+2 31+2 34+2 37+2 40+2 43+2 46+2 49+2 52+2 55+2 58+2 61+2 ...
+                       64+2 67+2 70+2 73+2 76+2 79+2 82+2 85+2 88+2 91+2 94+2 97+2 100+2 103+2 106+2 109+2 112+2 115+2 ...
+                       118+2 121+2 124+2 127+2 130+2 133+2 136+2 139+2 142+2 145+2 148+2 151+2 154+2 157+2 160+2 ...
+                       163+2 166+2 169+2 172+2 175+2 178+2];
+        for j = 1:size(colsProcess,2)
+            normSeq(:,colsProcess(j)) = 0;
+        end
+    
+        seq = normSeq;
+
     end
 
-    if seqNormalCurr(1,6) == 1
+    if seqNormalCurr(1,4) == 1
         % (6) put the "at rest" frame at the beginning and end of the seq
         seq = MSASLAtRest(seq);
     end
     
-%     if seqNormalCurr(1,7) == 1 % simplify
+%     if seqNormalCurr(1,5) == 1 % simplify
 %         reach = TrajReach(seq); % get traj reach 
 %         seq = TrajSimp(seq,reach * 0.05);
 %     end

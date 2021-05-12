@@ -1,51 +1,68 @@
-% Test runtimes of various sub-traj methods on Taxi dataaset
+% Test runtimes of various sub-traj methods on Taxi dataset
 
 InitGlobalVars;
 
-testMethods = [1 4];
-numQueries = 100;
-maxQsz = 20;
-typeQ = 2;
-eVal = 0.5;
+testMethods = [6];
+reachType = 2; % 1 = small reach, 2 = large reach
+numQueries = 10;
+typeQ = 1;
+eVal = 0;
+
+CCTType = 'CCT1';
+dataName = 'TaxiData';
+load(['MatlabData/' CCTType dataName '.mat']);
+load(['MatlabData\RealInputData\TaxiDataOrig.mat']);
+load(['MatlabData/TestSimpCCT4.mat']);
+InitDatasetVars(dataName);
+CreateTrajStr;
+doDFD = false;
 
 rngSeed = 1;
 rng(rngSeed); % reset random seed so experiments are reproducable
 
-% load Taxi original trajectory data
-dataName = 'TaxiData';
-load(['MatlabData\RealInputData\TaxiDataOrig.mat']);
-
-InitDatasetVars(dataName);
 eAdd = 0; eMult = 0;
 
-% create queries
-queryStrData = [];
-for j = 1:numQueries
-    Q = trajStrData(randi(size(trajStrData,2))).traj;
-    qSz = size(Q,1);
-    sPos = randi(qSz-1); % randomly choose start/end positions
-    ePos = min(randi(maxQsz) + sPos , qSz);
-    Q = Q(sPos:ePos,:);
-    queryStrData(j).traj = Q;
-    PreprocessQuery(j);
+if reachType == 1 % generate queries with smaller reach
+    maxQsz = 25;
+    for j = 1:numQueries
+        Q = cell2mat(trajOrigData(randi(size(trajOrigData,1)),1));
+        qSz = size(Q,1);
+        sPos = randi(qSz-1); % randomly choose start/end positions
+        ePos = min(randi(maxQsz) + sPos , qSz);
+        Q = Q(sPos:ePos,:);
+        queryStrData(j).traj = Q;
+        PreprocessQuery(j);
+    end
+else % generate queries with larger reach
+    maxQsz = 7;
+    for j = 1:numQueries
+        Q = queryStrData(j).traj;
+        qSz = size(Q,1);
+        sPos = randi(qSz-1);
+        ePos = min(randi(maxQsz) + sPos , qSz);
+        Q = Q(sPos:ePos,:);
+        queryStrData(j).traj = Q;
+        PreprocessQuery(j);
+    end
 end
-
-% load pre-processed CCT and Simp Tree
-load(['MatlabData\TestSimpCCT3.mat']);
-    
+  
 disp(['================']);
 
 for i = 1:size(testMethods,2) % sub-traj methods
     currMeth = testMethods(i);
     disp(['--------------']);
+
     % perform queries
     tic
     for j = 1:numQueries
         if currMeth == 1 
             txt = 'CCT (just Ball Simp) avg ms per query: ';
             NN(j,2,eMult); 
+        elseif currMeth == 2
+            txt = 'CCT (also Agarwal Simp) avg ms per query: ';
+            NN(j,2,eMult); 
         elseif currMeth == 3
-            txt = 'Vertex Aligned independent call ms per query: ';
+            txt = 'Vertex Aligned independent call avg ms per query: ';
             level = 1; sIdx = 1; eIdx = 2;
             SubNNSimpTree(j,level,sIdx,eIdx,typeQ,eVal,Inf,0);
         elseif currMeth == 4
@@ -77,9 +94,31 @@ for i = 1:size(testMethods,2) % sub-traj methods
             txt = 'Segment Interior use Simp Tree avg ms per query: ';
             level = 1; sIdx = 1; eIdx = 2;
             SubNNSimpTreeDP(j,level,sIdx,eIdx);
+        elseif currMeth == 7
+            txt = 'Vertex Aligned independent call avg ms per query: ';
+            level = 1; sIdx = 1; eIdx = 2;
+            SubNNSimpTreeVAIntraBall(j,level,sIdx,eIdx,typeQ,eVal,0);
+        elseif currMeth == 8
+            txt = 'Vertex Aligned independent call avg ms per query: ';
+            level = 1; sIdx = 1; eIdx = 2;
+            SubNNSimpTreeVA(j,level,sIdx,eIdx,typeQ,eVal,0);
+        elseif currMeth == 9
+            txt = 'Vertex Aligned use CCT result avg ms per query: ';
+            NN(j,2,eMult);
+            trajNNidx = queryStrData(j).decidetrajids;
+            NNdist = ContFrechet(trajStrData(trajNNidx).traj,queryStrData(j).traj);
+            QidR = numQueries + 1;
+            queryStrData(QidR).traj = queryStrData(j).traj;
+            PreprocessQuery(QidR);
+            RNN(QidR,2,NNdist + inpTrajErr(simpLevelCCT),0);
+            [sIdx,eIdx] = GetCCTPairwiseCand(QidR);
+            SubNNSimpTreeVA(j,simpLevelCCT,sIdx,eIdx,typeQ,eVal,0);
+            queryStrData(j).nnsearchtime = queryStrData(j).searchtime;
+            queryStrData(j).rnnsearchtime = queryStrData(QidR).searchtime;
         end
     end
     t1 = toc;
     t1 = round(t1/numQueries*1000); % average ms per query
     disp([txt,num2str(t1)]);
+
 end
