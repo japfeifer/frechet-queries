@@ -3,9 +3,9 @@
 InitGlobalVars;
 
 testMethods = [13];
-reachType = 2; % 1 = small reach, 2 = large reach
+reachType = 1; % 1 = small reach, 2 = large reach
 numQueries = 10;
-typeQ = 2;
+typeQ = 1;
 eVal = 0;
 
 rngSeed = 1;
@@ -146,7 +146,7 @@ for i = 1:size(testMethods,2) % sub-traj methods
         elseif currMeth == 13
             txt = 'Base Vertex Aligned independent call avg ms per query: ';
             level = 1; sIdx = 1; eIdx = 2;
-            FastSubNN(j,level,[sIdx eIdx],1,typeQ,eVal);
+            FastSubNN(j,level,[sIdx eIdx],0,typeQ,eVal);
         end
     end
     t1 = toc;

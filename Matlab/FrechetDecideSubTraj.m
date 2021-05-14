@@ -138,9 +138,14 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideSubTraj(P,Q,len,sCellP,s
             % if switch back to monotone path, or hit the freespace left edge in a non-monotone
             % path, then check if we can continue from here or need to backtrack
             if (dir == 1) || (currCellQ == 1 && newCellCutE(1) == 0)
+                if (currCellQ == 1 && newCellCutE(1) == 0) && dir == 0
+                    toPoint = newCellCutE;
+                else
+                    toPoint = newCellCutS;
+                end
                 [dir,numCellCheck,boundCutPath,boundCutIdx,backCellP,backCellQ,backFromEdge,...
                     backCellStartPoint,backCellCutE] = LineOfSightCheck(numCellCheck,boundCutPath,...
-                    boundCutIdx,currCellP,currCellQ,newCellCutS,segP,Q,len);
+                    boundCutIdx,currCellP,currCellQ,toPoint,segP,Q,len);
                 if dir == 1 % we have direct line of sight, can continue from here
                     state = 1;
                     boundCutPath(boundCutIdx,:) = [currCellQ currCellP newCellCutS newCellCutE];

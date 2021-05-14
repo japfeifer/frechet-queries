@@ -1,6 +1,9 @@
-function [decide] = frechet_decide2(P,Q,len,plotFSD,printFSD)
+function [decide] = frechet_decide3(P,Q,len,plotFSD,printFSD)
 %--solves the decision problem for Frechet distance
 %--modified: 27 Apr 2012:  To compute data required in frechet_init
+
+% **** performs a sub-traj decision procedure *****
+
 global I J lP lQ lPQ bP bQ
 
 [M,N]=size(P);
@@ -288,17 +291,19 @@ end
 % for j=2:J    %--fill in row 1
 %     BR(1,j,1) = NaN; BR(1,j,2) = NaN;
 % end
+LR(1:I-1,1,:) = LF(1:I-1,1,:); % seed left edge of freespace diagram since we want to determine paths from here
+BR(1,1,:) = BF(1,1,:); % seed bottm left cell bottom edge
 for i=1:I-1
     for j=1:J-1
-        if (i==1)&&(j==1)
-            if (LF(i,j,1)==0)&&(BF(i,j,1)==0)   %--start at the origin
-                LR(i,j+1,1) = LF(i,j+1,1); LR(i,j+1,2) = LF(i,j+1,2);
-                BR(j+1,i,1) = BF(j+1,i,1); BR(j+1,i,2) = BF(j+1,i,2);
-            else
-                LR(i,j+1,1) = NaN; LR(i,j+1,2) = NaN;
-                BR(j+1,i,1) = NaN; BR(j+1,i,2) = NaN;
-            end
-        else
+%         if (i==1)&&(j==1)
+%             if (LF(i,j,1)==0)&&(BF(i,j,1)==0)   %--start at the origin
+%                 LR(i,j+1,1) = LF(i,j+1,1); LR(i,j+1,2) = LF(i,j+1,2);
+%                 BR(j+1,i,1) = BF(j+1,i,1); BR(j+1,i,2) = BF(j+1,i,2);
+%             else
+%                 LR(i,j+1,1) = NaN; LR(i,j+1,2) = NaN;
+%                 BR(j+1,i,1) = NaN; BR(j+1,i,2) = NaN;
+%             end
+%         else
             if isnan(LR(i,j,1))&&isnan(BR(i,j,1))
                 LR(i,j+1,1) = NaN; LR(i,j+1,2) = NaN;
                 BR(i+1,j,1) = NaN; BR(i+1,j,2) = NaN;
@@ -346,7 +351,13 @@ for i=1:I-1
                     BR(i+1,j,2) = BF(i+1,j,2);
                 end
             end
-        end
+            if i==1 % at bottom row
+                if isnan(LR(i,j,1)) % no free space on left edge
+                    LR(i,j+1,1) = NaN; LR(i,j+1,2) = NaN;
+                    BR(i+1,j,1) = NaN; BR(i+1,j,2) = NaN;
+                end
+            end
+%         end
         if printFSD==1
             fprintf('cell(%d,%d):\n',i,j);
             fprintf('\tLF(i,j)=[%f,%f] ',LF(i,j,1),LF(i,j,2));
@@ -359,7 +370,9 @@ for i=1:I-1
     end
 end
 %--decide
-if (BR(I,J-1,2)==1)||(LR(I-1,J,2)==1)
+z = LR(1:I-1,J,2);
+z(isnan(z))=0;
+if sum(z) > 0
     decide = 1;
 else
     decide = 0;

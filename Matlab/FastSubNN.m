@@ -29,6 +29,7 @@ function FastSubNN(Qid,level,C,la,typeQ,eVal)
     cntLB = 0;
     cntUB = 0;
     numSubTraj = [];
+    alpha = Inf;
     
     % initial level setup of sub-traj info
     subStr = [];
@@ -57,7 +58,7 @@ function FastSubNN(Qid,level,C,la,typeQ,eVal)
         [subStr2,subTrajStr2] = GetCandidatesHST(subStr,i-1,lb,la,Q); 
         subStr = subStr2;
         subTrajStr = subTrajStr2;
-        
+
         % for each candidate, compute CF and set alpha to smallest
         alpha = Inf;
         for j = 1:size(subStr,1) 

@@ -22,9 +22,8 @@ function [newTraj,idxListP] = BallSimp(P,epsilonDist)
 
     if sP <=2 % there are already 2 or less vertices, so can't simplify
         newTraj = P;
-        newTrajCnt = sP;
-        idxCnt = idxCnt + 1;
-        idxListP(idxCnt:sP,1) = 1:sP;
+        idxListP(1:sP,1) = 1:sP;
+        idxCnt = sP;
     else    
         % initialize the new traj with the first index
         idxCnt = idxCnt + 1;
