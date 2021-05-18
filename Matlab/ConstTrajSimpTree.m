@@ -16,7 +16,7 @@
 
 function ConstTrajSimpTree(P,erd,mtl,simpType,compFreErr)
 
-    global inpTrajVert inpTrajPtr inpTrajErr inpTrajSz inpTrajErrF
+    global inpTrajVert inpTrajPtr inpTrajErr inpTrajSz inpTrajErrF inpLen
     
     switch nargin
     case 3
@@ -26,7 +26,7 @@ function ConstTrajSimpTree(P,erd,mtl,simpType,compFreErr)
         compFreErr = 0;
     end
 
-    inpTrajVert = []; inpTrajPtr = []; inpTrajErr = []; inpTrajSz = []; inpTrajErrF = [];
+    inpTrajVert = []; inpTrajPtr = []; inpTrajErr = []; inpTrajSz = []; inpTrajErrF = []; inpLen = [];
     numDim = size(P,2);  % number of dimensions in P 
     numVert = size(P,1); % number of vertices in P
    
@@ -73,6 +73,15 @@ function ConstTrajSimpTree(P,erd,mtl,simpType,compFreErr)
         inpTrajSz(i) = levelSzCnt;
         inpTrajErr(i) = er; % store the level error
         er = er / erd; % reduce error for next tree level
+    end
+    
+    % for each parent level compute the segment lengths
+    sz1 = size(inpTrajSz,2) - 1;
+    for i = 1:sz1 % for each parent level
+        idx1 = inpTrajVert(1:inpTrajSz(i),i);
+        simpP = P(idx1,:);
+        segLengths = GetSegLen(simpP);
+        inpLen(1:size(segLengths,1),i) = segLengths;
     end
     
     % compute the Frechet distance from each segment in the tree to its underlying non-simp vertices

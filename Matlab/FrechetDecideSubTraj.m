@@ -124,6 +124,9 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideSubTraj(P,Q,len,sCellP,s
                     if (backCellQ == szQ - 1 && backCellCutE(1) == 1) % we hit the freespace right edge with a non-monotone path, return false
                         return
                     end
+                    if nextFromEdge == 'B' && currCellP == szP - 1 % we hit top edge and want to go up, return false
+                        return
+                    end
                 end
             end
         else % state = 2
@@ -148,7 +151,11 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideSubTraj(P,Q,len,sCellP,s
                     boundCutIdx,currCellP,currCellQ,toPoint,segP,Q,len);
                 if dir == 1 % we have direct line of sight, can continue from here
                     state = 1;
-                    boundCutPath(boundCutIdx,:) = [currCellQ currCellP newCellCutS newCellCutE];
+                    if (currCellQ == 1 && newCellCutE(1) == 0) % initially hit the freespace left edge in a non-monotone
+                        boundCutPath(boundCutIdx,:) = [currCellQ currCellP backCellStartPoint newCellCutE];
+                    else
+                        boundCutPath(boundCutIdx,:) = [currCellQ currCellP newCellCutS newCellCutE];
+                    end
                     boundCutIdx = boundCutIdx + 1;
                     currCellStartPoint = nextCellStartPoint;
                     if currCellQ == 1 && newCellCutE(1) == 0 % made it to the left edge of freespace diagram, a monotone path has been found

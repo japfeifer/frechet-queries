@@ -1,4 +1,4 @@
-function [decide] = FrechetDecide(P,Q,len,simpFlag,plotFSD,bndCutFlg,bringFlg,subTrajFlg)
+function [decide,numCell,z] = FrechetDecide(P,Q,len,simpFlag,plotFSD,bndCutFlg,bringFlg,subTrajFlg)
 
     global I J lP lQ lPQ bP bQ
 
@@ -22,6 +22,9 @@ function [decide] = FrechetDecide(P,Q,len,simpFlag,plotFSD,bndCutFlg,bringFlg,su
         bringFlg = 1;
         subTrajFlg = 0;
     end
+    
+    numCell = 0;
+    z = [];
     
     if size(P,2) == 2 && bringFlg == 1 % use Bringmann code for 2D space
         decide = FrechetDPBringmann(P,Q,len);
@@ -71,13 +74,13 @@ function [decide] = FrechetDecide(P,Q,len,simpFlag,plotFSD,bndCutFlg,bringFlg,su
         end
     else % do actual frechet decision calc
         if bndCutFlg == 1
-            decide = FrechetDecideFast(P,Q,len);
+            [decide,numCell] = FrechetDecideFast(P,Q,len);
         else
             frechet_init2(P',Q');
             if subTrajFlg == 0
                 decide = frechet_decide2(P',Q',len,plotFSD,0);
             else
-                decide = frechet_decide3(P',Q',len,plotFSD,0);
+                [decide,z] = frechet_decide3(P',Q',len,plotFSD,0);
             end
         end
     end    

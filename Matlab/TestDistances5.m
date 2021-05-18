@@ -11,11 +11,11 @@ for i = 1:numQuery
 
     % continuous frechet
     t1 = tic;
-    distCont1 = SubContFrechetAlt(P,Q,decimalPrecision);
+    distCont1 = SubContFrechetAltVA(P,Q,decimalPrecision);
     time1 = time1 + toc(t1);
     
     t2 = tic;
-    distCont2 = SubContFrechetFast(P,Q,decimalPrecision);
+    distCont2 = SubContFrechetFastVA(P,Q,decimalPrecision);
     time2 = time2 + toc(t2);
 
 

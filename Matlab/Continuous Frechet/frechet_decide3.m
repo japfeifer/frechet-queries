@@ -1,4 +1,4 @@
-function [decide] = frechet_decide3(P,Q,len,plotFSD,printFSD)
+function [decide,z] = frechet_decide3(P,Q,len,plotFSD,printFSD)
 %--solves the decision problem for Frechet distance
 %--modified: 27 Apr 2012:  To compute data required in frechet_init
 
@@ -20,8 +20,11 @@ C(1:I-1,1:J-1)=NaN;
 D(1:I-1,1:J-1)=NaN;
 BF(1:I-1,1:J-1)=NaN;
 LF(1:I-1,1:J-1)=NaN;
-LR(2:I,1,1:2)=NaN;
-BR(1,2:J,1:2)=NaN;
+% LR(2:I,1,1:2)=NaN;
+% BR(1,2:J,1:2)=NaN;
+LR(2:I,2:J,1:2)=NaN;
+BR(2:I,2:J,1:2)=NaN;
+z = [];
 
 %--compute the free space in each cell
 for i=1:I-1 
@@ -291,19 +294,30 @@ end
 % for j=2:J    %--fill in row 1
 %     BR(1,j,1) = NaN; BR(1,j,2) = NaN;
 % end
+
+% BR(1,1,:) = BF(1,1,:); % seed bottom left cell bottom edge
 LR(1:I-1,1,:) = LF(1:I-1,1,:); % seed left edge of freespace diagram since we want to determine paths from here
-BR(1,1,:) = BF(1,1,:); % seed bottm left cell bottom edge
 for i=1:I-1
     for j=1:J-1
-%         if (i==1)&&(j==1)
-%             if (LF(i,j,1)==0)&&(BF(i,j,1)==0)   %--start at the origin
-%                 LR(i,j+1,1) = LF(i,j+1,1); LR(i,j+1,2) = LF(i,j+1,2);
-%                 BR(j+1,i,1) = BF(j+1,i,1); BR(j+1,i,2) = BF(j+1,i,2);
-%             else
-%                 LR(i,j+1,1) = NaN; LR(i,j+1,2) = NaN;
-%                 BR(j+1,i,1) = NaN; BR(j+1,i,2) = NaN;
-%             end
-%         else
+        if i==1 % at bottom row
+            if isnan(LR(i,j,1)) % no free space on left edge
+                LR(i,j+1,1) = NaN; LR(i,j+1,2) = NaN;
+                BR(i+1,j,1) = NaN; BR(i+1,j,2) = NaN;
+            else
+                if ~isnan(LF(i,j+1,2))
+                    if LR(i,j,1) > LF(i,j+1,2) % we cannot go right on monotone path
+                        LR(i,j+1,1) = NaN; LR(i,j+1,2) = NaN;
+                        BR(i+1,j,1) = NaN; BR(i+1,j,2) = NaN;
+                    else % may reduce the path opening
+                        LR(i,j+1,1) = max(LF(i,j+1,1),LR(i,j,1)); LR(i,j+1,2) = LF(i,j+1,2);
+                        BR(i+1,j,1) = BF(i+1,j,1); BR(i+1,j,2) = BF(i+1,j,2);
+                    end
+                else
+                    LR(i,j+1,1) = NaN; LR(i,j+1,2) = NaN;
+                    BR(i+1,j,1) = BF(i+1,j,1); BR(i+1,j,2) = BF(i+1,j,2);
+                end
+            end
+        else % not on bottom row
             if isnan(LR(i,j,1))&&isnan(BR(i,j,1))
                 LR(i,j+1,1) = NaN; LR(i,j+1,2) = NaN;
                 BR(i+1,j,1) = NaN; BR(i+1,j,2) = NaN;
@@ -330,34 +344,10 @@ for i=1:I-1
                     BR(i+1,j,2) = BF(i+1,j,2);
                 end
             else
-%                 LR(i,j+1,1) = LF(i,j+1,1); LR(i,j+1,2) = LF(i,j+1,2);
-%                 BR(i+1,j,1) = BF(i+1,j,1); BR(i+1,j,2) = BF(i+1,j,2);
-                if (LF(i,j+1,2)<LR(i,j,1))||isnan(LF(i,j+1,2))
-                    LR(i,j+1,1) = NaN; LR(i,j+1,2) = NaN;
-                elseif LF(i,j+1,1)>LR(i,j,1)
-                    LR(i,j+1,1) = LF(i,j+1,1);
-                    LR(i,j+1,2) = LF(i,j+1,2);
-                else
-                    LR(i,j+1,1) = LR(i,j,1);
-                    LR(i,j+1,2) = LF(i,j+1,2);
-                end
-                if (BF(i+1,j,2)<BR(i,j,1))||isnan(BF(i+1,j,2))
-                    BR(i+1,j,1) = NaN; BR(i+1,j,2) = NaN;
-                elseif BF(i+1,j,1)>BR(i,j,1)
-                    BR(i+1,j,1) = BF(i+1,j,1);
-                    BR(i+1,j,2) = BF(i+1,j,2);
-                else
-                    BR(i+1,j,1) = BR(i,j,1);
-                    BR(i+1,j,2) = BF(i+1,j,2);
-                end
+                LR(i,j+1,1) = LF(i,j+1,1); LR(i,j+1,2) = LF(i,j+1,2);
+                BR(i+1,j,1) = BF(i+1,j,1); BR(i+1,j,2) = BF(i+1,j,2);
             end
-            if i==1 % at bottom row
-                if isnan(LR(i,j,1)) % no free space on left edge
-                    LR(i,j+1,1) = NaN; LR(i,j+1,2) = NaN;
-                    BR(i+1,j,1) = NaN; BR(i+1,j,2) = NaN;
-                end
-            end
-%         end
+        end
         if printFSD==1
             fprintf('cell(%d,%d):\n',i,j);
             fprintf('\tLF(i,j)=[%f,%f] ',LF(i,j,1),LF(i,j,2));
@@ -370,9 +360,8 @@ for i=1:I-1
     end
 end
 %--decide
-z = LR(1:I-1,J,2);
-z(isnan(z))=0;
-if sum(z) > 0
+z = [LR(1:I-1,J,1) LR(1:I-1,J,2)];
+if sum(~isnan(z(:,1))) > 0 || sum(~isnan(z(:,2))) > 0 % if there are any numbers, then reached right side of freespace
     decide = 1;
 else
     decide = 0;

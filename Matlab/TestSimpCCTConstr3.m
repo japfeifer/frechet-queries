@@ -15,21 +15,17 @@ for i = 1:size(trajStrData,2)
     if size(currTraj,1) > 1000
         inP = [inP; currTraj];
     end
-    if size(inP,1) > 1400000
+    if size(inP,1) > 111000
         break 
     end
 end
 inP = DriemelSimp(inP,0);  % remove any "duplicate" vertices
 
 tic
-ConstTrajSimpTree(inP,2,17,1); % construct the simplification tree
+% ConstTrajSimpTree(inP,2,17,1); % construct the simplification tree
+ConstTrajSimpTree2(inP,2,1); % construct the simplification tree with "balanced" levels
 t = toc;
 disp(['Simplification tree construction time (s): ',num2str(t)]);
-
-% tic
-% ConstTrajSimpTree2(inP,2,1); % construct the simplification tree with "balanced" levels
-% t = toc;
-% disp(['Simplification tree construction time (s): ',num2str(t)]);
 
 % simpLevelCCT = 9; % the level of the simplification tree to store in CCT
 % simpPVertIdx = [inpTrajVert(1:inpTrajSz(simpLevelCCT),simpLevelCCT)]';
@@ -86,4 +82,4 @@ disp(['Simplification tree construction time (s): ',num2str(t)]);
 % GetCCTReductFact;
 % [overlapMean, overlapStd] = GetOverlap();
 
-% save(['MatlabData/TestSimpCCT3.mat'],'trajStrData','clusterTrajNode','clusterNode','simpLevelCCT','inP','inpTrajErr','inpTrajErrF','inpTrajPtr','inpTrajSz','inpTrajVert','-v7.3');
+% save(['MatlabData/TestSimpCCT3.mat'],'inP','inpTrajErr','inpTrajErrF','inpTrajPtr','inpTrajSz','inpTrajVert','inpLen','-v7.3');

@@ -17,8 +17,10 @@ C(1:I-1,1:J-1)=NaN;
 D(1:I-1,1:J-1)=NaN;
 BF(1:I-1,1:J-1)=NaN;
 LF(1:I-1,1:J-1)=NaN;
-LR(2:I,1,1:2)=NaN;
-BR(1,2:J,1:2)=NaN;
+% LR(2:I,1,1:2)=NaN;
+% BR(1,2:J,1:2)=NaN;
+LR(2:I,2:J,1:2)=NaN;
+BR(2:I,2:J,1:2)=NaN;
 
 %--compute the free space in each cell
 for i=1:I-1 
@@ -325,26 +327,8 @@ for i=1:I-1
                     BR(i+1,j,2) = BF(i+1,j,2);
                 end
             else
-%                 LR(i,j+1,1) = LF(i,j+1,1); LR(i,j+1,2) = LF(i,j+1,2);
-%                 BR(i+1,j,1) = BF(i+1,j,1); BR(i+1,j,2) = BF(i+1,j,2);
-                if (LF(i,j+1,2)<LR(i,j,1))||isnan(LF(i,j+1,2))
-                    LR(i,j+1,1) = NaN; LR(i,j+1,2) = NaN;
-                elseif LF(i,j+1,1)>LR(i,j,1)
-                    LR(i,j+1,1) = LF(i,j+1,1);
-                    LR(i,j+1,2) = LF(i,j+1,2);
-                else
-                    LR(i,j+1,1) = LR(i,j,1);
-                    LR(i,j+1,2) = LF(i,j+1,2);
-                end
-                if (BF(i+1,j,2)<BR(i,j,1))||isnan(BF(i+1,j,2))
-                    BR(i+1,j,1) = NaN; BR(i+1,j,2) = NaN;
-                elseif BF(i+1,j,1)>BR(i,j,1)
-                    BR(i+1,j,1) = BF(i+1,j,1);
-                    BR(i+1,j,2) = BF(i+1,j,2);
-                else
-                    BR(i+1,j,1) = BR(i,j,1);
-                    BR(i+1,j,2) = BF(i+1,j,2);
-                end
+                LR(i,j+1,1) = LF(i,j+1,1); LR(i,j+1,2) = LF(i,j+1,2);
+                BR(i+1,j,1) = BF(i+1,j,1); BR(i+1,j,2) = BF(i+1,j,2);
             end
         end
         if printFSD==1

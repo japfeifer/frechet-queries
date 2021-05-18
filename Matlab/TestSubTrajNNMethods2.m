@@ -2,24 +2,21 @@
 
 InitGlobalVars;
 
-testMethods = [6];
-reachType = 2; % 1 = small reach, 2 = large reach
+testMethods = [14 15];
+reachType = 1; % 1 = small reach, 2 = large reach
 numQueries = 10;
-typeQ = 1;
-eVal = 0;
+
+rngSeed = 1;
+rng(rngSeed); % reset random seed so experiments are reproducable
 
 CCTType = 'CCT1';
 dataName = 'TaxiData';
 load(['MatlabData/' CCTType dataName '.mat']);
 load(['MatlabData\RealInputData\TaxiDataOrig.mat']);
-load(['MatlabData/TestSimpCCT4.mat']);
+load(['MatlabData/TestSimpCCT2.mat']);
 InitDatasetVars(dataName);
 CreateTrajStr;
 doDFD = false;
-
-rngSeed = 1;
-rng(rngSeed); % reset random seed so experiments are reproducable
-
 eAdd = 0; eMult = 0;
 
 if reachType == 1 % generate queries with smaller reach
@@ -115,6 +112,21 @@ for i = 1:size(testMethods,2) % sub-traj methods
             SubNNSimpTreeVA(j,simpLevelCCT,sIdx,eIdx,typeQ,eVal,0);
             queryStrData(j).nnsearchtime = queryStrData(j).searchtime;
             queryStrData(j).rnnsearchtime = queryStrData(QidR).searchtime;
+        elseif currMeth == 12
+            txt = 'Base avg ms per query: ';
+            BaseSubNN(j);
+        elseif currMeth == 13
+            txt = 'Main Vertex Aligned avg ms per query: ';
+            level = 1; sIdx = 1; eIdx = 2;
+            MainSubNN(j,level,[sIdx eIdx]);
+        elseif currMeth == 14
+            txt = 'Main Improved call avg ms per query: ';
+            level = 1; sIdx = 1; eIdx = 2;
+            MainImprovedSubNN(j,level,[sIdx eIdx],0);
+        elseif currMeth == 15
+            txt = 'Main Improved (use for approx queries) call avg ms per query: ';
+            level = 1; sIdx = 1; eIdx = 2; typeQ = 2; eVal = 2;
+            MainImprovedSubNN2(j,level,[sIdx eIdx],0,typeQ,eVal);
         end
     end
     t1 = toc;

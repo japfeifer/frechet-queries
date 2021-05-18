@@ -23,9 +23,13 @@ disp(['================']);
 % perform queries
 tic
 for j = 1:numQueries
-    txt = 'Segment Interior use Simp Tree avg ms per query: ';
-    level = 1; sIdx = 1; eIdx = 2;
-    SubNNSimpTreeDP(j,level,sIdx,eIdx);
+%     txt = 'Segment Interior use Simp Tree avg ms per query: ';
+%     level = 1; sIdx = 1; eIdx = 2;
+%     SubNNSimpTreeDP(j,level,sIdx,eIdx);
+    
+    txt = 'Main Improved (Bringmann UB/LB) call avg ms per query: ';
+    level = 1; sIdx = 1; eIdx = 2; typeQ = 2; eVal = 0;
+    MainImprovedSubNN3(j,level,[sIdx eIdx],0,typeQ,eVal);
 end
 t1 = toc;
 t1 = round(t1/numQueries*1000); % average ms per query

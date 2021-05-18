@@ -2,11 +2,9 @@
 
 InitGlobalVars;
 
-testMethods = [13];
+testMethods = [16];
 reachType = 1; % 1 = small reach, 2 = large reach
 numQueries = 10;
-typeQ = 1;
-eVal = 0;
 
 rngSeed = 1;
 rng(rngSeed); % reset random seed so experiments are reproducable
@@ -15,6 +13,7 @@ rng(rngSeed); % reset random seed so experiments are reproducable
 CCTType = 'CCT1';
 dataName = 'TruckData';
 load(['MatlabData/' CCTType dataName '.mat']);
+load(['MatlabData/TestSimpCCT.mat']);
 InitDatasetVars(dataName);
 CreateTrajStr;
 eAdd = 0; eMult = 0;
@@ -48,16 +47,6 @@ disp(['================']);
 for i = 1:size(testMethods,2) % sub-traj methods
     currMeth = testMethods(i);
     disp(['--------------']);
-%     if currMeth == 1 % slower CCT
-%         load(['MatlabData/TestSimpCCT.mat']); % load the pre-processed CCT, simp tree, inP, and simpLevelCCT
-%     else % faster CCT
-%         load(['MatlabData/TestSimpCCT2.mat']); % load the pre-processed CCT, simp tree, inP, and simpLevelCCT
-%     end
-%     if currMeth == 8
-%         load(['MatlabData/TestSimpCCT.mat']);
-%     end
-    
-    load(['MatlabData/TestSimpCCT.mat']);
 
     % perform queries
     tic
@@ -136,17 +125,28 @@ for i = 1:size(testMethods,2) % sub-traj methods
             queryStrData(j).nnsearchtime = queryStrData(j).searchtime;
             queryStrData(j).rnnsearchtime = queryStrData(QidR).searchtime;
         elseif currMeth == 11
-            txt = 'Base Vertex Aligned independent call avg ms per query: ';
-            level = 1; sIdx = 1; eIdx = 2;
-            BaseSubNN(j,level,[sIdx eIdx]);
-        elseif currMeth == 12
             txt = 'Recursive Vertex Aligned independent call avg ms per query: ';
             level = 1; sIdx = 1; eIdx = 2;
             RecSubNNInit(j,level,[sIdx eIdx]);
+        elseif currMeth == 12
+            txt = 'Base avg ms per query: ';
+            BaseSubNN(j);
         elseif currMeth == 13
-            txt = 'Base Vertex Aligned independent call avg ms per query: ';
+            txt = 'Main Vertex Aligned avg ms per query: ';
             level = 1; sIdx = 1; eIdx = 2;
-            FastSubNN(j,level,[sIdx eIdx],0,typeQ,eVal);
+            MainSubNN(j,level,[sIdx eIdx]);
+        elseif currMeth == 14
+            txt = 'Main Improved call avg ms per query: ';
+            level = 1; sIdx = 1; eIdx = 2;
+            MainImprovedSubNN(j,level,[sIdx eIdx],0);
+        elseif currMeth == 15
+            txt = 'Main Improved (use for approx queries) call avg ms per query: ';
+            level = 1; sIdx = 1; eIdx = 2; typeQ = 2; eVal = 2;
+            MainImprovedSubNN2(j,level,[sIdx eIdx],0,typeQ,eVal);
+        elseif currMeth == 16
+            txt = 'Main Improved (Bringmann UB/LB) call avg ms per query: ';
+            level = 1; sIdx = 1; eIdx = 2; typeQ = 2; eVal = 0;
+            MainImprovedSubNN3(j,level,[sIdx eIdx],0,typeQ,eVal);
         end
     end
     t1 = toc;

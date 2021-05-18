@@ -40,7 +40,7 @@ function [lowBnd,upBnd,totCellCheck,totDPCalls,totSPVert,totUBVert,sP,eP,timeUB,
             maxBndList(i) = GetBestUpperBound(P,Q,0,0,0,Inf) + 0.000001;  % set threshBound=Inf, will only check bounding box
             totUBVert = totUBVert + size(P,1);
         end
-        maxBnd = max([maxBndList]);
+        maxBnd = min([maxBndList]);
         timeUB = toc(tUB);
     else
         timeUB = 0;
@@ -92,6 +92,11 @@ function [lowBnd,upBnd,totCellCheck,totDPCalls,totSPVert,totUBVert,sP,eP,timeUB,
         if loopCnt >= maxLoop && ansEqOneFlg == 1 % we can stop searching here
             break
         end
+        if ans == 1 && i > 1 % we can discard 1 to i-1 candidates from (sVertList,eVertList) since they are too far
+            sVertList = sVertList(i:size(sVertList,1),:);
+            eVertList = eVertList(i:size(eVertList,1),:);
+        end
+        
         if loopCnt > 1000
             error('Too many loops in ContFrechetSubTraj'); 
         end
@@ -99,7 +104,6 @@ function [lowBnd,upBnd,totCellCheck,totDPCalls,totSPVert,totUBVert,sP,eP,timeUB,
 
     lowBnd = minBnd;
     upBnd = maxBnd;
-%     errDist = upBnd + (2*inpTrajErr(level));
     errDist = upBnd + inpTrajErr(level);
 
     % determine new list of candidate sub-traj

@@ -28,7 +28,7 @@ global querySetKFold currHMTrainSet numCoordCurr classifierCurr numTrainDistComp
 
 global time2 time3 time4 t2 t3 t4 t5 t6 time5Sum time6Sum
 global trajStrData queryStrData
-global inpTrajVert inpTrajPtr inpTrajErr inpTrajErrF inpTrajSz inP simpLevelCCT
+global inpTrajVert inpTrajPtr inpTrajErr inpTrajErrF inpTrajSz inP simpLevelCCT inpLen
 global sCellCheck sDPCalls sSPVert PNN
 
 global decimalPrecision

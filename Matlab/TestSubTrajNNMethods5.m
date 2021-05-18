@@ -10,10 +10,10 @@ rngSeed = 1;
 rng(rngSeed); % reset random seed so experiments are reproducable
 
 CCTType = 'CCT1';
-dataName = 'TaxiData';
+dataName = 'FootballData';
 load(['MatlabData/' CCTType dataName '.mat']);
-load(['MatlabData\RealInputData\TaxiDataOrig.mat']);
-load(['MatlabData/TestSimpCCT3.mat']);
+% load(['MatlabData\RealInputData\FootballData.mat']);
+load(['MatlabData/TestSimpCCT5.mat']);
 InitDatasetVars(dataName);
 CreateTrajStr;
 doDFD = false;

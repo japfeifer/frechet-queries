@@ -22,4 +22,4 @@ disp(['Simplification tree construction time (s): ',num2str(t)]);
 % disp(['Simplification tree construction time (s): ',num2str(t)]);
 
 
-% save(['MatlabData/TestSimpCCT4.mat'],'inP','inpTrajErr','inpTrajErrF','inpTrajPtr','inpTrajSz','inpTrajVert','-v7.3');
+% save(['MatlabData/TestSimpCCT4.mat'],'inP','inpTrajErr','inpTrajErrF','inpTrajPtr','inpTrajSz','inpTrajVert','inpLen','-v7.3');

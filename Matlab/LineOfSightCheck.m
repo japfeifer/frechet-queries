@@ -58,11 +58,10 @@ function [dir,numCellCheck,boundCutPath,boundCutIdx,backCellP,backCellQ,backFrom
         end
         if currCellQ == toCellQ % we made it back to toPoint
             dir = 1;
-            % just set variables below to any values (they are not used if we make it back to toPoint)
             backCellP = 0;
             backCellQ = 0;
             backFromEdge = 'T';
-            backCellStartPoint = [0 0];
+            backCellStartPoint = fp;
             backCellCutE = [0 0];
             break
         end

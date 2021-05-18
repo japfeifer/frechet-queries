@@ -1,5 +1,5 @@
 
-function [subStr,subTrajStr] = GetCandidatesHST(prevSubStr,i,lb,la,Q)
+function [subStr] = GetCandidatesHST2(prevSubStr,i,lb)
 
     switch nargin
     case 3
@@ -7,8 +7,8 @@ function [subStr,subTrajStr] = GetCandidatesHST(prevSubStr,i,lb,la,Q)
         Q = [];
     end
     
-    global inpTrajPtr inpTrajVert inP inpTrajSz
-
+    global inpTrajPtr inpTrajVert
+    
     subStr = [];
 
     % determine number of pairwise traj so that memory can be pre-allocated (faster)
@@ -69,50 +69,4 @@ function [subStr,subTrajStr] = GetCandidatesHST(prevSubStr,i,lb,la,Q)
     subStr = subStr(1:cnt-1,:); % we may have pre-allocated too much space so trim it
     subStr = unique(subStr,'rows'); % remove any duplicate sub-trajectories
     
-    % get each sub-traj (vertices and coordinates) and error
-    la = min(size(inpTrajSz,2)-(i+1), la); % update look-ahead, can't look past the leaf level
-    subTrajStr = [];
-    for j = 1:size(subStr,1)
-        stIdx = subStr(j,1);
-        enIdx = subStr(j,2);
-        if i+1 < lb
-            enIdx = enIdx - 1; % *** the enIdx - 1 is for the Driemel simplification search logic
-        end
-        if la > 0 && stIdx < enIdx % we want to look ahead some number of HST levels, sub-traj must be at least one segment
-            [sSeg,eSeg] = GetSubTrajLookAhead(stIdx,stIdx+1,i+1,i+1+la);
-            minPtDist = Inf;
-            for k = sSeg:eSeg-1 % find closest point in P simplified sub-traj to the first vertex in Q
-                ptDist = CalcPointDist(Q(1,:), inP(inpTrajVert(k,i+1+la),:) );
-                if ptDist < minPtDist
-                    minPtDist = ptDist;
-                    newStIdx = inpTrajVert(k,i+1+la);
-                    bestk = k;
-                end
-            end
-            if stIdx == enIdx - 1 % there is a single segment in sub-traj
-                minPtDist = Inf;
-                for k = bestk:eSeg-1 % find closest point in P simplified sub-traj to the last vertex in Q
-                    ptDist = CalcPointDist(Q(end,:), inP(inpTrajVert(k,i+1+la),:) );
-                    if ptDist < minPtDist
-                        minPtDist = ptDist;
-                        newEnIdx = inpTrajVert(k,i+1+la);
-                    end
-                end
-                if newStIdx == newEnIdx
-                    idxP = [newStIdx];
-                else
-                    idxP = [newStIdx newEnIdx];
-                end
-            else % there is > 1 segment in sub-traj
-                idxP = [newStIdx inpTrajVert(stIdx+1:enIdx,i+1)'];
-            end
-        else % no lookahead, just generate traj
-            idxP = [inpTrajVert(stIdx:enIdx,i+1)]';  % get simplified P sub-traj
-        end
-        if size(idxP,2) == 1 % if a single vertex, just duplicate it
-            idxP = [idxP idxP];
-        end
-        subTrajStr(j).traj = inP(idxP,:); % contiguous list of vertex indices in simplified P (a sub-traj of P)
-    end
-
 end
