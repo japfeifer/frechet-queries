@@ -67,7 +67,7 @@ function SubNNSimpTreeDP(Qid,level,sVertList,eVertList)
         eVertList = [];
         for j = 1:size(sP,1)
             sVertList(j,1) = sP(j,1);
-            eVertList(j,1) = eP(j,1) + 1;
+            eVertList(j,1) = eP(j,1) + 1; % add 1 to end point since freespace cell references first vertex of segment
         end
     end
     

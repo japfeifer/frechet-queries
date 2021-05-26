@@ -1,4 +1,4 @@
-% Test runtimes of various sub-traj methods on Taxi dataset
+% Test runtimes of various sub-traj methods on synthetic dataset
 
 InitGlobalVars;
 load(['MatlabData/TestSimpCCT4.mat']);

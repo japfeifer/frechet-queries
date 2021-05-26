@@ -26,6 +26,6 @@ function BaseSubNN(Qid)
     queryStrData(Qid).subub = dist;
     queryStrData(Qid).subsearchtime = timeSearch;
     queryStrData(Qid).submemorysz = size(inP,1) * size(Q,1);
-    queryStrData(Qid).subnumoperations = size(inP,1) * size(Q,1) * cnt;
+    queryStrData(Qid).subnumoperations = round(size(Q,1) * cnt,2);
     
 end

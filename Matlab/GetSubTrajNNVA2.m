@@ -1,14 +1,21 @@
 
 
 
-function [alpha,totCellCheck,subStart,subEnd] = GetAlphaHST(subStr,level,Q)
+function [alpha,totCellCheck,subStart,subEnd] = GetSubTrajNNVA2(subStr,level,Q,lb)
 
-    global decimalPrecision inP inpTrajVert
+    global decimalPrecision inP inpTrajVert inpTrajPtr
     
     minIdx = min(subStr(:,1));
     maxIdx = max(subStr(:,2));
     
-    idxP = [inpTrajVert(minIdx:maxIdx,level)]'; % get non-simplified traj at leaf level
+    newMinIdx = minIdx;
+    newMaxIdx = maxIdx;
+    for i = level:lb-1
+        newMinIdx = inpTrajPtr(newMinIdx,i);
+        newMaxIdx = inpTrajPtr(newMaxIdx,i);
+    end
+    
+    idxP = [inpTrajVert(newMinIdx:newMaxIdx,lb)]'; % get non-simplified traj at leaf level
     P = inP(idxP,:);
 
     [alpha,totCellCheck,z,zRev] = SubContFrechetFastVA(P,Q,decimalPrecision);

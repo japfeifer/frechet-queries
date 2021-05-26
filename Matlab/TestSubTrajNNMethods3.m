@@ -5,6 +5,7 @@ InitGlobalVars;
 testMethods = [16];
 reachType = 1; % 1 = small reach, 2 = large reach
 numQueries = 10;
+maxQsz = 15;
 
 rngSeed = 1;
 rng(rngSeed); % reset random seed so experiments are reproducable
@@ -20,18 +21,20 @@ doDFD = false;
 eAdd = 0; eMult = 0;
 
 if reachType == 1 % generate queries with smaller reach
-    maxQsz = 25;
     for j = 1:numQueries
-        Q = cell2mat(trajOrigData(randi(size(trajOrigData,1)),1));
-        qSz = size(Q,1);
-        sPos = randi(qSz-1); % randomly choose start/end positions
-        ePos = min(randi(maxQsz) + sPos , qSz);
-        Q = Q(sPos:ePos,:);
+        inPsz = size(inP,1);
+        sPos = randi(inPsz-1); % randomly choose start/end positions
+        ePos = min(randi(maxQsz) + sPos , inPsz);
+        Q = inP(sPos:ePos,:);
+%         Q = cell2mat(trajOrigData(randi(size(trajOrigData,1)),1));
+%         qSz = size(Q,1);
+%         sPos = randi(qSz-1); % randomly choose start/end positions
+%         ePos = min(randi(maxQsz) + sPos , qSz);
+%         Q = Q(sPos:ePos,:);
         queryStrData(j).traj = Q;
         PreprocessQuery(j);
     end
 else % generate queries with larger reach
-    maxQsz = 7;
     for j = 1:numQueries
         Q = queryStrData(j).traj;
         qSz = size(Q,1);
@@ -129,7 +132,7 @@ for i = 1:size(testMethods,2) % sub-traj methods
             MainImprovedSubNN2(j,level,[sIdx eIdx],0,typeQ,eVal);
         elseif currMeth == 16
             txt = 'Main Improved (Bringmann UB/LB) call avg ms per query: ';
-            level = 1; sIdx = 1; eIdx = 2; typeQ = 2; eVal = 0;
+            level = 1; sIdx = 1; eIdx = 2; typeQ = 1; eVal = 0;
             MainImprovedSubNN3(j,level,[sIdx eIdx],0,typeQ,eVal);
         end
     end

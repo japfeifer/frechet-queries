@@ -19,7 +19,7 @@ function MainImprovedSubNN(Qid,level,C,la)
         eVal = 0;
     end
 
-    global queryStrData inpTrajSz inpTrajErr
+    global queryStrData inpTrajSz inpTrajErr inP
 
     tSearch = tic;
 
@@ -50,6 +50,7 @@ function MainImprovedSubNN(Qid,level,C,la)
  
     Q = queryStrData(Qid).traj; % query trajectory vertices and coordinates
     lb = size(inpTrajSz,2); % the leaf level for the simplification tree
+    stopVal = ceil(log2(size(inP,1))^3);
     
     % traverse the simplification tree one level at a time
     % start at level + 1, end at parent level above leafs
@@ -65,10 +66,10 @@ function MainImprovedSubNN(Qid,level,C,la)
         subStr = subStr2;
         subTrajStr = subTrajStr2;
         
-        if size(subStr,1) > maxCsz || thisLevel == lb % stop checking HST levels if |C| is large, or at leaf level
+        if size(subStr,1) > stopVal || thisLevel == lb % stop checking HST levels if |C| > |P|, or at leaf level
             break
         end
-
+        
         % get this levels sub-traj distance
         [alpha,numCellCheck] = GetAlphaHST(subStr,thisLevel,Q); 
         totCell = totCell + numCellCheck;
@@ -100,26 +101,16 @@ function MainImprovedSubNN(Qid,level,C,la)
     end
     
     % do sub-traj cont frechet dist call to get final result
-    [alpha,numCellCheck,z,zRev] = GetAlphaHST(subStr,thisLevel,Q);
+    [alpha,numCellCheck,subStart,subEnd] = GetSubTrajNNVA2(subStr,thisLevel,Q,lb);
     totCell = totCell + numCellCheck;
-    subStr = [0 0 0 0 0 0 0 0 0];
-    subStr(1,8) = zRev(1,2); % start vertex
-    subStr(1,9) = z(1,2); % end vertex
-    subStr(1,4) = alpha; % LB dist
-    subStr(1,5) = alpha; % UB dist
-
-    % get the inclusion maximal candidate
-    if size(subStr,1) > 1 
-        subStr = sortrows(subStr,[5 3],{'ascend' 'descend'}); % sort by smallest UB dist then by largest sub-traj size
-    end
 
     timeSearch = toc(tSearch);
 
     % store results
-    queryStrData(Qid).subsvert = subStr(1,8); % start vertex
-    queryStrData(Qid).subevert = subStr(1,9); % end vertex
-    queryStrData(Qid).sublb = subStr(1,4); % LB dist
-    queryStrData(Qid).subub = subStr(1,5); % UB dist
+    queryStrData(Qid).subsvert = subStart; % start vertex
+    queryStrData(Qid).subevert = subEnd; % end vertex
+    queryStrData(Qid).sublb = alpha; % LB dist
+    queryStrData(Qid).subub = alpha; % UB dist
     queryStrData(Qid).subcntsubtraj = numSubTraj;
     queryStrData(Qid).subcntlb = cntLB;
     queryStrData(Qid).subcntub = cntUB;
@@ -127,6 +118,6 @@ function MainImprovedSubNN(Qid,level,C,la)
     queryStrData(Qid).subcntcfd = cntCFD;
     queryStrData(Qid).subsearchtime = timeSearch;
     queryStrData(Qid).submemorysz = maxc + size(Q,1);
-    queryStrData(Qid).subnumoperations = totCell;
+    queryStrData(Qid).subnumoperations = round(totCell / size(inP,1),2);
     
 end

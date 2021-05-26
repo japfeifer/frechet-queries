@@ -254,6 +254,6 @@ function MainImprovedSubNN2(Qid,level,C,la,typeQ,eVal)
     queryStrData(Qid).subcntcfd = cntCFD;
     queryStrData(Qid).subsearchtime = timeSearch;
     queryStrData(Qid).submemorysz = maxc + size(Q,1);
-    queryStrData(Qid).subnumoperations = totCell;
+    queryStrData(Qid).subnumoperations = round(totCell / size(inP,1),2);
     
 end

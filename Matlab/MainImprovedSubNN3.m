@@ -61,6 +61,7 @@ function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal)
         subStr2 = []; 
         subStr2 = GetCandidatesHST2(subStr,thisLevel-1,lb); 
         subStr = subStr2;
+        totCell = totCell + size(subStr,1);
 
         if size(subStr,1) > stopVal || thisLevel == lb % stop checking HST levels if |C| > |P|, or at leaf level
             break
@@ -76,13 +77,12 @@ function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal)
             cntLB = cntLB + 1;
             if subStr(j,4) <= alpha + err % can not discard, so check for and UB dist
                 subStr(j,5) = GetBringDistHST(subStr(j,1),subStr(j,2),Q,lenQ,thisLevel,1); % get Bringmann UB
-                totCell = totCell + 1;
-                cntUB = cntUB + 1;
                 if subStr(j,5) < alpha
                     alpha = subStr(j,5);
                 end
             end
         end
+        totCell = totCell + size(subStr,1);
         
         % for each candidate, discard if alpha + 2*r(l) < CF(c,Q)
         numSubTraj = [numSubTraj; size(subStr,1) 0 0];
@@ -99,52 +99,28 @@ function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal)
                 end
             end
         end
+        totCell = totCell + size(subStr,1);
         numSubTraj(end,2) = sum(subStr(:,6)); % count number of candidates to discard
         subStr = subStr(subStr(:,6)==0,:);  % discard candidate sub-traj that are too far
-%         subStr = sortrows(subStr,[4 3],{'ascend' 'descend'}); % sort by smallest LB dist then by largest sub-traj size
 
         % error checking
         if size(subStr,1) == 0 
             error('NN Result set is empty');
         end
-
-        % additive/multiplicative query error logic
-        if eVal > 0
-            subStr = sortrows(subStr,[4 3],{'ascend' 'descend'}); % sort by smallest LB dist then by largest sub-traj size
-            smallestLB = max(subStr(1,4) - err, 0);  % use the LB
-            if typeQ == 1 % additive error
-                eAdd = eVal;
-            else
-                eAdd = eVal * smallestLB;
-            end
-            if subStr(1,5) <= smallestLB + eAdd % we found a candidate within query error
-                break
-            end
-        end
- 
     end
     
     % do sub-traj cont frechet dist call to get final result
-    [alpha,numCellCheck,z,zRev] = GetAlphaHST(subStr,thisLevel,Q);
+%     [alpha,numCellCheck,subStart,subEnd] = GetSubTrajNNVA2(subStr,thisLevel,Q,lb); % this version just does one sub-traj CFD check
+    [alpha,numCellCheck,subStart,subEnd,maxc] = GetSubTrajNNVA(subStr,thisLevel,Q,lb,typeQ,eVal,maxc,lenQ);
     totCell = totCell + numCellCheck;
-    subStr = [0 0 0 0 0 0 0 0 0];
-    subStr(1,8) = zRev(1,2); % start vertex
-    subStr(1,9) = z(1,2); % end vertex
-    subStr(1,4) = alpha; % LB dist
-    subStr(1,5) = alpha; % UB dist
-
-    % get the inclusion maximal candidate
-    if size(subStr,1) > 1 
-        subStr = sortrows(subStr,[5 3],{'ascend' 'descend'}); % sort by smallest UB dist then by largest sub-traj size
-    end
 
     timeSearch = toc(tSearch);
 
     % store results
-    queryStrData(Qid).subsvert = subStr(1,8); % start vertex
-    queryStrData(Qid).subevert = subStr(1,9); % end vertex
-    queryStrData(Qid).sublb = subStr(1,4); % LB dist
-    queryStrData(Qid).subub = subStr(1,5); % UB dist
+    queryStrData(Qid).subsvert = subStart; % start vertex
+    queryStrData(Qid).subevert = subEnd; % end vertex
+    queryStrData(Qid).sublb = alpha; % LB dist
+    queryStrData(Qid).subub = alpha; % UB dist
     queryStrData(Qid).subcntsubtraj = numSubTraj;
     queryStrData(Qid).subcntlb = cntLB;
     queryStrData(Qid).subcntub = cntUB;
@@ -152,6 +128,6 @@ function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal)
     queryStrData(Qid).subcntcfd = cntCFD;
     queryStrData(Qid).subsearchtime = timeSearch;
     queryStrData(Qid).submemorysz = maxc + size(Q,1);
-    queryStrData(Qid).subnumoperations = totCell;
+    queryStrData(Qid).subnumoperations = round(totCell / size(inP,1),2);
     
 end
