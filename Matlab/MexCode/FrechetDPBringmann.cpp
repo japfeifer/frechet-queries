@@ -67,7 +67,7 @@ public:
 
 //         stream << "frechet dist: " << resDist << std::endl;
 //         displayOnMATLAB(stream);
-        
+        delete frechet;
         return dp_flg;
     }
 
