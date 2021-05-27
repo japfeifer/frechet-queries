@@ -127,7 +127,7 @@ function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal)
     queryStrData(Qid).subcntfdp = cntFDP;
     queryStrData(Qid).subcntcfd = cntCFD;
     queryStrData(Qid).subsearchtime = timeSearch;
-    queryStrData(Qid).submemorysz = maxc + size(Q,1);
+    queryStrData(Qid).submemorysz = maxc;
     queryStrData(Qid).subnumoperations = round(totCell / size(inP,1),2);
     
 end

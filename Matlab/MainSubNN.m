@@ -12,7 +12,7 @@
 
 function MainSubNN(Qid,level,C)
 
-    global queryStrData inpTrajSz inpTrajErr decimalPrecision
+    global queryStrData inpTrajSz inpTrajErr decimalPrecision inP
 
     tSearch = tic;
 

@@ -52,7 +52,8 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideSubTraj(P,Q,len,sCellP,s
     while 1 == 1
         loopCnt = loopCnt + 1;
         if loopCnt > maxLoop
-            error('too many loops in free-space cells');
+%             error('too many loops in free-space cells');
+            disp(['Warning: too many loops in free-space cells in FrechetDecideSubTraj']);
         end
         if currCellP+1 > szP
             error('currCellP is too large');

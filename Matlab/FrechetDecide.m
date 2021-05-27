@@ -1,6 +1,6 @@
 function [decide,numCell,z] = FrechetDecide(P,Q,len,simpFlag,plotFSD,bndCutFlg,bringFlg,subTrajFlg)
 
-    global I J lP lQ lPQ bP bQ
+    global I J lP lQ lPQ bP bQ globalBringmann
 
     switch nargin
     case 3
@@ -26,7 +26,7 @@ function [decide,numCell,z] = FrechetDecide(P,Q,len,simpFlag,plotFSD,bndCutFlg,b
     numCell = 0;
     z = [];
     
-    if size(P,2) == 2 && bringFlg == 1 % use Bringmann code for 2D space
+    if size(P,2) == 2 && bringFlg == 1 && globalBringmann == 1 % use Bringmann code for 2D space
         decide = FrechetDPBringmann(P,Q,len);
         return
     end
@@ -80,7 +80,7 @@ function [decide,numCell,z] = FrechetDecide(P,Q,len,simpFlag,plotFSD,bndCutFlg,b
             if subTrajFlg == 0
                 decide = frechet_decide2(P',Q',len,plotFSD,0);
             else
-                [decide,z] = frechet_decide3(P',Q',len,plotFSD,0);
+                [decide,z,numCell] = frechet_decide4(P',Q',len,plotFSD,0);
             end
         end
     end    

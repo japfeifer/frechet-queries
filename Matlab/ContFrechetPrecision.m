@@ -2,7 +2,7 @@
 
 function [frechetDist,totCell] = ContFrechetPrecision(P,Q,decPrec,runBringmann)
 
-    global decimalPrecision
+    global decimalPrecision globalBringmann
     
     switch nargin
     case 2
@@ -12,7 +12,7 @@ function [frechetDist,totCell] = ContFrechetPrecision(P,Q,decPrec,runBringmann)
     
     totCell = 0;
     
-    if size(P,2) == 2 && runBringmann == 1 % use Bringmann code for 2D traj
+    if size(P,2) == 2 && runBringmann == 1 && globalBringmann == 1 % use Bringmann code for 2D traj
         frechetDist = FrechetDistBringmann(P,Q);
     else
         % get upper/lower bounds

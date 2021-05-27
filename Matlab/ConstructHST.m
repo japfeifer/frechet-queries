@@ -81,8 +81,8 @@ function ConstructHST(dataName,sourceName,realSynFlg,inpSz,constMeth,trajDataTyp
         if intrDim == 1 % low intrinsic dimensionality inP, straighter traj and not boxed in
             numDim = 2;
             dimUnits = 100;
-            maxVertDist = 6;
-            straightFactor = 0.97;
+            maxVertDist = 10;
+            straightFactor = 0.9999;
             for i = 1:inpSz
                 dimPos = [];
                 if i==1
@@ -103,7 +103,7 @@ function ConstructHST(dataName,sourceName,realSynFlg,inpSz,constMeth,trajDataTyp
         else % high intrinsic dimensionality inP, curvier trajectory and boxed in
             numDim = 2;
             dimUnits = 500;
-            maxVertDist = 6;
+            maxVertDist = 15;
             straightFactor = 0.60;
             for i = 1:inpSz
                 dimPos = [];

@@ -59,7 +59,8 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideFast(P,Q,len)
     while 1 == 1
         loopCnt = loopCnt + 1;
         if loopCnt > maxLoop
-            error('too many loops in free-space cells');
+%             error('too many loops in free-space cells');
+            disp(['Warning: too many loops in free-space cells in FrechetDecideFast']);
         end
         if floorIdx > 0 % check if we can pop record off floor stack
             if currCellQ == floorStack(floorIdx,1) % got back to Q column, pop record

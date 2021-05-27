@@ -31,6 +31,7 @@ global trajStrData queryStrData
 global inpTrajVert inpTrajPtr inpTrajErr inpTrajErrF inpTrajSz inP simpLevelCCT inpLen
 global sCellCheck sDPCalls sSPVert PNN
 
-global decimalPrecision
+global decimalPrecision globalBringmann
 
 decimalPrecision = 1e-8;
+globalBrinmann = 1;
