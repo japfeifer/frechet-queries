@@ -34,4 +34,4 @@ global sCellCheck sDPCalls sSPVert PNN
 global decimalPrecision globalBringmann
 
 decimalPrecision = 1e-8;
-globalBrinmann = 1;
+globalBringmann = 1;

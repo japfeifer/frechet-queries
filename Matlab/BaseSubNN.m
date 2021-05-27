@@ -15,8 +15,10 @@ function BaseSubNN(Qid)
 
     tSearch = tic;
     timeSearch = 0; 
+    totCnt = 0;
     Q = queryStrData(Qid).traj; % query trajectory vertices and coordinates
     [dist,cnt] = SubContFrechetAltVA(inP,Q,decimalPrecision);
+    totCnt = totCnt + cnt;
     
     timeSearch = toc(tSearch);
 
@@ -26,6 +28,6 @@ function BaseSubNN(Qid)
     queryStrData(Qid).subub = dist;
     queryStrData(Qid).subsearchtime = timeSearch;
     queryStrData(Qid).submemorysz = size(inP,1) * size(Q,1);
-    queryStrData(Qid).subnumoperations = round(size(Q,1) * cnt,2);
+    queryStrData(Qid).subnumoperations = round(totCnt / size(inP,1),2);
     
 end

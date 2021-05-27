@@ -31,6 +31,7 @@ function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal)
     numSubTraj = [];
     totCell = 0;
     maxc = 0;
+    foundApproxRes = 0;
     
     % initial level setup of sub-traj info
     subStr = [];
@@ -55,6 +56,7 @@ function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal)
         
         thisLevel = i + 1;
         err = (2 * inpTrajErr(thisLevel)) + 0.0000001;  % metric ball error
+        err2 = err/2;
         alpha = Inf;
         
         % get candidates for this level
@@ -75,7 +77,7 @@ function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal)
             subStr(j,4) = GetBringDistHST(subStr(j,1),subStr(j,2),Q,lenQ,thisLevel,0); % get Bringmann LB
             totCell = totCell + 1;
             cntLB = cntLB + 1;
-            if subStr(j,4) <= alpha + err % can not discard, so check for and UB dist
+            if subStr(j,4) <= alpha + err % can not discard, so check for an UB dist
                 subStr(j,5) = GetBringDistHST(subStr(j,1),subStr(j,2),Q,lenQ,thisLevel,1); % get Bringmann UB
                 if subStr(j,5) < alpha
                     alpha = subStr(j,5);
@@ -83,6 +85,24 @@ function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal)
             end
         end
         totCell = totCell + size(subStr,1);
+
+        if eVal > 0 && alpha - err2 > 0 % we have additive or multiplicative error. Check if we can stop
+            ls = alpha + err2; 
+            rs = alpha - err2;
+            if typeQ == 2 && ls/rs <= eVal  % multiplicative error
+                foundApproxRes = 1;
+                approxIdx = j;
+                break
+            elseif typeQ == 1 && ls-rs <= eVal % additive error
+                foundApproxRes = 1;
+                approxIdx = j;
+                break
+            end 
+        end
+                    
+        if foundApproxRes == 1
+            break
+        end
         
         % for each candidate, discard if alpha + 2*r(l) < CF(c,Q)
         numSubTraj = [numSubTraj; size(subStr,1) 0 0];
@@ -96,6 +116,12 @@ function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal)
                 cntLB = cntLB + 1;
                 if alpha + err < subStr(j,4)
                     subStr(j,6) = 1;  % mark to discard this sub-traj
+%                 else % this code checks another linear LB, but it does not seem to prune effctively
+%                     if GetBestLinearLBDP(c,Q,alpha + err) == 1
+%                         cntLB = cntLB + 1;
+%                         totCell = totCell + (size(c,1) + size(Q,1))*2;
+%                         subStr(j,6) = 1;  % mark to discard this sub-traj
+%                     end
                 end
             end
         end
@@ -109,10 +135,15 @@ function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal)
         end
     end
     
-    % do sub-traj cont frechet dist call to get final result
-%     [alpha,numCellCheck,subStart,subEnd] = GetSubTrajNNVA2(subStr,thisLevel,Q,lb); % this version just does one sub-traj CFD check
-    [alpha,numCellCheck,subStart,subEnd,maxc] = GetSubTrajNNVA(subStr,thisLevel,Q,lb,typeQ,eVal,maxc,lenQ);
-    totCell = totCell + numCellCheck;
+    if foundApproxRes == 1 % we found an approx result
+        subStart = subStr(approxIdx,1);
+        subEnd = subStr(approxIdx,2);
+    else
+        % do sub-traj cont frechet dist call to get final result
+    %     [alpha,numCellCheck,subStart,subEnd] = GetSubTrajNNVA2(subStr,thisLevel,Q,lb); % this version just does one sub-traj CFD check
+        [alpha,numCellCheck,subStart,subEnd,maxc] = GetSubTrajNNVA(subStr,thisLevel,Q,lb,typeQ,eVal,maxc,lenQ);
+        totCell = totCell + numCellCheck;
+    end
 
     timeSearch = toc(tSearch);
 

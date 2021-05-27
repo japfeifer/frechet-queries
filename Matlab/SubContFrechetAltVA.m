@@ -21,13 +21,13 @@ function [frechetDist,cnt] = SubContFrechetAltVA(P,Q,decPrec)
     revQ = fliplr(Q')';
     while maxBnd - minBnd > decPrec
         currLen = (minBnd + maxBnd) / 2;
-        cnt = cnt + 1;
         [ans,numCell,z] = FrechetDecide(P,Q,currLen,0,0,0,0,1);
+        cnt = cnt + numCell;
         if ans == 1
             ans = CheckVertexAlt(z); % check if z has vertex
             if ans == 1 % now check reversed P and Q
-                cnt = cnt + 1;
                 [ans,numCell,z] = FrechetDecide(revP,revQ,currLen,0,0,0,0,1);
+                cnt = cnt + numCell;
                 if ans == 1
                     ans = CheckVertexAlt(z); % check if z has vertex
                 end

@@ -1,9 +1,19 @@
 
 
 
-function QueryHST(sourceName,inVars)
+function QueryHST(sourceName,inVars,typeQ,eVal)
+
+    switch nargin
+    case 2
+        typeQ = 2;
+        eVal = 0;
+    end
+
+    global queryStrData globalBringmann
 
     load(sourceName);
+    
+    globalBringmann = 0; % do no run Bringmann c++ code, instead run matlab code for Frechet dist
     
     testMethods = [];
     for i = 1:6
@@ -21,24 +31,32 @@ function QueryHST(sourceName,inVars)
         for j = 1:numQueries
             
             if currMeth == 1
-                txt = 'Baseline 1';
+                txt = 'Baseline 1'; % modified Alt&Godau decider for sub-traj
                 BaseSubNN(j);
             elseif currMeth == 2
-                txt = 'Baseline 2';
-                BaseSubNN(j);
+                txt = 'Baseline 2'; % modified Driemel approx algorithm for sub-traj (use Baseline 1 decider)
+                BaseModDriemel(j,typeQ,eVal); % do a (1+epsilon) approximation - set epsilon to 1
             elseif currMeth == 3
-                txt = 'Baseline 3';
-                BaseSubNN(j);
+                tSearch = tic;
+                timeSearch = 0;
+                txt = 'Baseline 3'; % exact CCT NN query on all pairwise sub-traj
+                NN(j,2,0); 
+                timeSearch = toc(tSearch);
+                queryStrData(j).sublb = 0;
+                queryStrData(j).subub = 0;
+                queryStrData(j).subsearchtime = timeSearch;
+                queryStrData(j).submemorysz = 0;
+                queryStrData(j).subnumoperations = 0;
             elseif currMeth == 4
-                txt = 'Algorithm 1';
+                txt = 'Algorithm 1'; % modified Alt&Godau decider for sub-traj, with additional heuristics
                 Algo1SubNN(j);
             elseif currMeth == 5
-                txt = 'Algorithm 2';
+                txt = 'Algorithm 2'; % slightly modified Cover Tree FindNearest algo
                 level = 1; sIdx = 1; eIdx = 2;
                 MainSubNN(j,level,[sIdx eIdx]);
             elseif currMeth == 6
-                txt = 'Algorithm 3';
-                level = 1; sIdx = 1; eIdx = 2; typeQ = 2; eVal = 0;
+                txt = 'Algorithm 3'; % our contribution, a combo of Algo 1 & 2, and additional heuristics
+                level = 1; sIdx = 1; eIdx = 2;
                 MainImprovedSubNN3(j,level,[sIdx eIdx],0,typeQ,eVal);
             end
         end
