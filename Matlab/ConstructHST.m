@@ -143,13 +143,21 @@ function ConstructHST(dataName,sourceName,realSynFlg,inpSz,constMeth,trajDataTyp
     queryStrData = [];
     inPSz = size(inP,1);
     qSzMax = ceil(log2(inPSz)) * 2;
+    reachP = TrajReach(inP);
     for i = 1:numQ % create numQ queries
         sPos = randi(inPSz-1); % randomly choose start/end positions
         ePos = min(randi(qSzMax) + sPos , inPSz);
         Q = inP(sPos:ePos,:); % set Q to a sub-traj of inP
         % perturb each of the vertices in Q a percentage of the reach
         reachQ = TrajReach(Q); % get reach of Q
+        while reachQ * 10 > reachP % if Q's reach is too large, generate a different Q, until it's reach is relatively small
+            sPos = randi(inPSz-1); % randomly choose start/end positions
+            ePos = min(randi(qSzMax) + sPos , inPSz);
+            Q = inP(sPos:ePos,:); % set Q to a sub-traj of inP
+            reachQ = TrajReach(Q); % get reach of Q
+        end
         szQ = size(Q,1);
+        % perturb each of the vertices in Q a percentage of the reach
         perturb = reachQ * 0.03;
         Q = Q + ((-perturb + (perturb+perturb).*rand(size(Q,2),szQ))');
         % now randomly translate Q a percentage of the reach

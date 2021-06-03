@@ -1,7 +1,7 @@
 
 
 
-function [alpha,totCellCheck,subStart,subEnd,maxc] = GetSubTrajNNVA(subStr,level,Q,lb,typeQ,eVal,maxc,lenQ)
+function [alpha,totCellCheck,subStart,subEnd,maxc] = GetSubTrajNNVA(subStr,level,Q,lb,typeQ,eVal,maxc,lenQ,Qid)
 
     global decimalPrecision inP inpTrajVert inpTrajErr inpTrajPtr
     
@@ -27,26 +27,11 @@ function [alpha,totCellCheck,subStart,subEnd,maxc] = GetSubTrajNNVA(subStr,level
                 numFreLoops = i*2;
             end
         end
-%         if size(cand2check,1) > 1 && i < lb % seed an initial alpha
-%             for j = 1:size(cand2check,1) % find the smallest UB
-%                 idxP = [inpTrajVert(C(cand2check(j,1),1):C(cand2check(j,1),2),i)]';
-%                 P = inP(idxP,:);
-%                 dist = GetBestUpperBound(P,Q,0,0,0,0);
-% %                 dist = GetBringDistHST(C(cand2check(j,1),1),C(cand2check(j,1),2),Q,lenQ,i,1);
-%                 if dist < alpha
-%                     alpha = dist;
-%                     idx = j;
-%                 end
-%             end
-%             % do a "full" sub-traj CFD with the candidate with the smallest UB
-%             idxP = [inpTrajVert(C(cand2check(idx,1),1):C(cand2check(idx,1),2),i)]';
-%             P = inP(idxP,:);
-%             alpha = SubContFrechetFastVA(P,Q,decimalPrecision,alpha,numFreLoops);
-%         end
+        
         for j = 1:size(cand2check,1) % for each c in C, get VA dist and track smallest dist
             idxP = [inpTrajVert(C(cand2check(j,1),1):C(cand2check(j,1),2),i)]';
             P = inP(idxP,:);
-            [dist,numCellCheck,z,zRev] = SubContFrechetFastVA(P,Q,decimalPrecision,alpha,numFreLoops);
+            [dist,numCellCheck,z,zRev] = SubContFrechetFastVA(P,Q,decimalPrecision,alpha,numFreLoops,Qid);
             totCellCheck = totCellCheck + numCellCheck;
             if dist < alpha % save smallest alpha. also save start/end vertex since we may be at leaf level and can return results
                 alpha = dist;

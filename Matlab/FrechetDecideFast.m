@@ -1,9 +1,9 @@
 % Use a boundary cut method to answer true/false if curve P and Q are at most "len" Continuous Frechet distance apart
 % For P & Q, rows are vertices, and columns dimensional coordinates
 
-function [ans,numCellCheck,boundCutPath] = FrechetDecideFast(P,Q,len)
+function [answ,numCellCheck,boundCutPath] = FrechetDecideFast(P,Q,len)
 
-    ans = 0; % default answer is "false"
+    answ = 0; % default answer is "false"
     numCellCheck = 0; % number of cells checked during the free-space search
     floorStack = [];
     floorIdx = 0;
@@ -35,7 +35,7 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideFast(P,Q,len)
     boundCutIdx = 1;
     prevDropFlg = 1;
     loopCnt = 0;
-    maxLoop = currCellP * currCellQ * 2;
+    maxLoop = currCellP * currCellQ * 5;
     
     if  sDist > len || eDist > len % P & Q start/end vertices are too far apart
         return
@@ -52,7 +52,7 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideFast(P,Q,len)
     end
     
     if szP - 1 == 1 && szQ - 1 == 1 % each curve has just 2 vertices, hence just one cell
-        ans = 1; % there is a monotone path
+        answ = 1; % there is a monotone path
         return
     end
     
@@ -73,7 +73,7 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideFast(P,Q,len)
                 numCellCheck = numCellCheck + 1;
                 boundCutPath(boundCutIdx,:) = [currCellQ currCellP newCellCutS newCellCutE];
                 boundCutIdx = boundCutIdx + 1;
-                ans = 1; % there is a monotone path
+                answ = 1; % there is a monotone path
                 return
             end
             segP = [P(currCellP,:); P(currCellP+1,:)];
@@ -108,16 +108,19 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideFast(P,Q,len)
             if dir == 1 % switching back to monotone path, check if we can continue from here or need to backtrack
               
                 [dir,numCellCheck,boundCutPath,boundCutIdx,backCellP,backCellQ,backFromEdge,...
-                    backCellStartPoint,backCellCutE] = LineOfSightCheck(numCellCheck,boundCutPath,...
+                    backCellStartPoint,backCellCutE,errFlg] = LineOfSightCheck(numCellCheck,boundCutPath,...
                     boundCutIdx,currCellP,currCellQ,newCellCutS,segP,Q,len);
-
+                if errFlg == 1
+                    answ = 0;
+                    return
+                end
                 if dir == 1 % we have direct line of sight, can continue from here
                     state = 1;
                     boundCutPath(boundCutIdx,:) = [currCellQ currCellP newCellCutS newCellCutE];
                     boundCutIdx = boundCutIdx + 1;
                     currCellStartPoint = nextCellStartPoint;
                     if currCellP == 1 && currCellQ == 1 % made it to the first cell, a monotone path has been found
-                        ans = 1; % there is a monotone path
+                        answ = 1; % there is a monotone path
                         return
                     end
                 else %  non-free space is blocking direct line of sight, need to backtrack and head in a non-monotone path

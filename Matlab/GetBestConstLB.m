@@ -96,7 +96,7 @@ function lowBound = GetBestConstLB(P,Q,epsilon,cType,id1,id2,excludeSSE)
             elseif cType == 3
                 simpP = [P(1,:); P(end,:)]; % P'
                 distP = ContFrechet(P,simpP,2,0);
-                distQ = trajStrData(id1).st;
+                distQ = queryStrData(id1).st;
             end
             currBnd = abs(distP - distQ)/2;
             if currBnd > lowBound

@@ -14,9 +14,9 @@
 % numCellCheck - number of freespace diagram cells that were checked during search
 % boundCutPath - the monotone path from the right edge to left edge of the freespace diagram 
 
-function [ans,numCellCheck,boundCutPath] = FrechetDecideSubTraj(P,Q,len,sCellP,sHeight)
+function [answ,numCellCheck,boundCutPath] = FrechetDecideSubTraj(P,Q,len,sCellP,sHeight)
 
-    ans = 0; % default answer is "false"
+    answ = 0; % default answer is "false"
     numCellCheck = 0; % number of cells checked during the free-space search
     floorStack = [];
     floorIdx = 0;
@@ -47,7 +47,7 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideSubTraj(P,Q,len,sCellP,s
     boundCutIdx = 1;
     prevDropFlg = 1;
     loopCnt = 0;
-    maxLoop = currCellP * currCellQ * 2;
+    maxLoop = currCellP * currCellQ * 5;
     
     while 1 == 1
         loopCnt = loopCnt + 1;
@@ -95,7 +95,7 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideSubTraj(P,Q,len,sCellP,s
                 return
             end
             if (currCellQ == 1 && newCellCutE(1) == 0 && dir == 1) % we hit the freespace left edge with a monotone path, return true
-                ans = 1;
+                answ = 1;
                 if boundCutIdx <= size(boundCutPath,1)
                     boundCutPath(boundCutIdx:size(boundCutPath,1),:) = [];
                 end
@@ -104,15 +104,19 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideSubTraj(P,Q,len,sCellP,s
             currCellStartPoint = nextCellStartPoint;
             if (currCellQ == 1 && newCellCutE(1) == 0 && dir == 0) % we hit the freespace left edge with a non-monotone path, check the line-of-sight
                 [dir,numCellCheck,boundCutPath,boundCutIdx,backCellP,backCellQ,backFromEdge,...
-                    backCellStartPoint,backCellCutE] = LineOfSightCheck(numCellCheck,boundCutPath,...
+                    backCellStartPoint,backCellCutE,errFlg] = LineOfSightCheck(numCellCheck,boundCutPath,...
                     boundCutIdx,currCellP,currCellQ,newCellCutE,segP,Q,len);
+                if errFlg == 1
+                    answ = 0;
+                    return
+                end
                 if dir == 1 % we have direct line of sight, so a monotone path, return true
                     boundCutPath(boundCutIdx,:) = [currCellQ currCellP newCellCutS newCellCutE];
                     boundCutIdx = boundCutIdx + 1;
                     if boundCutIdx <= size(boundCutPath,1)
                         boundCutPath(boundCutIdx:size(boundCutPath,1),:) = [];
                     end
-                    ans = 1;
+                    answ = 1;
                     return
                 else % non-free space is blocking direct line of sight, need to backtrack and head in a non-monotone path
                     floorIdx = floorIdx + 1;
@@ -148,8 +152,12 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideSubTraj(P,Q,len,sCellP,s
                     toPoint = newCellCutS;
                 end
                 [dir,numCellCheck,boundCutPath,boundCutIdx,backCellP,backCellQ,backFromEdge,...
-                    backCellStartPoint,backCellCutE] = LineOfSightCheck(numCellCheck,boundCutPath,...
+                    backCellStartPoint,backCellCutE,errFlg] = LineOfSightCheck(numCellCheck,boundCutPath,...
                     boundCutIdx,currCellP,currCellQ,toPoint,segP,Q,len);
+                if errFlg == 1
+                    answ = 0;
+                    return
+                end
                 if dir == 1 % we have direct line of sight, can continue from here
                     state = 1;
                     if (currCellQ == 1 && newCellCutE(1) == 0) % initially hit the freespace left edge in a non-monotone
@@ -160,7 +168,7 @@ function [ans,numCellCheck,boundCutPath] = FrechetDecideSubTraj(P,Q,len,sCellP,s
                     boundCutIdx = boundCutIdx + 1;
                     currCellStartPoint = nextCellStartPoint;
                     if currCellQ == 1 && newCellCutE(1) == 0 % made it to the left edge of freespace diagram, a monotone path has been found
-                        ans = 1; % there is a monotone path
+                        answ = 1; % there is a monotone path
                         if boundCutIdx <= size(boundCutPath,1)
                             boundCutPath(boundCutIdx:size(boundCutPath,1),:) = [];
                         end

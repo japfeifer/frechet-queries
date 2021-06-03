@@ -1,19 +1,29 @@
 function [dir,numCellCheck,boundCutPath,boundCutIdx,backCellP,backCellQ,backFromEdge,...
-                    backCellStartPoint,backCellCutE] = LineOfSightCheck(numCellCheck,boundCutPath,...
+                    backCellStartPoint,backCellCutE,errFlg] = LineOfSightCheck(numCellCheck,boundCutPath,...
                     boundCutIdx,toCellP,toCellQ,toPoint,segP,Q,len)
     
     % Find point on boundCutPath to start line of sight (ray shooting) from.
     % Do a binary search - can do this since boundCutPath is monotone.
     maxIdx = boundCutIdx - 1;
     minIdx = 1;
+    currIdx = maxIdx;
     loopCnt = 0;
+    errFlg = 0;
+    dir = 0;
+    backCellP = 0;
+    backCellQ = 0;
+    backFromEdge = 'T';
+    backCellStartPoint = [0 0];
+    backCellCutE = [0 0];
     maxLoop = size(boundCutPath,1);
     while 1 == 1
        loopCnt = loopCnt + 1;
-       if loopCnt > maxLoop
-           error('too many loops in binary search of boundCutPath');
-       end
        currIdx = floor((maxIdx+minIdx)/2);
+       if loopCnt > maxLoop || currIdx == 0
+           errFlg = 1;
+           disp(['Warning: too many loops in binary search of boundCutPath, or index is 0']);
+           return
+       end
        boundPathP = boundCutPath(currIdx,2);
        if boundPathP > toCellP
            minIdx = currIdx + 1;

@@ -50,7 +50,8 @@ function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal)
     Q = queryStrData(Qid).traj; % query trajectory vertices and coordinates
     lb = size(inpTrajSz,2); % the leaf level for the simplification tree
     lenQ = queryStrData(Qid).len;
-    stopVal = ceil(log2(size(inP,1))^3);
+%     stopVal = ceil(log2(size(inP,1))^3);
+    stopVal = 1000;
     
     for i = level:lb-1 % traverse the simplification tree one level at a time, start at level + 1
         
@@ -141,7 +142,7 @@ function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal)
     else
         % do sub-traj cont frechet dist call to get final result
     %     [alpha,numCellCheck,subStart,subEnd] = GetSubTrajNNVA2(subStr,thisLevel,Q,lb); % this version just does one sub-traj CFD check
-        [alpha,numCellCheck,subStart,subEnd,maxc] = GetSubTrajNNVA(subStr,thisLevel,Q,lb,typeQ,eVal,maxc,lenQ);
+        [alpha,numCellCheck,subStart,subEnd,maxc] = GetSubTrajNNVA(subStr,thisLevel,Q,lb,typeQ,eVal,maxc,lenQ,Qid);
         totCell = totCell + numCellCheck;
     end
 

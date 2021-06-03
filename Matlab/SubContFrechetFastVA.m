@@ -2,7 +2,7 @@
 % uses our boundary cut method
 % find answer that is vertex-aligned
 
-function [frechetDist,totCellCheck,newz,newzRev] = SubContFrechetFastVA(P,Q,decPrec,alpha,maxLoop)
+function [frechetDist,totCellCheck,newz,newzRev] = SubContFrechetFastVA(P,Q,decPrec,alpha,maxLoop,Qid)
 
     global decimalPrecision
     
@@ -11,11 +11,16 @@ function [frechetDist,totCellCheck,newz,newzRev] = SubContFrechetFastVA(P,Q,decP
         decPrec = decimalPrecision;
         alpha = Inf;
         maxLoop = Inf;
+        Qid = 0;
     case 3
         alpha = Inf;
         maxLoop = Inf;
+        Qid = 0;
     case 4
         maxLoop = Inf;
+        Qid = 0;
+    case 5
+        Qid = 0;
     end
     
     totCellCheck = 0;
@@ -26,6 +31,19 @@ function [frechetDist,totCellCheck,newz,newzRev] = SubContFrechetFastVA(P,Q,decP
     minBnd = 0;
     ansEqOneFlg = 0;
     
+    if alpha < Inf
+        if Qid == 0
+            distLB = GetBestConstLB(P,Q,Inf,0,0,0,1);  % get the LB (linear time)
+        else
+            distLB = GetBestConstLB(P,Q,Inf,3,Qid,0,1);  % get the LB (linear time)
+        end
+        if distLB > alpha
+            frechetDist = Inf;
+            newz = [];
+            newzRev = [];
+            return 
+        end
+    end
     % if alpha < Inf then check FDP on alpha, if false then stop
     if alpha < Inf
         currLen = alpha;

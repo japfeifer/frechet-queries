@@ -22,7 +22,7 @@ scrList = ["MatlabData/HSTFootballDataSz1000Meth1.mat"; ...
            "MatlabData/HSTSyntheticLowSz1000Meth1.mat"; ...
            "MatlabData/HSTSyntheticHighSz1000Meth1.mat"];
        
-globalBringmann = 0; % do not run bringmann c++ code, instead run matlab code
+globalBringmann = 1; % run bringmann c++ code
 
 for iProc = 1:size(dataList,1)   
     dataName = char(dataList(iProc));
