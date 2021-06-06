@@ -77,12 +77,14 @@ function ConstTrajSimpTree(P,erd,mtl,simpType,compFreErr)
     
     % for each parent level compute the segment lengths
     sz1 = size(inpTrajSz,2) - 1;
+    inpLen(1:numVert,1:sz1) = 0; % pre-allocate memory
     for i = 1:sz1 % for each parent level
         idx1 = inpTrajVert(1:inpTrajSz(i),i);
         simpP = P(idx1,:);
         segLengths = GetSegLen(simpP);
         inpLen(1:size(segLengths,1),i) = segLengths;
     end
+    inpLen = inpLen(1:size(segLengths,1),1:sz1);
     
     % compute the Frechet distance from each segment in the tree to its underlying non-simp vertices
     inpTrajErrF(1:numVert-1,1:mtl-1) = Inf;

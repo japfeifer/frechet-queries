@@ -44,41 +44,62 @@ function [frechetDist,cnt,stopEarly,foundResult] = SubContFrechetAltVA(P,Q,decPr
                 end
             end
         end
+        b = err * (1 + (2/(eVal-1)));
         if answ == 1
             maxBnd = currLen;
-            if checkStopFlg == 1 % see if we can stop by examining the maxBnd, which is an upper bound on alpha
-                if eVal > 0 % we have additive or multiplicative error. Check if we can stop
-                    ls = currLen + err; 
-                    rs = currLen - err;
-                    if rs <= 0 % we can stop early since the error is infinite
-                        stopEarly = 1;
-                        break
-                    else
-                        if typeQ == 2 && ls/rs > eVal  % multiplicative error
-                            stopEarly = 1;
-                            break
-                        elseif typeQ == 1 && ls-rs > eVal % additive error
-                            stopEarly = 1;
-                            break
-                        end 
-                    end
+            if checkStopFlg == 1 % upper bound check
+                if currLen < b
+                    stopEarly = 1;
+                    break
+                end
+                if currLen >= b/2 && currLen <= b*2
+                    stopEarly = 1;
+                    break
                 end
             end
+%             if checkStopFlg == 1 % see if we can stop by examining the maxBnd, which is an upper bound on alpha
+%                 if eVal > 0 % we have additive or multiplicative error. Check if we can stop
+%                     ls = currLen + err; 
+%                     rs = currLen - err;
+%                     if rs <= 0 % we can stop early since the error is infinite
+%                         stopEarly = 1;
+%                         break
+%                     else
+%                         if typeQ == 2 && ls/rs > eVal  % multiplicative error
+%                             stopEarly = 1;
+%                             break
+%                         elseif typeQ == 1 && ls-rs > eVal % additive error
+%                             stopEarly = 1;
+%                             break
+%                         end 
+%                     end
+%                 end
+%             end
         else
             minBnd = currLen;
-            if checkStopFlg == 1
-                if eVal > 0 && currLen - err > 0 % we have additive or multiplicative error. Check if we can stop
-                    ls = currLen + err; 
-                    rs = currLen - err;
-                    if typeQ == 2 && ls/rs <= eVal  % multiplicative error
-                        foundResult = 1;
-                        break
-                    elseif typeQ == 1 && ls-rs <= eVal % additive error
-                        foundResult = 1;
-                        break
-                    end 
+            if checkStopFlg == 1 % lower bound check
+                if currLen >= b
+                    foundResult = 1;
+                    break
+                end
+                if currLen >= b/2 && currLen <= b*2
+                    stopEarly = 1;
+                    break
                 end
             end
+%             if checkStopFlg == 1
+%                 if eVal > 0 && currLen - err > 0 % we have additive or multiplicative error. Check if we can stop
+%                     ls = currLen + err; 
+%                     rs = currLen - err;
+%                     if typeQ == 2 && ls/rs <= eVal  % multiplicative error
+%                         foundResult = 1;
+%                         break
+%                     elseif typeQ == 1 && ls-rs <= eVal % additive error
+%                         foundResult = 1;
+%                         break
+%                     end 
+%                 end
+%             end
         end
     end
     frechetDist = (minBnd + maxBnd) / 2;

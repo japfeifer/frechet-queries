@@ -5,7 +5,7 @@
 % sourceName: e.g. 'MatlabData\RealInputData\FootballData.mat'
 % realSynFlg: 1 = real, 2 = synthetic
 % inpSz: size of input curve P
-% constMeth: HST construction method, 1 = halven radius, 2 = double nodes
+% constMeth: HST construction method, 1 = halven radius up to level number, 2 = double nodes, 3 = halven radius until all parent nodes have 3 or less vertices
 % trajDataType: 1 = trajData, 2 = trajStrData, 3 = trajOrigData
 % numLevels: number of levels for constMeth 1
 % logFactor: log factor for constMeth 2
@@ -84,20 +84,32 @@ function ConstructHST(dataName,sourceName,realSynFlg,inpSz,constMeth,trajDataTyp
             maxVertDist = 10;
             straightFactor = 0.9999;
             for i = 1:inpSz
-                dimPos = [];
-                if i==1
-                    for j = 1:numDim
-                        dimPos = [dimPos dimUnits*rand];
+                stopFlg = 0;
+                while stopFlg == 0
+                    dimPos = [];
+                    if i==1
+                        for j = 1:numDim
+                            dimPos = [dimPos dimUnits*rand];
+                        end
+                    elseif i==2
+                        for j = 1:numDim
+                            dimPos = [dimPos (-maxVertDist + (maxVertDist+maxVertDist) *rand) + inP(i-1,j)];
+                        end
+                    else
+                        for j = 1:numDim
+                            dimPos = [dimPos (-maxVertDist + (maxVertDist+maxVertDist) *rand) + (inP(i-1,j)) + straightFactor.*(inP(i-1,j) - inP(i-2,j))];
+                        end
+                    end  
+                    if i > 1
+                        if CalcPointDist(dimPos,inP(i-1,:)) == 0 % see if vertex is diff from last vertex
+                            stopFlg = 0;
+                        else
+                            stopFlg = 1;
+                        end
+                    else
+                        stopFlg = 1;
                     end
-                elseif i==2
-                    for j = 1:numDim
-                        dimPos = [dimPos (-maxVertDist + (maxVertDist+maxVertDist) *rand) + inP(i-1,j)];
-                    end
-                else
-                    for j = 1:numDim
-                        dimPos = [dimPos (-maxVertDist + (maxVertDist+maxVertDist) *rand) + (inP(i-1,j)) + straightFactor.*(inP(i-1,j) - inP(i-2,j))];
-                    end
-                end  
+                end
                 inP(i,:) = dimPos;
             end
         else % high intrinsic dimensionality inP, curvier trajectory and boxed in
@@ -106,24 +118,36 @@ function ConstructHST(dataName,sourceName,realSynFlg,inpSz,constMeth,trajDataTyp
             maxVertDist = 15;
             straightFactor = 0.60;
             for i = 1:inpSz
-                dimPos = [];
-                if i==1
-                    for j = 1:numDim
-                        dimPos = [dimPos dimUnits*rand];
+                stopFlg = 0;
+                while stopFlg == 0
+                    dimPos = [];
+                    if i==1
+                        for j = 1:numDim
+                            dimPos = [dimPos dimUnits*rand];
+                        end
+                    elseif i==2
+                        for j = 1:numDim
+                            coord = (-maxVertDist + (maxVertDist+maxVertDist) *rand) + inP(i-1,j);
+                            coord = min(max(coord,0),dimUnits);
+                            dimPos = [dimPos coord];
+                        end
+                    else
+                        for j = 1:numDim
+                            coord = (-maxVertDist + (maxVertDist+maxVertDist) *rand) + (inP(i-1,j)) + straightFactor.*(inP(i-1,j) - inP(i-2,j));
+                            coord = min(max(coord,0),dimUnits);
+                            dimPos = [dimPos coord];
+                        end
+                    end  
+                    if i > 1
+                        if CalcPointDist(dimPos,inP(i-1,:)) == 0 % see if vertex is diff from last vertex
+                            stopFlg = 0;
+                        else
+                            stopFlg = 1;
+                        end
+                    else
+                        stopFlg = 1;
                     end
-                elseif i==2
-                    for j = 1:numDim
-                        coord = (-maxVertDist + (maxVertDist+maxVertDist) *rand) + inP(i-1,j);
-                        coord = min(max(coord,0),dimUnits);
-                        dimPos = [dimPos coord];
-                    end
-                else
-                    for j = 1:numDim
-                        coord = (-maxVertDist + (maxVertDist+maxVertDist) *rand) + (inP(i-1,j)) + straightFactor.*(inP(i-1,j) - inP(i-2,j));
-                        coord = min(max(coord,0),dimUnits);
-                        dimPos = [dimPos coord];
-                    end
-                end  
+                end
                 inP(i,:) = dimPos;
             end
         end
@@ -133,8 +157,10 @@ function ConstructHST(dataName,sourceName,realSynFlg,inpSz,constMeth,trajDataTyp
     tic
     if constMeth == 1
         ConstTrajSimpTree(inP,2,numLevels); % construct the HST, halven radius at each subsequent level
-    else
+    elseif constMeth == 2
         ConstTrajSimpTree2(inP,logFactor);  % construct the HST, double nodes at each subsequent level
+    elseif constMeth == 3
+        ConstTrajSimpTree3(inP,2); % construct the HST, halven radius at each subsequent level, stop when last parent level nodes each only have at most 2 vertices
     end
     t = toc;
     disp(['HST construction time (ms): ',num2str(t * 1000)]);
