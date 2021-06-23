@@ -74,6 +74,18 @@ function QueryHST(sourceName,inVars,typeQ,eVal)
         disp(['Max size candidate Min: ',num2str(currMin),'  Max: ',num2str(currMax),...
               '  Mean: ',num2str(currMean),'  Std: ',num2str(currStd)]);
           
+        if currMeth == 5 || currMeth == 6
+            tmp1 = [];
+            tmp1(1:numQueries,1:3) = 0;
+            for j = 1:numQueries
+                tmp1(j,1) = queryStrData(j).subevert - queryStrData(j).subsvert + 1;
+                tmp1(j,2) = queryStrData(j).submemorysz;
+                tmp1(j,3) = tmp1(j,2) / tmp1(j,1);
+            end
+            currMean = mean([tmp1(1:numQueries,3)]);
+            disp(['Max |c| as a factor of the result |P''| size: ',num2str(currMean)]);
+        end
+          
         currMin = min([queryStrData(1:numQueries).subnumoperations]);
         currMax = max([queryStrData(1:numQueries).subnumoperations]);
         currMean = mean([queryStrData(1:numQueries).subnumoperations]);

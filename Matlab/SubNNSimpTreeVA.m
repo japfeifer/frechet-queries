@@ -304,6 +304,7 @@ function SubNNSimpTreeVA(Qid,level,sIdx,eIdx,typeQ,eVal,graphFlg)
     if foundResFlg == 0
         if size(subStr,1) > 1 % get the inclusion maximal candidate
             subStr = sortrows(subStr,[4 3],{'ascend' 'descend'}); % sort by smallest LB dist then by largest sub-traj size
+            subStr = sortrows(subStr,[4 3],{'ascend' 'ascend'});
         end
         candTrajSet = 1;
     end

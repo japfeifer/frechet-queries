@@ -2,7 +2,7 @@
 
 InitGlobalVars;
 
-testMethods = [16];
+testMethods = [8];
 reachType = 1; % 1 = small reach, 2 = large reach
 numQueries = 10;
 
