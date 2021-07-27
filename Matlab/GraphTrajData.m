@@ -1,9 +1,10 @@
-% create data
+rngSeed = 1; % random seed value
+rng(rngSeed); % reset random seed so experiments are reproducable
 
 figure
 for i=1:size(trajStrData,2)
     Q = trajStrData(i).traj;
-    plot(Q(:,1),Q(:,2),'linewidth',1);
+    plot(Q(:,1),Q(:,2),'linewidth',1,'color',rand(1,3));
     hold on;
 end
 axis equal

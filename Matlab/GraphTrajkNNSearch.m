@@ -1,7 +1,7 @@
 
 Qid = 1;
 kNum = 2;
-Q = cell2mat(queryTraj(Qid,1)); % query trajectory
+Q = queryStrData(Qid).traj;
 
 PreprocessQuery(Qid);
 GetkNNStat(Qid,kNum);

@@ -10,7 +10,12 @@
 % Outputs:
 % queryStrData - various query results stored here
 
-function MainSubNN(Qid,level,C)
+function MainSubNN(Qid,level,C,graphFlg)
+
+    switch nargin
+    case 3
+        graphFlg = 0;
+    end
 
     global queryStrData inpTrajSz inpTrajErr decimalPrecision inP
 
@@ -38,6 +43,10 @@ function MainSubNN(Qid,level,C)
  
     Q = queryStrData(Qid).traj; % query trajectory vertices and coordinates
     lb = size(inpTrajSz,2); % the leaf level for the simplification tree
+    
+    if graphFlg == 1
+        GraphSubNN(Qid,level,1,subStr);
+    end
     
     for i = level:lb-1 % traverse the simplification tree one level at a time, start at level + 1
         
@@ -72,6 +81,11 @@ function MainSubNN(Qid,level,C)
                 subStr(j,6) = 1;  % mark to discard this sub-traj
             end
         end
+        
+        if graphFlg == 1
+            GraphSubNN(Qid,thisLevel,2,subStr);
+        end
+        
         numSubTraj(end,2) = sum(subStr(:,6)); % count number of candidates to discard
         subStr = subStr(subStr(:,6)==0,:);  % discard candidates sub-traj that are too far
         
@@ -103,5 +117,9 @@ function MainSubNN(Qid,level,C)
     queryStrData(Qid).subsearchtime = timeSearch;
     queryStrData(Qid).submemorysz = maxc + size(Q,1);
     queryStrData(Qid).subnumoperations = round(totCell / size(inP,1),2);
+    
+    if graphFlg == 1
+        GraphSubNN(Qid,lb,3,subStr);
+    end
     
 end

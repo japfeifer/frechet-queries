@@ -51,7 +51,7 @@ function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal)
     lb = size(inpTrajSz,2); % the leaf level for the simplification tree
     lenQ = queryStrData(Qid).len;
 %     stopVal = ceil(log2(size(inP,1))^3);
-    stopVal = 1000;
+    stopVal = 1000000;
     
     for i = level:lb-1 % traverse the simplification tree one level at a time, start at level + 1
         

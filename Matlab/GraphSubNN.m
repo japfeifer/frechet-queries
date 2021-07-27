@@ -22,9 +22,9 @@ function GraphSubNN(Qid,level,plotType,subStr)
     plot([P(sP,1) P(sP,1)],[P(sP,2) P(sP,2)],'kx','MarkerSize',5);
     
     % plot Q
-    plot(Q(:,1),Q(:,2),'b','linewidth',2,'markerfacecolor','b');
-    plot([Q(1,1) Q(1,1)],[Q(1,2) Q(1,2)],'bo','MarkerSize',5);
-    plot([Q(sQ,1) Q(sQ,1)],[Q(sQ,2) Q(sQ,2)],'bx','MarkerSize',5);
+    plot(Q(:,1),Q(:,2),'b','linewidth',5,'markerfacecolor','b');
+    plot([Q(1,1) Q(1,1)],[Q(1,2) Q(1,2)],'bo','MarkerSize',10);
+    plot([Q(sQ,1) Q(sQ,1)],[Q(sQ,2) Q(sQ,2)],'bx','MarkerSize',10);
     
     % plot each candidate sub-traj set
     if plotType == 1 || plotType == 2

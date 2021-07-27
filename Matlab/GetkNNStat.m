@@ -2,7 +2,7 @@
 % 
 function GetkNNStat(Qid,kNum)
 
-    global searchStat s1Stat s2Stat resStat tmpCCT queryTraj clusterNode
+    global searchStat s1Stat s2Stat resStat tmpCCT queryStrData clusterNode
 
     searchStat = []; s1Stat = []; s2Stat = []; resStat = [];
 
@@ -16,7 +16,8 @@ function GetkNNStat(Qid,kNum)
     end
 
     % create s1Stat
-    s1Stat = cell2mat(queryTraj(Qid,8));
+    s1Stat = queryStrData(Qid).prunes1;
+%     s1Stat = cell2mat(queryTraj(Qid,8));
     s1Stat = s1Stat(:,1);
     s1Stat = s1Stat';
     for i=1:size(s1Stat,2) % convert node id to traj id
@@ -25,12 +26,14 @@ function GetkNNStat(Qid,kNum)
     end
 
     % create s2Stat
-    s2Stat = cell2mat(queryTraj(Qid,7));
+    s2Stat = queryStrData(Qid).reduces1trajid;
+%     s2Stat = cell2mat(queryTraj(Qid,7));
     s2Stat = s2Stat(:,1);
     s2Stat = s2Stat';
 
     % create resStat
-    resStat = cell2mat(queryTraj(Qid,12));
+    resStat = queryStrData(Qid).decidetrajids;
+%     resStat = cell2mat(queryTraj(Qid,12));
     resStat = resStat(:,1);
     resStat = resStat';
 end
