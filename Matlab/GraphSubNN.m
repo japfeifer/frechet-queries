@@ -8,6 +8,9 @@ function GraphSubNN(Qid,level,plotType,subStr)
 
     sP = size(P,1);
     sQ = size(Q,1);
+    numKeep = 0;
+    numDisc = 0;
+    cmMin = Inf;
     
     % plot figure
     if plotType == 1
@@ -35,6 +38,7 @@ function GraphSubNN(Qid,level,plotType,subStr)
                 R = inP(idxP,:); % contiguous list of vertex indices in P (a sub-traj of P)
                 sR = size(R,1);
                 plot(R(:,1),R(:,2),'r','linewidth',2,'markerfacecolor','r');
+                numDisc = numDisc + 1;
             end
         end
         for i = 1:subStrSz % graph traj that are not too far in green
@@ -44,6 +48,8 @@ function GraphSubNN(Qid,level,plotType,subStr)
                 sR = size(R,1);
                 plot(R(:,1),R(:,2),'g','linewidth',2,'markerfacecolor','g');
                 cm = ContFrechet(Q,R);
+                cmMin = min(cmMin,cm)
+                numKeep = numKeep + 1;
             end
         end
 %         for i = 1:subStrSz % graph traj that are not too far and have a chain in thick green
@@ -53,16 +59,21 @@ function GraphSubNN(Qid,level,plotType,subStr)
 %                 plot(R(:,1),R(:,2),'color',[0.4660 0.6740 0.1880],'linewidth',4,'markerfacecolor','g');
 %             end
 %         end
-        title(['Level:',num2str(level),'  Size inP (black):',num2str(sP),'  Size Q (blue):',num2str(sQ),...
-            '  Size Not Discarded R (green):',num2str(sR),'  ConFrechetDist(Q,R): ',num2str(cm),' with error ',...
-            num2str(inpTrajErr(level))]);
+        title(['Query ID:',num2str(Qid),...
+               '    Resolution Level:',num2str(level),...
+               '    Size P (black):',num2str(sP),...
+               '    Size Q (blue):',num2str(sQ),...
+               '    Num Keep (green):',num2str(numKeep),...
+               '    Num Discard (red):',num2str(numDisc),...
+               '    Closest Frechet Dist:',num2str(cmMin),...
+               '    Resolution Ball Radius:',num2str(inpTrajErr(level))]);
     elseif plotType == 3
         idxP = [inpTrajVert(subStr(1,1):subStr(1,2),level)]';   % just look a first row in subStr
         R = inP(idxP,:); % contiguous list of vertex indices in P (a sub-traj of P)
         sR = size(R,1);
         plot(R(:,1),R(:,2),'color',[0.4660 0.6740 0.1880],'linewidth',4,'markerfacecolor','g');
-        cm = ContFrechet(Q,R);
-        title(['FINAL Level:',num2str(level),'  Size inP (black):',num2str(sP),'  Size Q (blue):',num2str(sQ),'  Size RESULT R (green):',num2str(sR),'  ConFrechetDist(Q,R): ',num2str(cm),' with error ',num2str(inpTrajErr(level))]);
+        cmMin = ContFrechet(Q,R);
+        title(['FINAL Level:',num2str(level),'  Size inP (black):',num2str(sP),'  Size Q (blue):',num2str(sQ),'  Size RESULT R (green):',num2str(sR),'  ConFrechetDist(Q,R): ',num2str(cmMin),' with error ',num2str(inpTrajErr(level))]);
     end
     
     xyMax = [max(max(P(:,1)),max(Q(:,1))) max(max(P(:,2)),max(Q(:,2)))];
@@ -70,7 +81,7 @@ function GraphSubNN(Qid,level,plotType,subStr)
     xyLen = xyMax - xyMin;
     
     text(xyMin(1),xyMin(2)-(xyLen(2)*0.03),'Fréchet Distance');
-    line([xyMin(1) cm+xyMin(1)],[xyMin(2)-(xyLen(2)*0.05) xyMin(2)-xyLen(2)*0.05],'color','c','linewidth',3); % CFD line
+    line([xyMin(1) cmMin+xyMin(1)],[xyMin(2)-(xyLen(2)*0.05) xyMin(2)-xyLen(2)*0.05],'color','c','linewidth',3); % CFD line
     text(xyMin(1),xyMin(2)-(xyLen(2)*0.08),'Error Distance');
     line([xyMin(1) inpTrajErr(level)+xyMin(1)],[xyMin(2)-(xyLen(2)*0.1) xyMin(2)-xyLen(2)*0.1],'color','m','linewidth',3); % error line
 

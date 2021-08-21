@@ -1,6 +1,6 @@
 
 
-function simpP = GetSimpP (stIdx,enIdx,level,lb)
+function simpP = GetSimpP(stIdx,enIdx,level,lb)
 
     global inpTrajVert inP
     

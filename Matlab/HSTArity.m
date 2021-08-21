@@ -1,7 +1,7 @@
 % Compute HST arity
 
 aList = [];
-aList(1:size(inP,1)*2,1) = 0;
+aList(1:size(inP,1)*30,1) = 0;
 cnt = 1;
 for i = 1:size(inpTrajPtr,2)
     for j = 1:inpTrajSz(i) - 1
@@ -13,8 +13,10 @@ for i = 1:size(inpTrajPtr,2)
             cnt = cnt + 1;
         else
             foundFlg = 0;
-            a = find(inpTrajPtr(:,i-1) == idx1);
-            if size(a,1) > 0
+%             a = find(inpTrajPtr(:,i-1) == idx1);
+            a = FindInpTrajPtr(i-1,idx1);
+            if a > 0
+%             if size(a,1) > 0
                 if inpTrajPtr(a+1,i-1) == idx2
                     foundFlg = 1;
                 end

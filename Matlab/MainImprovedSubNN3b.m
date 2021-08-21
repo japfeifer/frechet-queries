@@ -10,13 +10,16 @@
 % Outputs:
 % queryStrData - various query results stored here
 
-function MainImprovedSubNN3b(Qid,level,C,la,typeQ,eVal)
+function MainImprovedSubNN3b(Qid,level,C,la,typeQ,eVal,stopVal)
 
     switch nargin
     case 3
         la = 0;
         typeQ = 1;
         eVal = 0;
+        stopVal = 10000000;
+    case 6
+        stopVal = 10000000;
     end
 
     global queryStrData inpTrajSz inpTrajErr inP
@@ -54,15 +57,19 @@ function MainImprovedSubNN3b(Qid,level,C,la,typeQ,eVal)
     Q = queryStrData(Qid).traj; % query trajectory vertices and coordinates
     lb = size(inpTrajSz,2); % the leaf level for the simplification tree
     lenQ = queryStrData(Qid).len;
-%     stopVal = ceil(log2(size(inP,1))^3);
-    stopVal = 100000;
     alpha = Inf;
-    alphaErr = Inf;
     numCheck = 0;
     subStr3 = []; 
     
     while 1 == 1
         subStr = sortrows(subStr,12,'ascend'); % smallest LB first
+%         subStr = sortrows(subStr,13,'ascend'); % smallest UB first
+%         subStr = subStr(randperm(size(subStr, 1)), :);  % random candidate first
+%         for j = 1:size(subStr,1) 
+%             subStr(j,14) = (subStr(j,12) + subStr(j,13)) / 2;
+%         end
+%         subStr = sortrows(subStr,14,'ascend'); % smallest average fo LB & UB
+%         subStr = subStr(:,1:13);
         i = 1;
         
         if subStr(i,10) + 1 < lb % not expanding to leaf level
@@ -92,27 +99,25 @@ function MainImprovedSubNN3b(Qid,level,C,la,typeQ,eVal)
                     subStr2(j,13) = subStr2(j,5) + err;
                     if subStr2(j,13) < alpha
                         alpha = subStr2(j,13);
-                        alphaErr = err;
+                        if eVal > 0 && alpha - err > 0 % we have additive or multiplicative error. Check if we can stop
+                            ls = alpha + err; 
+                            rs = alpha - err;
+                            if typeQ == 2 && ls/rs <= eVal  % multiplicative error
+                                foundApproxRes = 1;
+                                approxIdx = j;
+                                break
+                            elseif typeQ == 1 && ls-rs <= eVal % additive error
+                                foundApproxRes = 1;
+                                approxIdx = j;
+                                break
+                            end 
+                        end
                     end
                 else
                     subStr2(j,13) = Inf;
                 end
             end
             totCell = totCell + size(subStr2,1);
-
-            if eVal > 0 && alpha - (2 * alphaErr) > 0 % we have additive or multiplicative error. Check if we can stop
-                ls = alpha; 
-                rs = alpha - (2 * alphaErr);
-                if typeQ == 2 && ls/rs <= eVal  % multiplicative error
-                    foundApproxRes = 1;
-                    approxIdx = j;
-                    break
-                elseif typeQ == 1 && ls-rs <= eVal % additive error
-                    foundApproxRes = 1;
-                    approxIdx = j;
-                    break
-                end 
-            end
 
             if foundApproxRes == 1
                 break
@@ -144,7 +149,8 @@ function MainImprovedSubNN3b(Qid,level,C,la,typeQ,eVal)
             subStr = subStr(subStr(:,6)==0,:); 
             subStr2 = subStr2(subStr2(:,6)==0,:); 
             subStr = [subStr2; subStr];
-        
+            subStr = unique(subStr,'rows'); % remove any duplicate sub-trajectories
+            
         else  % expanding to leaf level
             subStr3(end+1,:) = subStr(i,:);
             subStr(i,:) = [];
@@ -155,6 +161,8 @@ function MainImprovedSubNN3b(Qid,level,C,la,typeQ,eVal)
         end
         
     end
+    
+    subStr3 = unique(subStr3,'rows'); % remove any duplicate sub-trajectories
     
     if foundApproxRes == 1 % we found an approx result
         subStart = subStr(approxIdx,1);

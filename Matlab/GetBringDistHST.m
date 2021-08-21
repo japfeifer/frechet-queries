@@ -5,6 +5,11 @@ function dist = GetBringDistHST(startIdxP,endIdxP,Q,lenQ,level,distFlg)
     
     % distFlg: 0 = LB, 1 = UB
     
+    lb = size(inpTrajVert,2);
+    if level < lb
+        endIdxP = endIdxP - 1; % *** the enIdx - 1 is for the Driemel simplification search logic
+    end
+    
     startIdxQ = 1;
     endIdxQ = size(lenQ,1);
     midIdxQ = floor((startIdxQ + endIdxQ)/2);

@@ -16,7 +16,7 @@
 
 function ConstTrajSimpTree(P,erd,mtl,simpType,compFreErr)
 
-    global inpTrajVert inpTrajPtr inpTrajErr inpTrajSz inpTrajErrF inpLen
+    global inpTrajVert inpTrajPtr inpTrajErr inpTrajSz inpTrajErrF inpLen inpTrajRad
     
     switch nargin
     case 3
@@ -26,13 +26,14 @@ function ConstTrajSimpTree(P,erd,mtl,simpType,compFreErr)
         compFreErr = 0;
     end
 
-    inpTrajVert = []; inpTrajPtr = []; inpTrajErr = []; inpTrajSz = []; inpTrajErrF = []; inpLen = [];
+    inpTrajVert = []; inpTrajPtr = []; inpTrajErr = []; inpTrajSz = []; inpTrajErrF = []; inpLen = []; inpTrajRad = [];
     numDim = size(P,2);  % number of dimensions in P 
     numVert = size(P,1); % number of vertices in P
    
     % pre-populate inpTrajVert and inpTrajPtr (faster runtimes)
     inpTrajVert(1:numVert,1:mtl) = 0;
     inpTrajPtr(1:numVert,1:mtl-1) = 0;
+    inpTrajRad(1:numVert,1:50-1) = 0;
 
     er = TrajReach(P); % get the root error which is reach of P
     
@@ -42,9 +43,11 @@ function ConstTrajSimpTree(P,erd,mtl,simpType,compFreErr)
             inpTrajVert(1,1) = 1; % first vertex index of P
             inpTrajVert(2,1) = numVert; % last vertex index of P
             inpTrajErr(i) = er; % root has error that is the reach of the trajectory
+            inpTrajRad(1,i) = er;
             levelSzCnt = 2; % root has just 2 vertices (it is a single segment)
         else % we are at non-root parent
             levelSzCnt = 0;
+            radCnt = 0;
             % construct each node at level i, and link each start/end node to its parent at level i-1 
             for j = 1:inpTrajSz(i-1) - 1  % loop through the segments from the level i-1 
                 seIdx = inpTrajVert(j:j+1,i-1);  % get level i-1 segment start and end vertex index
@@ -52,7 +55,7 @@ function ConstTrajSimpTree(P,erd,mtl,simpType,compFreErr)
                     er = 0; % set error to 0
                 end
                 if simpType == 1
-                    [simpP,idxListP] = LinearSimp(P(seIdx(1,1):seIdx(2,1),:),er);  % simplify level i-1 curve using Driemel method
+                    [simpP,idxListP,radList] = LinearSimp(P(seIdx(1,1):seIdx(2,1),:),er);  % simplify level i-1 curve using Driemel method
                 elseif simpType == 2
                     [simpP,idxListP] = BallSimp(P(seIdx(1,1):seIdx(2,1),:),er);  % simplify level i-1 curve using Intra-ball method
                 elseif simpType == 3
@@ -67,6 +70,12 @@ function ConstTrajSimpTree(P,erd,mtl,simpType,compFreErr)
                         inpTrajPtr(j,i-1) = levelSzCnt;
                     end
                 end
+                if er ~= 0
+                    for k = 1:size(radList,1)
+                        radCnt = radCnt + 1;
+                        inpTrajRad(radCnt,i) = radList(k,1);
+                    end
+                end
             end
             inpTrajPtr(inpTrajSz(i-1),i-1) = levelSzCnt; % update last inpTrajPtr for level i-1
         end
@@ -75,8 +84,12 @@ function ConstTrajSimpTree(P,erd,mtl,simpType,compFreErr)
         er = er / erd; % reduce error for next tree level
     end
     
+    inpTrajVert = inpTrajVert(1:numVert,1:i);
+    inpTrajPtr = inpTrajPtr(1:numVert,1:i-1);
+    inpTrajRad = inpTrajRad(1:numVert,1:i-1);
+    
     % for each parent level compute the segment lengths
-    sz1 = size(inpTrajSz,2) - 1;
+    sz1 = size(inpTrajSz,2);
     inpLen(1:numVert,1:sz1) = 0; % pre-allocate memory
     for i = 1:sz1 % for each parent level
         idx1 = inpTrajVert(1:inpTrajSz(i),i);

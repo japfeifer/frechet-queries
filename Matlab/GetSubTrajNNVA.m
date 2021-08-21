@@ -37,19 +37,20 @@ function [alpha,totCellCheck,subStart,subEnd,maxc] = GetSubTrajNNVA(subStr,level
                 alpha = dist;
                 idxOffset = C(cand2check(j,1),1) - 1; % need an offset to P, since P is most likely a sub-traj
                 szCut = size(z,1);
-                subStart = z(szCut,2) + idxOffset;
-                subEnd = z(1,2) + idxOffset + 1; % a +1 is added since end is a freespace cell and not a vertex
+                if szCut > 0
+                    subStart = z(szCut,2) + idxOffset;
+                    subEnd = z(1,2) + idxOffset + 1; % a +1 is added since end is a freespace cell and not a vertex
+                end
+                if eVal > 0 && alpha - err > 0 % we have additive or multiplicative error. Check if we can stop
+                    ls = alpha + err; 
+                    rs = alpha - err;
+                    if typeQ == 2 && ls/rs <= eVal  % multiplicative error
+                        return
+                    elseif typeQ == 1 && ls-rs <= eVal % additive error
+                        return
+                    end 
+                end
             end
-        end
-        
-        if eVal > 0 && alpha - err > 0 % we have additive or multiplicative error. Check if we can stop
-            ls = alpha + err; 
-            rs = alpha - err;
-            if typeQ == 2 && ls/rs <= eVal  % multiplicative error
-                return
-            elseif typeQ == 1 && ls-rs <= eVal % additive error
-                return
-            end 
         end
         
         if i < lb % at parent level, get candidates for next lower level

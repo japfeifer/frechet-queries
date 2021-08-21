@@ -10,13 +10,17 @@
 % Outputs:
 % queryStrData - various query results stored here
 
-function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal)
+function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal,stopVal)
 
     switch nargin
     case 3
         la = 0;
         typeQ = 1;
         eVal = 0;
+        stopVal = 1000;
+    case 6
+        stopVal = 1000;
+        %     stopVal = ceil(log2(size(inP,1))^3);
     end
 
     global queryStrData inpTrajSz inpTrajErr inP
@@ -50,9 +54,7 @@ function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal)
     Q = queryStrData(Qid).traj; % query trajectory vertices and coordinates
     lb = size(inpTrajSz,2); % the leaf level for the simplification tree
     lenQ = queryStrData(Qid).len;
-%     stopVal = ceil(log2(size(inP,1))^3);
-    stopVal = 1000000;
-    
+
     for i = level:lb-1 % traverse the simplification tree one level at a time, start at level + 1
         
         thisLevel = i + 1;
@@ -82,25 +84,24 @@ function MainImprovedSubNN3(Qid,level,C,la,typeQ,eVal)
                 subStr(j,5) = GetBringDistHST(subStr(j,1),subStr(j,2),Q,lenQ,thisLevel,1); % get Bringmann UB
                 if subStr(j,5) < alpha
                     alpha = subStr(j,5);
+                    if eVal > 0 && alpha - err2 > 0 % we have additive or multiplicative error. Check if we can stop
+                        ls = alpha + err2; 
+                        rs = alpha - err2;
+                        if typeQ == 2 && ls/rs <= eVal  % multiplicative error
+                            foundApproxRes = 1;
+                            approxIdx = j;
+                            break
+                        elseif typeQ == 1 && ls-rs <= eVal % additive error
+                            foundApproxRes = 1;
+                            approxIdx = j;
+                            break
+                        end 
+                    end
                 end
             end
         end
         totCell = totCell + size(subStr,1);
-
-        if eVal > 0 && alpha - err2 > 0 % we have additive or multiplicative error. Check if we can stop
-            ls = alpha + err2; 
-            rs = alpha - err2;
-            if typeQ == 2 && ls/rs <= eVal  % multiplicative error
-                foundApproxRes = 1;
-                approxIdx = j;
-                break
-            elseif typeQ == 1 && ls-rs <= eVal % additive error
-                foundApproxRes = 1;
-                approxIdx = j;
-                break
-            end 
-        end
-                    
+        
         if foundApproxRes == 1
             break
         end

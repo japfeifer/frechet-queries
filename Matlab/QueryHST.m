@@ -57,7 +57,12 @@ function QueryHST(sourceName,inVars,typeQ,eVal)
             elseif currMeth == 6
                 txt = 'Algorithm 3'; % our contribution, a combo of Algo 1 & 2, and additional heuristics
                 level = 1; sIdx = 1; eIdx = 2;
-                MainImprovedSubNN3(j,level,[sIdx eIdx],0,typeQ,eVal);
+                if size(inVars,2) == 8
+                    stopVal = inVars(8);
+                else
+                    stopVal = 1000;
+                end
+                MainImprovedSubNN3(j,level,[sIdx eIdx],0,typeQ,eVal,stopVal);
             end
         end
         currMin = min([queryStrData(1:numQueries).subsearchtime]);
