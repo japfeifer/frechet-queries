@@ -85,7 +85,7 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
                     seq = MSRDAExtractFeatures2(seq,thisDef);
                 elseif datasetType == 6
                     seq = NTURGBDExtractFeatures2(seq,thisDef);
-                elseif datasetType == 7
+                elseif datasetType == 7 || datasetType == 8
                     seq = MSASLExtractFeatures2(seq,thisDef);
                 end
                 if reachPctCurr > 0 % simplify the curve
@@ -114,7 +114,7 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
                             seq = MSRDAExtractFeatures2(seq,thisDef);
                         elseif datasetType == 6
                             seq = NTURGBDExtractFeatures2(seq,thisDef);
-                        elseif datasetType == 7
+                        elseif datasetType == 7 || datasetType == 8
                             seq = MSASLExtractFeatures2(seq,thisDef);
                         end
                         if reachPctCurr > 0 % simplify the curve
@@ -143,7 +143,7 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
                     seq = MSRDAExtractFeatures2(seq,thisDef);
                 elseif datasetType == 6
                     seq = NTURGBDExtractFeatures2(seq,thisDef);
-                elseif datasetType == 7
+                elseif datasetType == 7 || datasetType == 8
                     seq = MSASLExtractFeatures2(seq,thisDef);
                 end
                 if reachPctCurr > 0 % simplify the curve
@@ -171,7 +171,7 @@ while isempty(acc_iter_def_curr) == false  % continue until the set of canonical
                         seq = MSRDAExtractFeatures2(seq,thisDef);
                     elseif datasetType == 6
                         seq = NTURGBDExtractFeatures2(seq,thisDef);
-                    elseif datasetType == 7
+                    elseif datasetType == 7 || datasetType == 8
                         seq = MSASLExtractFeatures2(seq,thisDef);
                     end
                     if reachPctCurr > 0 % simplify the curve

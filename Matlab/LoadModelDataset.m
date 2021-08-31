@@ -27,7 +27,10 @@ elseif datasetType == 6
     % load('MatlabData/NTURGBD60NoSimpData.mat');
     % load('MatlabData/NTURGBD60SimpData.mat');
 elseif datasetType == 7
-    load('MatlabData/MSASLData.mat');
+    load('MatlabData/MSASL1Data.mat');
+elseif datasetType == 8
+    load('MatlabData/MSASL2Data.mat');
+%     MSASLFixLocoOnly
 end
 
 CompMoveClassID; % create class ID's

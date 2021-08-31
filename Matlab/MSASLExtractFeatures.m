@@ -108,7 +108,30 @@ function seq2 = MSASLExtractFeatures(seq,extractMethod)
         seq2(:,a:a+2) = seq(:,NECK) - seq(:,LWST); a=a+3;
         seq2(:,a:a+2) = seq(:,REYE) - seq(:,LWST); a=a+3;
         seq2(:,a:a+2) = seq(:,LEYE) - seq(:,LWST); a=a+3;
-
+    elseif extractMethod == 21
+        seq2(:,a:a+2) = seq(:,RTPR) - seq(:,HEAD); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTDI) - seq(:,HEAD); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTEF) - seq(:,HEAD); a=a+3;
+        seq2(:,a:a+2) = seq(:,REAR) - seq(:,HEAD); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB) - seq(:,HEAD); a=a+3;
+    elseif extractMethod == 22
+        seq2(:,a:a+2) = seq(:,RMPR) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RMME) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RMDI) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RMEF) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RIPR) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RIME) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RIDI) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RIEF) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO) - seq(:,RWST); a=a+3;
+    elseif extractMethod == 23
+        seq2(:,a:a+2) = seq(:,RMPR) - seq(:,RIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RMME) - seq(:,RIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RMDI) - seq(:,RIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RMEF) - seq(:,RIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTPR) - seq(:,RIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTDI) - seq(:,RIEF); a=a+3;
+        seq2(:,a:a+2) = seq(:,RTEF) - seq(:,RIEF); a=a+3;
     elseif extractMethod == 1001
         seq2(:,a:a+2) = seq(:,HEAD); a=a+3;
     elseif extractMethod == 1002

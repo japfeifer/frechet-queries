@@ -1,6 +1,6 @@
 InitGlobalVars;
 
-scriptName = 'ProcessHSTCCTConst';
+scriptName = 'ProcessHSTCCTConst_Football2500';
 bothFile = ['ExpRes/',scriptName,'_',datestr(now,'dd-mm-yy','local'),'_',datestr(now,'hh-MM-ss','local')];
 diaryFile = [bothFile,'.txt'];
 diary(diaryFile)
@@ -13,14 +13,8 @@ disp([scriptName]);
 %     "NBABasketballData" "GeoLifeData" "Hurdat2AtlanticData" ...
 %     "PenTipData"];
 
-dataList = ["FootballData"; ...
-            "PigeonHomingData"; ...
-            "SyntheticLow"; ...
-            "SyntheticHigh"];
-scrList = ["MatlabData/HSTFootballDataSz1000Meth3.mat"; ...
-           "MatlabData/HSTPigeonHomingDataSz1000Meth3.mat"; ...
-           "MatlabData/HSTSyntheticLowSz1000Meth3.mat"; ...
-           "MatlabData/HSTSyntheticHighSz1000Meth3.mat"];
+dataList = ["FootballData"];
+scrList = ["MatlabData/HSTFootballDataSz2500Meth3.mat"];
        
 globalBringmann = 1; % run bringmann c++ code
 

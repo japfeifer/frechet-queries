@@ -32,7 +32,7 @@ for i = 1:size(trainSet,1) % training set
         seq = MSRDAExtractFeatures(seq,exMethNum);
     elseif datasetType == 6
         seq = NTURGBDExtractFeatures(seq,exMethNum);
-    elseif datasetType == 7
+    elseif datasetType == 7 || datasetType == 8
         seq = MSASLExtractFeatures(seq,exMethNum);
     end
     if reachPctCurr > 0 % simplify the curve
@@ -63,7 +63,7 @@ if classifierCurr == 2
                 seq = MSRDAExtractFeatures(seq,exMethNum);
             elseif datasetType == 6
                 seq = NTURGBDExtractFeatures(seq,exMethNum);
-            elseif datasetType == 7
+            elseif datasetType == 7 || datasetType == 8
                 seq = MSASLExtractFeatures(seq,exMethNum);
             end
             if reachPctCurr > 0 % simplify the curve
@@ -94,7 +94,7 @@ for i = 1:size(querySet,1) % query set
         seq = MSRDAExtractFeatures(seq,exMethNum);
     elseif datasetType == 6
         seq = NTURGBDExtractFeatures(seq,exMethNum);
-    elseif datasetType == 7
+    elseif datasetType == 7 || datasetType == 8
         seq = MSASLExtractFeatures(seq,exMethNum);
     end
     if reachPctCurr > 0 % simplify the curve
@@ -126,7 +126,7 @@ if classifierCurr == 1
             seq = MSRDAExtractFeatures(seq,exMethNum);
         elseif datasetType == 6
             seq = NTURGBDExtractFeatures(seq,exMethNum);
-        elseif datasetType == 7
+        elseif datasetType == 7 || datasetType == 8
             seq = MSASLExtractFeatures(seq,exMethNum);
         end
         if reachPctCurr > 0 % simplify the curve

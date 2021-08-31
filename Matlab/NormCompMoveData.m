@@ -18,7 +18,7 @@ for i = 1:size(compIDs,1)
         normSeq = MSRDANormalizeSeq(seq,seqNormalCurr);
     elseif datasetType == 6
         normSeq = NTURGBDNormalizeSeq(seq,seqNormalCurr);
-    elseif datasetType == 7
+    elseif datasetType == 7 || datasetType == 8
         normSeq = MSASLNormalizeSeq(seq,seqNormalCurr);
     end
     CompMoveData(compIDs(i,1),6) = mat2cell(normSeq,size(normSeq,1),size(normSeq,2)); 

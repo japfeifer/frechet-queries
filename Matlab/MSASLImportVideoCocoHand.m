@@ -1,3 +1,4 @@
+% Allocate more GPU memory to the hands, and less to the 18 coco joints
 % Load MS-ASL video files, run openpose to extract 2D joint data, and save
 % the resulting json files.
 

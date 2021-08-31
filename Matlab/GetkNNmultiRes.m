@@ -18,7 +18,7 @@ for i = 1:size(trainSet,1) % training set
         seq = MSRDAExtractFeatures2(seq,kNNFeatureCurr);
     elseif datasetType == 6
         seq = NTURGBDExtractFeatures2(seq,kNNFeatureCurr);
-    elseif datasetType == 7
+    elseif datasetType == 7 || datasetType == 8
         seq = MSASLExtractFeatures2(seq,kNNFeatureCurr);
     end
     if reachPctCurr > 0 % simplify the curve
@@ -44,7 +44,7 @@ for i = 1:size(querySet,1) % query set
         seq = MSRDAExtractFeatures2(seq,kNNFeatureCurr);
     elseif datasetType == 6
         seq = NTURGBDExtractFeatures2(seq,kNNFeatureCurr);
-    elseif datasetType == 7
+    elseif datasetType == 7 || datasetType == 8
         seq = MSASLExtractFeatures2(seq,kNNFeatureCurr);
     end
     if reachPctCurr > 0 % simplify the curve
