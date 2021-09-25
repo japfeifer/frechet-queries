@@ -3,8 +3,8 @@
 
 nodeID = 1;
 tmpCCTDepth = Inf;
-
 tmpCCT = clusterNode;
+CreateTrajStr;
 
 GetCCTTrajOverlap(); % compute the overlap measure for each of the leafs (trajectories)
 

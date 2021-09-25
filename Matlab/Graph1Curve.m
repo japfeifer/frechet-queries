@@ -20,4 +20,6 @@ plot([P(sP,1) P(sP,1)],[P(sP,2) P(sP,2)],'kx','MarkerSize',10);
 title(['Size P:',num2str(sP)]);
 set(gca,'TickDir','out');
 axis([4400 5100 -50 250])
+
+% axis off
 % axis equal;

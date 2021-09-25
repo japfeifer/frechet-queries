@@ -31,14 +31,12 @@ function [trajOverlapMean, trajOverlapStd] = GetCCTTrajOverlap()
         
         % get all nodes within LB range
         allNodesCnt = 0;
-        GetTrajOverlap2(1,Qid,Q);
         
+        GetTrajOverlap2(1,Qid,Q);
         if allNodesCnt < parentCnt
             error('allNodesCnt < parentCnt');
         end
-        
         trajOverlapList(end+1) = (allNodesCnt - parentCnt) / allNodesCnt;
-        
         trajOverlapNodesCnt(end+1) = allNodesCnt;
        
         if mod(i,100) == 0

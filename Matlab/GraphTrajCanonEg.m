@@ -1,6 +1,7 @@
 % FrechetDecide(P1,P2,err,0,1,0,0,0); % plot the freespace diagram
 
-% Pentip dataset
+% Run ProcesskNNExactReal with k=5 for the pen tip data set
+
 Qid = 4;
 P2 = queryStrData(Qid).traj;
 id = queryStrData(Qid).decidetrajids(5,1); % get fifth closest traj to Q

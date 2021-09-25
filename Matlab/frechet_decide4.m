@@ -415,7 +415,8 @@ if plotFSD==1  %--plot the free space diagram
     for i=1:I-1
         for j=1:J-1
             x = [j-1 j j j-1];  y = [i-1 i-1 i i];
-            h(ih)=patch(x',y','k'); ih = ih + 1;
+%             h(ih)=patch(x',y','k'); ih = ih + 1;
+            h(ih)=patch(x',y','k','FaceColor','[0.6,0.6,0.6]'); ih = ih + 1;
             x = []; y = [];
             if ~isnan(C(i,j))
                 x = [x j-1+C(i,j)];  y = [y i-1];

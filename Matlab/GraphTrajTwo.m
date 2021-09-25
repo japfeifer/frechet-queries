@@ -1,5 +1,7 @@
 % FrechetDecide(P1,P2,err,0,1,0,0,0); % plot the freespace diagram
 
+% First, run ProcesskNNExactReal for the football dataset
+
 % Football dataset
 Qid = 4;
 P2 = queryStrData(Qid).traj;

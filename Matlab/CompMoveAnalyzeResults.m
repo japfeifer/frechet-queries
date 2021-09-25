@@ -25,6 +25,7 @@ B = [testLabels testMat];
 C = [A;B];
 
 figure(10);
-cm = confusionchart(queryResults2(:,5),queryResults2(:,6));
-% cm.ColumnSummary = 'column-normalized';
+% cm = confusionchart(queryResults2(:,5),queryResults2(:,6));
+cm = confusionchart(queryResults2(:,5),queryResults2(:,6),'Normalization','column-normalized');
+cm.ColumnSummary = 'column-normalized';
 

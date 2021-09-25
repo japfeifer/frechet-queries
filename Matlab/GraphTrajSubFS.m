@@ -1,6 +1,7 @@
 % FrechetDecide(P1,P2,err,0,1,0,0,0); % plot the freespace diagram
 
-% Pigeon Homing 1000 Sub-traj data set
+% Run Proposed Algo 3 first on Pigeon Homing |P|=1000 Sub-traj data set
+
 Qid = 6;
 idx1 = queryStrData(Qid).subsvert;
 idx2 = queryStrData(Qid).subevert;
@@ -36,5 +37,8 @@ hold on;
 
 title(['Size P1: ',num2str(sP1),'  Size P2: ',num2str(sP2)]);
 set(gca,'TickDir','out');
+
 % axis([-600 1200 -1900 2300])
-axis equal;
+
+axis off
+% axis equal;
