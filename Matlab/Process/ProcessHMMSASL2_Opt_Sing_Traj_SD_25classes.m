@@ -2,7 +2,7 @@
 
 InitGlobalVars;
 
-scriptName = 'ProcessHMMSASL2_Opt_Multi_Traj_SD';
+scriptName = 'ProcessHMMSASL2_Opt_Sing_Traj_SD_25classes';
 bothFile = ['ExpRes/',scriptName,'_',datestr(now,'dd-mm-yy','local'),'_',datestr(now,'hh-MM-ss','local')];
 matFile = [bothFile '.mat'];
 diaryFile = [bothFile,'.txt'];
@@ -16,7 +16,7 @@ disp([scriptName]);
 batchFlg = 1;
 datasetType = 8; % 1 = KinTrans, 2 = MHAD, 3 = LM, 4 = UCF
 classifierCurr = 1;  % 1 = subspace discriminant compute all distances, 2 = NN search
-trajDefTypeCurr = 2; % Trajectory definition type, 1 = append to a single traj, 2 = insert to a traj set
+trajDefTypeCurr = 1; % Trajectory definition type, 1 = append to a single traj, 2 = insert to a traj set
 doTrainSplit = 1;
 reachPctCurr = 0;
 acc_iter_def = [1001 1002 1003 1004 1005 1006 1007 1008 1009 1010 1011 1012 ...
@@ -51,31 +51,9 @@ trainMethodCurr = 1;
 bestTrainRepFlgCurr = 0;
 swapKFoldCurr = 0;
 
-groupClassesFlg = 0; 
-subsetClassesFlg = 0;
-groupClassesList = {[]}; 
-subsetClassesList = [];
-featureSetClass = [];
-testSetClass = [];
-trainSetClass = [];
-testSetList = [];
-
-doIterNumJtsIncl = 1;
-% iterNumJtsIncl = 3;
-% doSVMFlg = 1;
-% doDMmMin = 15;
-
-aggFlg = 1;
-totBodyJts = 9; 
-mapCanonJts =  [1001 1; 1002 1; 1003 1; 1004 1; 1005 1; 1006 1; 1007 1; 1008 1; 1009 1; 1010 1; 1011 1; 1012 1; ...
-                        1014 2; 1015 2; 1016 2; 1017 2; 1018 2; 1019 2; 1020 2; 1021 2; 1022 2; 1023 2; 1024 2; ...
-                1025 3;         1027 3; 1028 3; 1029 3; 1030 3; 1031 3; 1032 3; 1033 3; 1034 3; 1035 3; 1036 3; ...
-                1037 4; 1038 4; 1039 4; 1040 4;         1042 4; 1043 4; 1044 4; 1045 4; 1046 4; 1047 4; 1048 4; ...
-                1049 5; 1050 5; 1051 5; 1052 5; 1053 5; 1054 5; 1055 5;         1057 5; 1058 5; 1059 5; 1060 5; ...
-                1061 6; 1062 6;         1064 6; 1065 6; 1066 6; 1067 6; 1068 6; 1069 6; 1070 6; 1071 6; 1072 6; ...
-                1073 7; 1074 7; 1075 7; 1076 7; 1077 7;         1079 7; 1080 7; 1081 7; 1082 7; 1083 7; 1084 7; ...
-                1085 8; 1086 8; 1087 8;         1089 8; 1090 8; 1091 8; 1092 8; 1093 8; 1094 8; 1095 8; 1096 8; ...
-                1097 9; 1098 9; 1099 9; 1100 9; 1101 9; 1102 9;         1104 9; 1105 9; 1106 9; 1107 9; 1108 9];
+featureSetClass = [13 22 53 15 4 17 61 75 23 26 47 59 67 76 77 84 3 5 8 16 24 30 35 48 51];
+testSetClass = [13 22 53 15 4 17 61 75 23 26 47 59 67 76 77 84 3 5 8 16 24 30 35 48 51];
+trainSetClass = [13 22 53 15 4 17 61 75 23 26 47 59 67 76 77 84 3 5 8 16 24 30 35 48 51];
 
 % output variable selections
 disp(['datasetType: ',num2str(datasetType)]);

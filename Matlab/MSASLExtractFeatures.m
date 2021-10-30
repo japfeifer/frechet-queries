@@ -132,6 +132,53 @@ function seq2 = MSASLExtractFeatures(seq,extractMethod)
         seq2(:,a:a+2) = seq(:,RTPR) - seq(:,RIEF); a=a+3;
         seq2(:,a:a+2) = seq(:,RTDI) - seq(:,RIEF); a=a+3;
         seq2(:,a:a+2) = seq(:,RTEF) - seq(:,RIEF); a=a+3;
+    elseif extractMethod == 24
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,LWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,NECK) - seq(:,LWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,REYE) - seq(:,LWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,LEYE) - seq(:,LWST); a=a+3;
+    elseif extractMethod == 25
+        seq2(:,a:a+2) = seq(:,RWST) - seq(:,HEAD); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB) - seq(:,HEAD); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO) - seq(:,HEAD); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,HEAD); a=a+3;
+    elseif extractMethod == 26
+        seq2(:,a:a+2) = seq(:,LWST) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,REYE) - seq(:,RWST); a=a+3;
+    elseif extractMethod == 27
+        seq2(:,a:a+2) = seq(:,RELB) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,LWST) - seq(:,RWST); a=a+3;
+    elseif extractMethod == 28
+        seq2(:,a:a+2) = seq(:,RWST) - seq(:,HEAD); a=a+3;
+        seq2(:,a:a+2) = seq(:,REAR) - seq(:,HEAD); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,LSHO) - seq(:,LWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,NECK) - seq(:,HEAD); a=a+3;
+    elseif extractMethod == 29
+        seq2(:,a:a+2) = seq(:,LWST) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,NECK) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB) - seq(:,RWST); a=a+3;
+    elseif extractMethod == 30
+        seq2(:,a:a+2) = seq(:,LWST) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,LEAR) - seq(:,HEAD); a=a+3;
+        seq2(:,a:a+2) = seq(:,RWST) - seq(:,NECK); a=a+3;
+        seq2(:,a:a+2) = seq(:,REYE) - seq(:,HEAD); a=a+3;
+    elseif extractMethod == 31
+        seq2(:,a:a+2) = seq(:,LWST) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,REYE) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO) - seq(:,RWST); a=a+3;
+    elseif extractMethod == 32
+        seq2(:,a:a+2) = seq(:,LWST) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,REYE) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,REYE) - seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,LEYE) - seq(:,LWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,REYE) - seq(:,LSHO); a=a+3;
+
     elseif extractMethod == 1001
         seq2(:,a:a+2) = seq(:,HEAD); a=a+3;
     elseif extractMethod == 1002

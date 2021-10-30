@@ -2,7 +2,7 @@
 
 InitGlobalVars;
 
-scriptName = 'ProcessHMMSASL2_Opt_Multi_Traj_SD';
+scriptName = 'ProcessHMMSASL2_Opt_Multi_Traj_SD_25classes';
 bothFile = ['ExpRes/',scriptName,'_',datestr(now,'dd-mm-yy','local'),'_',datestr(now,'hh-MM-ss','local')];
 matFile = [bothFile '.mat'];
 diaryFile = [bothFile,'.txt'];
@@ -55,9 +55,9 @@ groupClassesFlg = 0;
 subsetClassesFlg = 0;
 groupClassesList = {[]}; 
 subsetClassesList = [];
-featureSetClass = [];
-testSetClass = [];
-trainSetClass = [];
+featureSetClass = [13 22 53 15 4 17 61 75 23 26 47 59 67 76 77 84 3 5 8 16 24 30 35 48 51];
+testSetClass = [13 22 53 15 4 17 61 75 23 26 47 59 67 76 77 84 3 5 8 16 24 30 35 48 51];
+trainSetClass = [13 22 53 15 4 17 61 75 23 26 47 59 67 76 77 84 3 5 8 16 24 30 35 48 51];
 testSetList = [];
 
 doIterNumJtsIncl = 1;

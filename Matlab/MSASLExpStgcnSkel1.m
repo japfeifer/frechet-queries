@@ -7,8 +7,11 @@
 %
 % Note that an experiment must first be loaded with trainSet and testSet data
 % delete files in the Test and Train folders.
+%
+% sample command to copy files to Artemis:
+% scp *.json jpfe0390@hpc.sydney.edu.au:/project/RDS-FEI-compGestClass-RW/data/cocomsasl/kinetics_train
 
-repeatNum = 10;
+repeatNum = 20;
 
 % training data
 targetFolder = 'C:\Users\johna\Downloads\Export\Train\train';
