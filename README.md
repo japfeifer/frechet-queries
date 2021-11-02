@@ -3,9 +3,9 @@
 This repository contains code and other information relating to my PhD Thesis. I study problems in the field of Computational Geometry, and specifically research new and novel solutions in the sub-field of Computational Movemement Analysis. In a nutshell, I focus on researching new data structures and algorithms that answer proximity queries on movement data, i.e., data that contains changing coordinate locations on moving objects, called trajectories. Trajectory data sets are diverse and real-world examples include: foraging flying bats, people commuting within a city, house cats on the prowl in their neighborhood, roaming buffalo, shipping vessel paths, pen-tip (handwriting) movement, human skeletal sign language joint movement, hurricane tracking, and cement truck routes. Although real trajectories exist in 2D or 3D space, theoretically, trajectories can be constructed in higher dimensional space which can be advantageous in solving certain problems.
 
 The algorithms and data structures are designed to have smaller pre-processing and query computational complexity, as well as a smaller size complexity.  Our work includes both theoretical and experimental results, and can answer questions such as:
-1) Given an input set containing many trajectories and a query trajectory, provide exact or approximate nearest-neighbor, k-nearest-neighbor, or Range (all trajectories within a distance threshold) results that are closest to the query, under the continuous Fréchet similarity measure.
-2) Given a large trajectory input and a small query trajectory, find the exact or approximate sub-trajectory segments within the large trajectory input that are closest to the query for nearest-neighbor, k-nearest-neighbor, or range queries (under the discrete or continuous Fréchet distance measures).
-3) Given a training set containing sign language skeletal movement with labels, classify a test (query) sign.
+1) We are given a large trajectory input set S, and the goal is to find trajectories in S that are close to a query 𝑄.  We must support both kNN and Range queries that give either exact or approximate results, under the continuous Fréchet distance.
+2) We are given a large input trajectory 𝑃 and small query trajectory 𝑄, and the goal is to find the sub-trajectory 𝑃′ in 𝑃 that is closest to 𝑄
+3) Given a training set containing sign language skeletal movement sequences with labels, correctly classify a test (query) sequence.
 
 My PhD thesis can be downloaded [here](https://cloudstor.aarnet.edu.au/plus/s/c6ylHAahVMqeAbk).
 
