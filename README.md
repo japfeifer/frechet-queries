@@ -14,7 +14,7 @@ There are three main projects, each with their own associated paper:
 2) [Sub-trajectory Proximity Queries](https://github.com/japfeifer/frechet-queries/wiki/Sub-trajectory-Proximity-Queries) under the Continuous Fréchet Distance
 3) [Sign Language Recognition](https://github.com/japfeifer/frechet-queries/wiki/Sign-Language-Recognition-Project) from Skeletal Trajectory Data with Interpretable Classifiers
 
-For general information on code setup click [here](https://github.com/japfeifer/frechet-queries/wiki).
+For general information on data set and Matlab version requirements click [here](https://github.com/japfeifer/frechet-queries/wiki).
 
 Other potentially interesting sub-topics that have accompanying code include:
 1) Performing trajectory similarity searches using Hyper Vector computing (see [Pentti Kanerva](https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=Pentti+Kanerva&btnG=), [Chris Eliasmith](https://scholar.google.com/citations?user=KOBO-6QAAAAJ&hl=en&oi=sra), and [Tony Plate](https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=Tony+Plate&btnG=)).
