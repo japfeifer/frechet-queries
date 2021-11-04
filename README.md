@@ -12,7 +12,7 @@ My PhD thesis can be downloaded [here](https://cloudstor.aarnet.edu.au/plus/s/c6
 There are three main projects, each with their own associated paper:
 1) [Trajectory Proximity Queries](https://github.com/japfeifer/frechet-queries/wiki/Trajectory-Proximity-Queries) under the Continuous Fréchet Distance
 2) [Sub-trajectory Proximity Queries](https://github.com/japfeifer/frechet-queries/wiki/Sub-trajectory-Proximity-Queries) under the Continuous Fréchet Distance
-3) [Sign Language Recognition](https://github.com/japfeifer/frechet-queries/wiki/Sign-Language-Recognition-Project) from Skeletal Trajectory Data with Interpretable Classifiers
+3) [Sign Language Recognition](https://github.com/japfeifer/frechet-queries/wiki/Sign-Language-Recognition) from Skeletal Trajectory Data with Interpretable Classifiers
 
 For general information on data set and Matlab version requirements click [here](https://github.com/japfeifer/frechet-queries/wiki).
 
