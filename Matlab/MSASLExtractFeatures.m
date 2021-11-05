@@ -178,7 +178,27 @@ function seq2 = MSASLExtractFeatures(seq,extractMethod)
         seq2(:,a:a+2) = seq(:,REYE) - seq(:,RELB); a=a+3;
         seq2(:,a:a+2) = seq(:,LEYE) - seq(:,LWST); a=a+3;
         seq2(:,a:a+2) = seq(:,REYE) - seq(:,LSHO); a=a+3;
-
+    elseif extractMethod == 33
+        seq2(:,a:a+2) = seq(:,LWST) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RWST) - seq(:,NECK); a=a+3;
+        seq2(:,a:a+2) = seq(:,REAR); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,LWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB); a=a+3;
+        seq2(:,a:a+2) = seq(:,REAR) - seq(:,HEAD); a=a+3;
+        seq2(:,a:a+2) = seq(:,REAR) - seq(:,NECK); a=a+3;
+    elseif extractMethod == 34
+        seq2(:,a:a+2) = seq(:,LWST) - seq(:,RWST); a=a+3;
+        seq2(:,a:a+2) = seq(:,LEAR); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO) - seq(:,HEAD); a=a+3;
+        seq2(:,a:a+2) = seq(:,LELB) - seq(:,LSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,RSHO) - seq(:,NECK); a=a+3;
+        seq2(:,a:a+2) = seq(:,RELB) - seq(:,NECK); a=a+3;
+        seq2(:,a:a+2) = seq(:,HEAD) - seq(:,RSHO); a=a+3;
+        seq2(:,a:a+2) = seq(:,LEAR) - seq(:,HEAD); a=a+3;
+        seq2(:,a:a+2) = seq(:,REYE); a=a+3;
+        seq2(:,a:a+2) = seq(:,REAR); a=a+3;
+        seq2(:,a:a+2) = seq(:,REYE) - seq(:,HEAD); a=a+3;
+        
     elseif extractMethod == 1001
         seq2(:,a:a+2) = seq(:,HEAD); a=a+3;
     elseif extractMethod == 1002
