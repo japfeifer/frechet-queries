@@ -48,8 +48,6 @@ public:
 
     double FrechetDPBringmann(matlab::data::TypedArray<double>& inCurve1, matlab::data::TypedArray<double>& inCurve2, double leash_dist) {
         
-//         stream << "start function call." << std::endl;
-//         displayOnMATLAB(stream);
         FrechetLight* frechet =  new FrechetLight();
         Curve bringCurve1;
         Curve bringCurve2;      
@@ -64,6 +62,9 @@ public:
         }
 
         bool dp_flg = frechet->lessThanWithFilters(leash_dist, bringCurve1, bringCurve2);
+        
+//         stream << "box count: " << frechet->getNumberOfBoxes() << std::endl;
+//         displayOnMATLAB(stream);
 
 //         stream << "frechet dist: " << resDist << std::endl;
 //         displayOnMATLAB(stream);

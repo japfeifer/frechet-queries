@@ -865,6 +865,9 @@ bool FrechetLight::lessThan(distance_t distance, Curve const& curve1, Curve cons
 	// this is the main computation of the decision problem
 	computeOutputs(initial_box, initial_inputs, final_outputs);
 
+//     stream << "this does not work!" << std::endl;
+//     displayOnMATLAB(stream);
+    
 	return isTopRightReachable(final_outputs);
 }
 
@@ -874,7 +877,7 @@ bool FrechetLight::lessThanWithFilters(distance_t distance, Curve const& curve1,
 	this->curve_pair[1] = &curve2;
 	this->distance = distance;
 	this->dist_sqr = distance * distance;
-
+    
 	assert(curve1.size());
 	assert(curve2.size());
 
