@@ -7,7 +7,7 @@ The algorithms and data structures are designed to have smaller pre-processing a
 2) We are given a large input trajectory 𝑃 and small query trajectory 𝑄, and the goal is to find the sub-trajectory 𝑃′ in 𝑃 that is closest to 𝑄
 3) We are given a training set containing sign language skeletal movement sequences with labels, and the goal is to correctly classify a test (query) sequence.
 
-My PhD thesis can be downloaded [here](https://cloudstor.aarnet.edu.au/plus/s/qa7WI7ZiCdLFJZY).
+My PhD thesis can be downloaded [here](https://ses.library.usyd.edu.au/handle/2123/27296).
 
 There are three main projects, each with their own associated paper:
 1) [Trajectory Proximity Queries](https://github.com/japfeifer/frechet-queries/wiki/Trajectory-Proximity-Queries) under the Continuous Fréchet Distance
