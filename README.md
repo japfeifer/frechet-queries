@@ -17,7 +17,7 @@ There are three main projects, each with their own associated paper:
 For general information on data set and Matlab version requirements click [here](https://github.com/japfeifer/frechet-queries/wiki).
 
 Other potentially interesting sub-topics that have accompanying code include:
-1) Work on classifying NFL Football offensive and defensive pays (click [here](https://www.kaggle.com/evanpfeifer/uncovering-playbooks-automatic-play-clustering)).
+1) Work on classifying NFL Football offensive and defensive pays (click [here](https://github.com/evanpfeifer/nfl-big-data-bowl)).
 2) Performing trajectory similarity searches using Hyper Vector computing (see [Pentti Kanerva](https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=Pentti+Kanerva&btnG=), [Chris Eliasmith](https://scholar.google.com/citations?user=KOBO-6QAAAAJ&hl=en&oi=sra), and [Tony Plate](https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=Tony+Plate&btnG=)).
 
 I acknowledge and thank my PhD supervisor, [Dr. Joachim Gudmundsson](https://scholar.google.com/citations?user=uECC9_gAAAAJ&hl=en&oi=sra), and auxilliary supervisor, [Dr. Martin P. Seybold](https://scholar.google.com/citations?user=CwRCo7IAAAAJ&hl=en&oi=ao), for helping to contribute and guide me throughout the programme at the School of Computer Science, University of Sydney, Australia.
